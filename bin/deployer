@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#
+# Wrapper for `deployer.phar`
+#
+# e.g., `deployer current -v`
+#
+# This is basically just an alias for `deployer.phar`, but you can call it from anywhere inside a site's
+# directory and it will find the correct path to Deployer and the config file.
+#
+# It's also flexible enough to be used when multiple Regolith sites are installed under the same user
+# account. It will use the config file for whichever directory you're currently in.
+#
+DIR=$PWD
+
+while [[ ! -f $DIR/bin/deployer.phar ]]; do
+	DIR=$( dirname $DIR )
+
+	if [[ '/' == $DIR ]]; then
+		echo "Deployer couldn't be found. Please make sure you're in the site's directory."
+		return
+	fi
+done
+
+/usr/bin/php $DIR/bin/deployer.phar --file=$DIR/config/deployer/regolith-recipe.php $@

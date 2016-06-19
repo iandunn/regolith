@@ -36,6 +36,7 @@ $deployer_environment = array(
 	'servers' => array(
 		'production' => array(
 			'hostname'    => 'regolith-production.net',
+			'origin_ip'   => '',    // If using an HTTP proxy like CloudFlare, enter your origin server IP. Otherwise, leave blank.
 			'username'    => 'regolith',
 			'deploy_path' => '/var/www/regolith-production.net',
 		),

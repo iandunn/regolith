@@ -40,7 +40,9 @@ set( 'shared_files', [
 set( 'shared_dirs', get_shared_directories() );
 
 foreach ( $deployer_environment['servers'] as $environment => $settings ) {
-	server( $environment, $settings['hostname'] )
+	$hostname = $settings['origin_ip'] ?: $settings['hostname'];
+
+	server( $environment, $hostname )
 		->user( $settings['username'] )
 		->forwardAgent()
 		->env( 'deploy_path', $settings['deploy_path'] );

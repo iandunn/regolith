@@ -26,8 +26,9 @@ $wp_supercache_304             = 0;
 $wp_cache_no_cache_for_get     = 0;
 $wp_cache_disable_utf8         = 0;
 $cache_page_secret             = 'ad270361c39c428c9465313363b02559';
-$wp_cache_home_path            = '/wordpress/';
-$wp_cache_slash_check          = 1;
+
+$wp_cache_home_path = '/wordpress/';
+$wp_cache_slash_check = 1;
 
 if ( ! defined( 'WPCACHEHOME' ) ) {
 	define( 'WPCACHEHOME', WP_CONTENT_DIR . "/plugins/wp-super-cache/" );

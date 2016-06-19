@@ -32,7 +32,8 @@ function get_shared_directories() {
 set( 'repository', $deployer_environment['repository'] );
 
 set( 'shared_files', [
-		'config/environment.php'
+		'config/environment.php',
+		'web/.user.ini',
 	]
 );
 

@@ -5,6 +5,7 @@ web/.user.ini
 web/content/cache
 web/content/upgrade
 web/content/uploads
+web/content/wfcache
 web/content/wflogs
 web/wordpress
 

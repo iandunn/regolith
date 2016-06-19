@@ -1,6 +1,7 @@
 # BEGIN Regolith
 <IfModule mod_rewrite.c>
 	RewriteEngine On
+	RewriteBase /
 
 	# Force HTTPS everywhere
 	RewriteCond %{SERVER_PORT} 80

@@ -56,10 +56,11 @@ foreach ( $deployer_environment['servers'] as $environment => $settings ) {
  * release folder. The symlink tells it the right place to look.
  */
 task( 'deploy:symlink_wp_config', function() {
+	$make_directory   = 'mkdir -p {{deploy_path}}/shared/web';
 	$change_directory = 'cd {{deploy_path}}/shared/web';
 	$create_symlink   = 'ln -snf ../../current/web/wp-config.php wp-config.php';
 
-	run( "$change_directory && $create_symlink" );
+	run( "$make_directory && $change_directory && $create_symlink" );
 } )->desc( 'Create symlink for wp-config.php' );
 
 /**

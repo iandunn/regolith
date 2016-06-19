@@ -17,6 +17,7 @@ configure dev uploads to pull from production if not found
 maybe write script to pull db from production and import into dev
 	https://github.com/markjaquith/WP-Stack/blob/master/lib/tasks.rb
 	or deployer.phar does that?
+	what about security though? it'll contain sensitive things like password hashes that you don't want just floating around random dev environments locally
 	add to readme?
 
 

@@ -17,8 +17,9 @@ add_filter( 'auto_update_plugin',            '__return_true'  );
 add_filter( 'auto_update_theme',             '__return_true'  );
 add_filter( 'xmlrpc_enabled',                '__return_false' ); // Disable for security -- http://core.trac.wordpress.org/ticket/21509#comment:5
 
-add_filter( 'wp_mail',  __NAMESPACE__ . '\intercept_outbound_mail'  );
-add_action( 'shutdown', __NAMESPACE__ . '\content_sensor_flag', 999 );
+add_filter( 'wp_mail',      __NAMESPACE__ . '\intercept_outbound_mail'  );
+add_action( 'wp_footer',    __NAMESPACE__ . '\content_sensor_flag', 999 );
+add_action( 'login_footer', __NAMESPACE__ . '\content_sensor_flag', 999 );
 
 
 /**
@@ -74,9 +75,5 @@ function intercept_outbound_mail( $args ) {
  * When making requests to the front-end, service should add a cachebuster to the URL, like /?s={timestamp}
  */
 function content_sensor_flag() {
-	if ( ! did_action( 'wp_footer' ) && ! did_action( 'login_footer' ) ) {
-		return;
-	}
-
 	printf( '<!-- %s -->', \REGOLITH_CONTENT_SENSOR_FLAG );
 }

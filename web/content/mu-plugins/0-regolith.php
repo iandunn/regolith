@@ -22,6 +22,8 @@ if ( is_multisite() ) {
 	add_filter( 'network_site_url', __NAMESPACE__ . '\fix_network_site_url', 10, 3 );
 }
 
+add_filter( 'upgrader_clear_destination', __NAMESPACE__ . '\upgrader_symlink_compatibility', 11, 3 );    // after \Plugin_Upgrader::delete_old_plugin() | delete_old_theme()
+
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	register_wp_cli_commands();
 }
@@ -87,4 +89,46 @@ function fix_network_site_url( $url, $path, $scheme ) {
 	}
 
 	return $url . $path;
+}
+
+/**
+ * Make `\WP_Upgrader` compatible with shared dependency symlinks on production
+ *
+ * On production, Core and 3rd-party plugins/themes live in the `shared` folder, so that they can be accessed by
+ * all releases. `web/content/plugins/{foo}` is just a symlink to `shared/web/content/plugins/{foo}`.
+ *
+ * `\WP_Upgrader` doesn't understand that `{foo}` is just a symlink, and tries to delete it before installing the
+ * new version. `\WP_Filesystem_Direct::delete()` fails because `rmdir( $symlink )` returns `false`.
+ *
+ * That's actually what we want, though, because we don't want to remove the symlink, only the contents of the
+ * target directory.
+ *
+ * `\WP_Upgrader` thinks that failing to delete the directory is a critical error, and would normally abort the
+ * rest of the upgrade process, so we don't hook in at the last minute and tell it everything is fine.
+ *
+ * @param true|\WP_Error $removed
+ * @param string         $local_destination
+ * @param string         $remote_destination
+ *
+ * @return true|\WP_Error
+ */
+function upgrader_symlink_compatibility( $removed, $local_destination, $remote_destination ) {
+	if ( 'production' !== REGOLITH_ENVIRONMENT ) {
+		return $removed;
+	}
+
+	if ( ! is_wp_error( $removed ) || 'remove_old_failed' !== $removed->get_error_code() ) {
+		return $removed;
+	}
+
+	$potential_dependency = str_replace( REGOLITH_ROOT_DIR, '', $remote_destination );
+	$potential_dependency = trim( $potential_dependency, '/' );
+	$dependencies         = file_get_contents( REGOLITH_ROOT_DIR . '/.gitignore' );
+	$is_dependency        = false !== strpos( $dependencies, $potential_dependency );
+
+	if ( ! $is_dependency ) {
+		return $removed;
+	}
+
+	return true;
 }

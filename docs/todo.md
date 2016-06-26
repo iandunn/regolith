@@ -2,14 +2,26 @@
 
 ## High
 
-set browser cache headers?
-	8 days for content/* 
-	16 hours for html 
+regolith base - create init() or something to make cleaner
+
+share content/cache/.htaccess and maybe a few other files so it doesn't get wiped out during deploy
+    also ! to gitignore
+
+set cache headers for browsers and cloudflare
+	6 hours for homepage and other archives
+	8 days for individual posts/pages ?
+	8 days for content/*
+	make sure to not override nocache headers
+
+reconsider including https://github.com/roots/wp-password-bcrypt
 
 send these headers?
 	X-Xss-Protection
 	X-Content-Type-Options
 	Content-Security-Policy
+
+
+during first install on production, deployer creates the wordpress folder, so wp-cli doesn't install wp, then rest of script fails
 
 configure dev uploads to pull from production if not found
 	add to readme?
@@ -50,8 +62,33 @@ add wp-cli helper for bakcing up tables?
 
 get wpsc working in mod_rewrite for homepage etc, rather than just php mode
 
+ship default config for login security solution, wordfence, etc
+	want it to enforce it all the time, so user can't change through wpadmin?
+	or just want to be able to impose it during setting up new site, so don't have to go through config all over again?
+
+	could store config files in config/plugins/foo.php
+		then have filters read from there and use set_option filter
+			faster than doing it from get_option
+		or have wp-cli command to `wp option update foo bar`
+
+	maybe use `wp dictator` to enforce
+		would store config in config/plugins/foo.yml
+		would need to write extension, or can it handle this already?
+
+
 
 ## Medium
+
+probably need to split install.md up into different scenarios
+	setting up new dev environment for new site
+	setting up new dev environment from existing regolith production site
+	setting up new production environment from existing regolith dev environment
+
+reconsider environmental variables for environment config
+	could use apache `SetEnv WP_ENV production` in the dir above the folder where regolith is cloned
+	how to get that to work automatically with wpcli?
+
+reconsider adding log folder, it's nice to have them easily accessible from the IDE
 
 should $deployer_environment be in enviornment.php? it's not specific to each envirronment. could be in common.php?
 
@@ -71,13 +108,6 @@ mu-plugins/common.php - run auto plugin updater faster, so it runs before wordfe
 how to handle deploy when changes need to be made to environment.php?
 what about when add new shared files? need to commit+deploy updated recipe before commit+deploy other?
 	maybe fine now that running install_dependencies.sh after deploy?
-
-
-ship default config for login security solution, wordfence, etc
-	maybe use `wp dictator` to enforce
-	manually enforce, or automatically?
-	could store config files in config/plugins, then have filters read from there and use set_option filter
-		faster than doing it from get_option
 
 wp super cache
 	after deploys
@@ -104,6 +134,7 @@ don't need to set ABSPATH in config/wordpress/common.php?
 	always set by wp-load.php?
 	or is it always set by common.php, so don't need to check if it's already been set?
 	https://core.trac.wordpress.org/changeset/7971
+	https://core.trac.wordpress.org/ticket/26592
 
 why checking wp_default_theme in mu-plugins/0-bedrock.php?
     never had problems without that, unless that's why wp-cli would install things to the core folder

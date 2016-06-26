@@ -2,8 +2,6 @@
 
 ## High
 
-regolith base - create init() or something to make cleaner
-
 share content/cache/.htaccess and maybe a few other files so it doesn't get wiped out during deploy
     also ! to gitignore
 

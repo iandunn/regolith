@@ -11,21 +11,31 @@ Author URI:  http://iandunn.name
 namespace Regolith\Base;
 defined( 'WPINC' ) or die();
 
-if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
-    register_theme_directory( ABSPATH . 'wp-content/themes' );
-}
+/**
+ * Register hook callbacks and other initialization tasks
+ */
+function initialize() {
+	add_filter( 'upgrader_clear_destination', __NAMESPACE__ . '\upgrader_symlink_compatibility', 11, 3 );    // after \Plugin_Upgrader::delete_old_plugin() | delete_old_theme()
 
-if ( is_multisite() ) {
-	// See https://github.com/roots/bedrock/issues/250 and https://core.trac.wordpress.org/ticket/36507
-	add_filter( 'option_home',      __NAMESPACE__ . '\fix_home_url'                );
-	add_filter( 'option_siteurl',   __NAMESPACE__ . '\fix_site_url'                );
-	add_filter( 'network_site_url', __NAMESPACE__ . '\fix_network_site_url', 10, 3 );
-}
+	/*
+	 * Fix URLs on Multisite
+	 *
+	 * See https://github.com/roots/bedrock/issues/250
+	 * See https://core.trac.wordpress.org/ticket/36507
+	 */
+	if ( is_multisite() ) {
+		add_filter( 'option_home',      __NAMESPACE__ . '\fix_home_url'                );
+		add_filter( 'option_siteurl',   __NAMESPACE__ . '\fix_site_url'                );
+		add_filter( 'network_site_url', __NAMESPACE__ . '\fix_network_site_url', 10, 3 );
+	}
 
-add_filter( 'upgrader_clear_destination', __NAMESPACE__ . '\upgrader_symlink_compatibility', 11, 3 );    // after \Plugin_Upgrader::delete_old_plugin() | delete_old_theme()
+	if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
+	    register_theme_directory( ABSPATH . 'wp-content/themes' );
+	}
 
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	register_wp_cli_commands();
+	if ( defined( 'WP_CLI' ) && WP_CLI ) {
+		register_wp_cli_commands();
+	}
 }
 
 /**
@@ -132,3 +142,5 @@ function upgrader_symlink_compatibility( $removed, $local_destination, $remote_d
 
 	return true;
 }
+
+initialize();

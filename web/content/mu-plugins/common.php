@@ -17,10 +17,11 @@ add_filter( 'auto_update_plugin',            '__return_true'  );
 add_filter( 'auto_update_theme',             '__return_true'  );
 add_filter( 'xmlrpc_enabled',                '__return_false' ); // Disable for security -- http://core.trac.wordpress.org/ticket/21509#comment:5
 
-add_filter( 'wp_mail',      __NAMESPACE__ . '\intercept_outbound_mail'  );
-add_action( 'wp_footer',    __NAMESPACE__ . '\content_sensor_flag', 999 );
-add_action( 'login_footer', __NAMESPACE__ . '\content_sensor_flag', 999 );
-
+add_filter( 'wp_mail',                    __NAMESPACE__ . '\intercept_outbound_mail'        );
+add_action( 'wp_footer',                  __NAMESPACE__ . '\content_sensor_flag',      999  );
+add_action( 'login_footer',               __NAMESPACE__ . '\content_sensor_flag',      999  );
+add_action( 'admin_bar_menu',             __NAMESPACE__ . '\admin_bar_environment'          );
+add_action( 'wp_before_admin_bar_render', __NAMESPACE__ . '\admin_bar_environment_css'      );
 
 /**
  * Prevent sandbox e-mails from going to production email accounts
@@ -76,4 +77,60 @@ function intercept_outbound_mail( $args ) {
  */
 function content_sensor_flag() {
 	printf( '<!-- %s -->', \REGOLITH_CONTENT_SENSOR_FLAG );
+}
+
+/**
+ * Show the current environment in the Admin Bar
+ *
+ * This helps increase awareness of the current environment, to make it less likely that someone will
+ * accidentally do something on production that they meant to do in a development environment.
+ *
+ * @param \WP_Admin_Bar $admin_bar
+ */
+function admin_bar_environment( $admin_bar ) {
+	if ( ! is_super_admin() ) {
+		return;
+	}
+
+	$admin_bar->add_node( array(
+		'id'     => 'regolith-environment',
+		'title'  => ucwords( REGOLITH_ENVIRONMENT ),
+		'parent' => 'top-secondary',
+	) );
+}
+
+/**
+ * Styles for the environment node in the Admin Bar
+ */
+function admin_bar_environment_css() {
+	if ( ! is_super_admin() ) {
+		return;
+	}
+
+	$background_color = 'production' == REGOLITH_ENVIRONMENT ? 'transparent' : '#32465a';
+
+	?>
+
+	<style>
+		#wpadminbar ul li#wp-admin-bar-regolith-environment,
+		#wpadminbar:not(.mobile) .ab-top-menu > li#wp-admin-bar-regolith-environment:hover > .ab-item {
+			background-color: <?php echo esc_html( $background_color ); ?>;
+		}
+
+			#wpadminbar li#wp-admin-bar-regolith-environment .ab-item {
+				color: #eeeeee;
+			}
+
+				#wp-admin-bar-regolith-environment > .ab-item:before {
+					top: 2px;
+					content: "\f325";
+				}
+
+					#wpadminbar li#wp-admin-bar-regolith-environment:hover .ab-item:before {
+						color: #a0a5aa;
+						color: rgba( 240, 245, 250, 0.6 );
+					}
+	</style>
+
+	<?php
 }

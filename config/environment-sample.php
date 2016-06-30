@@ -13,7 +13,7 @@
  * to the current release, etc.
  */
 
-define( 'REGOLITH_ENVIRONMENT',            'development'                );
+define( 'REGOLITH_ENVIRONMENT',            'development'                );  // if you choose something other than { development | staging | production } than you'll need to update other code that references this constant
 define( 'WP_HOME',                         'https://regolith.localhost' );
 define( 'DB_HOST',                         'localhost'                  );
 define( 'DB_PASSWORD',                     'password'                   );

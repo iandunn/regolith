@@ -2,6 +2,9 @@
 
 ## High
 
+don't even need wp-cli.yml to find correct path?
+	probably do if above web, but doulbe check
+
 share content/cache/.htaccess and maybe a few other files so it doesn't get wiped out during deploy
     also ! to gitignore
 
@@ -12,16 +15,19 @@ set cache headers for browsers and cloudflare
 	make sure to not override nocache headers
 
 reconsider including https://github.com/roots/wp-password-bcrypt
+	don't want to ship with repo b/c would have to maintain, always want latest like w/ other dependencies
+	there's a copy in w.org repo, but not official so don't trust to be unmodified and to keep updated
 
 send these headers?
 	X-Xss-Protection
 	X-Content-Type-Options
 	Content-Security-Policy
 
-
 during first install on production, deployer creates the wordpress folder, so wp-cli doesn't install wp, then rest of script fails
+	maybe just use --force param
 
 configure dev uploads to pull from production if not found
+	don't need to b/c db points to those urls anyway?
 	add to readme?
 
 maybe write script to pull db from production and import into dev
@@ -29,7 +35,6 @@ maybe write script to pull db from production and import into dev
 	or deployer.phar does that?
 	what about security though? it'll contain sensitive things like password hashes that you don't want just floating around random dev environments locally
 	add to readme?
-
 
 setup pre-commit hook for codesniffer, pre-release for phpmd?
 	needs to be setup server-side for proper enforcement?
@@ -73,9 +78,16 @@ ship default config for login security solution, wordfence, etc
 		would store config in config/plugins/foo.yml
 		would need to write extension, or can it handle this already?
 
+using wpcli for dependency management assumes that all dependencies are in the w.org repos
+	is there a way to integrate plugins hosted on github or premium themes
+	maybe need a combination of composer (but not wppackagist)
+
+mu-plugins/common.php - run auto plugin updater faster, so it runs before wordfence sends an email that plugins are out of date
 
 
 ## Medium
+
+if multisite, then look for mu-plugins/sites/hostname.php and include if exists
 
 probably need to split install.md up into different scenarios
 	setting up new dev environment for new site
@@ -101,7 +113,6 @@ should install deployer.phar to ~/bin instead of site_root/bin, b/c don't need 5
 setup a /monitor (or whatever) rewrite endpoint that sends nocache_headers, and update monitors to hit that
 	neceessary b/c uptimerobot doesn't support cachebusters, so it's just hitting cloudflare for front-end checks
 
-mu-plugins/common.php - run auto plugin updater faster, so it runs before wordfence sends an email that plugins are out of date
 
 how to handle deploy when changes need to be made to environment.php?
 what about when add new shared files? need to commit+deploy updated recipe before commit+deploy other?
@@ -121,6 +132,10 @@ wp super cache
 
 
 ## Low
+
+add deploy task to ping slack channel
+	already exists, just set it up and have it disabled by default
+	https://github.com/deployphp/recipes/blob/bdcf49f8e409971b79583aeed618aa87ae714f93/docs/slack.md
 
 move deploy recipe tasks to named functions for better readability?
 
@@ -155,3 +170,5 @@ isntall: modularize into functions
 
 is there a way to set a help description for `wp regolith` without having a class for it?
 	right now only have a description for `wp regolith purge-cloudflare-cache`
+
+maybe also add environment to title on front/back end, to increase awareness

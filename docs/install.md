@@ -1,6 +1,6 @@
 ## Requirements
 
-You'll need SSH access to your production server, and it must have Git and WP-CLI installed.
+You'll need SSH access to your production server, and it must have Git and WP-CLI installed. If they're not installed by default, you may be able to install them into your home directory.
 
 
 ## Installing Regolith
@@ -10,7 +10,7 @@ You'll need SSH access to your production server, and it must have Git and WP-CL
 1. If you have an existing database, import it.
 1. Review/update all the default configuration.
 	1. Copy `config/environment-sample.php` to `config/environment.php`
-	1. Update the values in `config/*`, `.gitignore`, `wp-cli.yml`, and anything else you want to customize.
+	1. Update the values in `config/*`, `.gitignore`, and anything else you want to customize.
 	1. If you use CloudFlare, add [your zone ID](https://blog.cloudflare.com/cloudflare-tips-frequently-used-cloudflare-ap/#comment-2486013580) to `environment.php` and uncomment the `purge_cloudflare` task in `config/deployer/regolith-recipe.php`.
 	1. _Warning:_ Before enabling the HSTS header in `.htaccess`, make sure the site has an active SSL certificate, and that you understand the consequences of HSTS. You may also need to tweak it to include subdomains, preloading, etc.
 	1. Plugin and theme dependencies are managed by simply adding them to `.gitignore`. That file acts as the central and canonical list of dependencies. `install-dependencies.sh` and `regolith-recipe.php` extract the items from there.

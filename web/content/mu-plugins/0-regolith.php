@@ -114,7 +114,7 @@ function fix_network_site_url( $url, $path, $scheme ) {
  * target directory.
  *
  * `\WP_Upgrader` thinks that failing to delete the directory is a critical error, and would normally abort the
- * rest of the upgrade process, so we don't hook in at the last minute and tell it everything is fine.
+ * rest of the upgrade process, so we hook in at the last minute and tell it everything is fine.
  *
  * @param true|\WP_Error $removed
  * @param string         $local_destination

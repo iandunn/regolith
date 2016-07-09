@@ -82,8 +82,6 @@ using wpcli for dependency management assumes that all dependencies are in the w
 	is there a way to integrate plugins hosted on github or premium themes
 	maybe need a combination of composer (but not wppackagist)
 
-mu-plugins/common.php - run auto plugin updater faster, so it runs before wordfence sends an email that plugins are out of date
-
 
 ## Medium
 
@@ -129,6 +127,11 @@ wp super cache
 
 		`wp package install wp-cli/wp-super-cache-cli` during install
 			allow_url_fopen on shared hosting
+
+add dev environment dependenies
+	e.g., debug-bar, debug-bar-cron, etc
+	install-dependencies.sh already knows which environment it is, so not hard to add extra variable for dev plugins and install those if dev environment
+	how to handle in .gitignore, though?
 
 
 ## Low

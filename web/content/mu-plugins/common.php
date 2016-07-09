@@ -17,6 +17,7 @@ add_filter( 'auto_update_plugin',            '__return_true'  );
 add_filter( 'auto_update_theme',             '__return_true'  );
 add_filter( 'xmlrpc_enabled',                '__return_false' ); // Disable for security -- http://core.trac.wordpress.org/ticket/21509#comment:5
 
+add_action( 'init',                       __NAMESPACE__ . '\schedule_cron_jobs'             );
 add_filter( 'wp_mail',                    __NAMESPACE__ . '\intercept_outbound_mail'        );
 add_action( 'wp_footer',                  __NAMESPACE__ . '\content_sensor_flag',      999  );
 add_action( 'login_footer',               __NAMESPACE__ . '\content_sensor_flag',      999  );
@@ -24,9 +25,23 @@ add_action( 'admin_bar_menu',             __NAMESPACE__ . '\admin_bar_environmen
 add_action( 'wp_before_admin_bar_render', __NAMESPACE__ . '\admin_bar_environment_css'      );
 
 /**
+ * Schedule WP-Cron jobs
+ */
+function schedule_cron_jobs() {
+	// Install updates every hour, to minimize the window where a known vulnerability is active
+	if ( ! wp_next_scheduled( 'wp_maybe_auto_update' ) ) {
+		wp_schedule_event( time(), 'hourly', 'wp_maybe_auto_update' );
+	}
+}
+
+/**
  * Prevent sandbox e-mails from going to production email accounts
  *
- * @param array @args
+ * This is a quick and dirty alternative to tools like MailCatcher and MailHog. It's more appropriate because
+ * Regolith projects typically don't use Ansible, etc to provision identical production and development
+ * environments. so we want something at the application-level
+ *
+ * @param array $args
  *
  * @return array
  */
@@ -83,7 +98,7 @@ function content_sensor_flag() {
  * Show the current environment in the Admin Bar
  *
  * This helps increase awareness of the current environment, to make it less likely that someone will
- * accidentally do something on production that they meant to do in a development environment.
+ * accidentally modify content on production that they meant to modify in a development environment.
  *
  * @param \WP_Admin_Bar $admin_bar
  */

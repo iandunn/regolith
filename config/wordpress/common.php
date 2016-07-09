@@ -9,11 +9,11 @@ define( 'DB_USER',    'username'           );
 define( 'DB_CHARSET', 'utf8'               );
 define( 'DB_COLLATE', ''                   );
 
-define( 'REGOLITH_ROOT_DIR',            dirname( dirname( __DIR__ ) )                               );
-define( 'WP_SITEURL',                   WP_HOME . '/wordpress'                                      );
-define( 'WP_CONTENT_URL',               WP_HOME . $content_dir_path                                 );
-define( 'WP_CONTENT_DIR',               REGOLITH_ROOT_DIR . $document_root_path . $content_dir_path );
-define( 'WPCACHEHOME',                  WP_CONTENT_DIR . '/plugins/wp-super-cache/'                 );
+define( 'REGOLITH_ROOT_DIR', dirname( dirname( __DIR__ ) )                               );
+define( 'WP_SITEURL',        WP_HOME . '/wordpress'                                      );
+define( 'WP_CONTENT_URL',    WP_HOME . $content_dir_path                                 );
+define( 'WP_CONTENT_DIR',    REGOLITH_ROOT_DIR . $document_root_path . $content_dir_path );
+define( 'WPCACHEHOME',       WP_CONTENT_DIR . '/plugins/wp-super-cache/'                 );
 
 define( 'WP_CACHE',                     true            );
 define( 'FORCE_SSL_ADMIN',              true            );

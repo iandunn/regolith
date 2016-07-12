@@ -57,10 +57,9 @@ function intercept_outbound_mail( $args ) {
 		$args_text     = sprintf( '<pre>%s</pre>', $args_text );
 	}
 
-	$args['message'] = $override_text . $args_text . $original_message;
-
 	$args['to']      = REGOLITH_MAIL_INTERCEPT_ADDRESS;
-	$args['subject'] = '[DEV] ' . $args['subject'];
+	$args['subject'] = sprintf( '[%s] %s', strtoupper( REGOLITH_ENVIRONMENT ), $args['subject'] );
+	$args['message'] = sprintf( $override_text, $args_text, $original_message );
 	$args['headers'] = '';    // wipe out CC and BCC
 
 	return $args;

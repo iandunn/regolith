@@ -1,6 +1,10 @@
 ## Requirements
 
-You'll need SSH access to your production server, and it must have Git and WP-CLI installed. If they're not installed by default, you may be able to install them into your home directory.
+* Regolith is designed to work with **Apache**
+* You'll also need **SSH access** to your production server
+* **Git** and **WP-CLI** must be installed in all environments
+
+If your host doesn't have Git or WP-CLI, check [the troubleshooting guide](./troubleshooting.md).
 
 
 ## Installing Regolith

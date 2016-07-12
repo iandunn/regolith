@@ -1,6 +1,8 @@
+# Outside the web root
 bin/deployer.phar
 config/environment.php
 
+# Inside the web root
 web/.user.ini
 web/content/cache
 web/content/upgrade
@@ -9,6 +11,18 @@ web/content/wfcache
 web/content/wflogs
 web/wordpress
 
+#
+# Plugin and theme dependencies
+#
+# 3rd-party dependencies that live in the WordPress.org repositories _SHOULD_ be added here, so that Regolith can
+# automatically install and update them. If any 3rd party plugins/themes aren't added here, then Regolith will
+# consider them to be custom, and will block updates for them. Blocking those updates could lead to known security
+# vulnerabilities going unpatched. See auto_update_valid_dependencies() for details.
+#
+# Custom plugins and themes _SHOULD NOT_ be added here, because they need to be tracked by Git, and we don't want
+# them to potentially be overridden with a different plugin/theme from the WordPress.org repository. See
+# block_updates_for_custom_extensions() for details.
+#
 web/content/plugins/akismet
 web/content/plugins/cloudflare
 web/content/plugins/google-authenticator

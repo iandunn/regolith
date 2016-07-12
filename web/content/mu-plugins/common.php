@@ -9,15 +9,19 @@ Author URI:  http://iandunn.name
 */
 
 namespace Regolith\Common_Functionality;
+use Regolith\Base;
 defined( 'WPINC' ) or die();
 
 add_filter( 'allow_minor_auto_core_updates', '__return_true'  );
 add_filter( 'allow_major_auto_core_updates', '__return_true'  );
-add_filter( 'auto_update_plugin',            '__return_true'  );
-add_filter( 'auto_update_theme',             '__return_true'  );
+add_filter( 'automatic_updates_is_vcs_checkout', '__return_false' ); // See note in auto_update_valid_dependencies()
 add_filter( 'xmlrpc_enabled',                '__return_false' ); // Disable for security -- http://core.trac.wordpress.org/ticket/21509#comment:5
 
 add_action( 'init',                       __NAMESPACE__ . '\schedule_cron_jobs'             );
+add_filter( 'site_transient_update_plugins', __NAMESPACE__ . '\block_updates_for_custom_extensions'       );
+add_filter( 'site_transient_update_themes',  __NAMESPACE__ . '\block_updates_for_custom_extensions'       );
+add_filter( 'auto_update_plugin',            __NAMESPACE__ . '\auto_update_valid_dependencies',     10, 2 );
+add_filter( 'auto_update_theme',             __NAMESPACE__ . '\auto_update_valid_dependencies',     10, 2 );
 add_filter( 'wp_mail',                    __NAMESPACE__ . '\intercept_outbound_mail'        );
 add_action( 'wp_footer',                  __NAMESPACE__ . '\content_sensor_flag',      999  );
 add_action( 'login_footer',               __NAMESPACE__ . '\content_sensor_flag',      999  );
@@ -32,6 +36,66 @@ function schedule_cron_jobs() {
 	if ( ! wp_next_scheduled( 'wp_maybe_auto_update' ) ) {
 		wp_schedule_event( time(), 'hourly', 'wp_maybe_auto_update' );
 	}
+}
+
+/**
+ * Block WordPress.org updates for custom plugins and themes
+ *
+ * If the WordPress.org repository has a plugin or theme with the exact same slug as one of our custom plugins or
+ * themes, and the extension in the repository has a higher version number, then WP Upgrader will overwrite the
+ * custom extension with the one from the WordPress.org repository.
+ *
+ * See https://core.trac.wordpress.org/ticket/32101
+ * See https://core.trac.wordpress.org/ticket/10814
+ *
+ * @param object $dependencies
+ *
+ * @return object
+ */
+function block_updates_for_custom_extensions( $dependencies ) {
+	if ( empty( $dependencies->response ) ) {
+		return $dependencies;
+	}
+
+	foreach( $dependencies->response as $slug => $details ) {
+		if ( 'site_transient_update_plugins' == current_filter() ) {
+			$dependency_path = '/plugins/' . dirname( $slug );
+		} else {
+			$dependency_path = '/themes/' . $slug;
+		}
+
+		if ( ! Base\is_dependency( $dependency_path ) ) {
+			unset( $dependencies->response[ $slug ] );
+		}
+	}
+
+	return $dependencies;
+}
+
+/**
+ * Enable automatic updates for registered plugin/theme dependencies
+ *
+ * This is only for 3rd party dependencies, not for custom plugins and themes.
+ *
+ * By default, WP_Automatic_Updater refuses to update anything that it thinks is tracked in a version control
+ * system. It doesn't detect that on a per-plugin or per-theme basis, though, it just looks thinks everything is
+ * version-controlled if it finds a VCS folder anywhere in the tree. In order to get around that and automatically
+ * update dependencies, `automatic_updates_is_vcs_checkout` is always set to `false`.
+ *
+ * Always setting that to `false` introduces the potential for conflicts with plugins/themes in the WordPress.org
+ * directories, though.
+ * todo why is this necessary? b/c the block thing turns it off?
+ * see block_updates_for_custom_plugins_themes().todo
+ *
+ * @param bool   $should_update
+ * @param object $dependency
+ *
+ * @return bool
+ */
+function auto_update_valid_dependencies( $should_update, $dependency ) {
+	$dependency_slug = isset( $dependency->plugin ) ? 'plugins/' . dirname( $dependency->plugin ) : "themes/{$dependency->theme}";
+
+	return Base\is_dependency( $dependency_slug );
 }
 
 /**

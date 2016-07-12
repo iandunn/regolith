@@ -131,16 +131,26 @@ function upgrader_symlink_compatibility( $removed, $local_destination, $remote_d
 		return $removed;
 	}
 
-	$potential_dependency = str_replace( REGOLITH_ROOT_DIR, '', $remote_destination );
-	$potential_dependency = trim( $potential_dependency, '/' );
-	$dependencies         = file_get_contents( REGOLITH_ROOT_DIR . '/.gitignore' );
-	$is_dependency        = false !== strpos( $dependencies, $potential_dependency );
-
-	if ( ! $is_dependency ) {
+	if ( ! is_dependency( $remote_destination ) ) {
 		return $removed;
 	}
 
 	return true;
+}
+
+/**
+ * Check if a given path is one of our registered dependencies
+ *
+ * @param string $path
+ *
+ * @return bool
+ */
+function is_dependency( $path ) {
+	$potential_dependency = str_replace( REGOLITH_ROOT_DIR, '', $path );
+	$potential_dependency = trim( $potential_dependency, '/' );
+	$dependencies         = file_get_contents( REGOLITH_ROOT_DIR . '/.gitignore' );
+
+	return false !== strpos( $dependencies, $potential_dependency );
 }
 
 initialize();

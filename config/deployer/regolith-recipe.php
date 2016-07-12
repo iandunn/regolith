@@ -1,10 +1,41 @@
 <?php
 
-/** @global array $deployer_environment */
+namespace Regolith\Deploy_Recipe;
+
+ini_set( 'display_errors', 1 );
 
 require_once( 'recipe/common.php'                          );
 require_once( dirname( __DIR__ ) . '/environment.php'      );
 require_once( dirname( __DIR__ ) . '/wordpress/common.php' );
+
+initialize();
+
+/**
+ * Initialize
+ */
+function initialize() {
+	global $deployer_environment;
+
+	set( 'repository', $deployer_environment['repository'] );
+
+	set( 'shared_files', [
+			'config/environment.php',
+			'web/content/cache/.htaccess',
+			'web/.user.ini',
+		]
+	);
+
+	set( 'shared_dirs', get_shared_directories() );
+
+	foreach ( $deployer_environment['servers'] as $environment => $settings ) {
+		$hostname = $settings['origin_ip'] ?: $settings['hostname'];
+
+		server( $environment, $hostname )
+			->user( $settings['username'] )
+			->forwardAgent()
+			->env( 'deploy_path', $settings['deploy_path'] );
+	}
+}
 
 /**
  * Get the directories that are shared across releases
@@ -28,26 +59,6 @@ function get_shared_directories() {
 
 	return array_map( 'trim', $shared_directories );
 }
-
-set( 'repository', $deployer_environment['repository'] );
-
-set( 'shared_files', [
-		'config/environment.php',
-		'web/.user.ini',
-	]
-);
-
-set( 'shared_dirs', get_shared_directories() );
-
-foreach ( $deployer_environment['servers'] as $environment => $settings ) {
-	$hostname = $settings['origin_ip'] ?: $settings['hostname'];
-
-	server( $environment, $hostname )
-		->user( $settings['username'] )
-		->forwardAgent()
-		->env( 'deploy_path', $settings['deploy_path'] );
-}
-
 
 /**
  * Create a symlink for wp-config.php in the shared folder

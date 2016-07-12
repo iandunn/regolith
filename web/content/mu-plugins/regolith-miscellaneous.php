@@ -1,21 +1,21 @@
 <?php
 
 /*
-Plugin Name: Regolith - Common
-Description: Functionality common across my sites
+Plugin Name: Regolith - Miscellaneous
+Description: Functionality that doesn't fit in the other Regolith mu-plugins
 Version:     0.1
 Author:      Ian Dunn
 Author URI:  http://iandunn.name
 */
 
-namespace Regolith\Common_Functionality;
+namespace Regolith\Miscellaneous;
 defined( 'WPINC' ) or die();
 
-add_filter( 'xmlrpc_enabled',                '__return_false' ); // Disable for security -- http://core.trac.wordpress.org/ticket/21509#comment:5
+add_filter( 'xmlrpc_enabled', '__return_false' );   // Disable for security -- http://core.trac.wordpress.org/ticket/21509#comment:5
 
 add_filter( 'wp_mail',                    __NAMESPACE__ . '\intercept_outbound_mail'        );
-add_action( 'wp_footer',                  __NAMESPACE__ . '\content_sensor_flag',      999  );
-add_action( 'login_footer',               __NAMESPACE__ . '\content_sensor_flag',      999  );
+add_action( 'wp_footer',                  __NAMESPACE__ . '\content_sensor_flag',       999 );
+add_action( 'login_footer',               __NAMESPACE__ . '\content_sensor_flag',       999 );
 add_action( 'admin_bar_menu',             __NAMESPACE__ . '\admin_bar_environment'          );
 add_action( 'wp_before_admin_bar_render', __NAMESPACE__ . '\admin_bar_environment_css'      );
 

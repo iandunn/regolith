@@ -2,9 +2,6 @@
 
 You'll need SSH access to your production server, and it must have Git and WP-CLI installed. If they're not installed by default, you may be able to install them into your home directory.
 
-## Troubleshooting
-
-See [troubleshooting.md](./troubleshooting.md).
 
 ## Installing Regolith
 
@@ -36,3 +33,8 @@ See [troubleshooting.md](./troubleshooting.md).
 1. Setup a monitoring service (like [Uptime Robot](https://uptimerobot.com/)) to look for the value of `REGOLITH_CONTENT_SENSOR_FLAG` in `wp-login.php` and `{domain}/?s={timestamp}` on production.
 
 At this point, your repo is independent of Regolith. You can manually merge in updates if you want, but don't feel like you have to.
+
+
+## Troubleshooting
+
+If you run into any problems, check [the troubleshooting guide](./troubleshooting.md). If that doesn't help, [search for an existing issue](https://github.com/iandunn/regolith/issues). If there isn't one, create one.

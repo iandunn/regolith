@@ -1,4 +1,6 @@
-# WP-CLI Commands
+# Miscellaneous Notes
+
+## WP-CLI Commands
 
 Any `.php` files placed in `bin/wp-cli/multiple-use` will automatically be registered as WP-CLI commands scripts, so you can just run `wp {foo} {bar}`. See `purge-cloudflare-cache.php` as an example.
 

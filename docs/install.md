@@ -2,6 +2,9 @@
 
 You'll need SSH access to your production server, and it must have Git and WP-CLI installed. If they're not installed by default, you may be able to install them into your home directory.
 
+## Troubleshooting
+
+See [troubleshooting.md](./troubleshooting.md).
 
 ## Installing Regolith
 
@@ -14,6 +17,7 @@ You'll need SSH access to your production server, and it must have Git and WP-CL
 	1. If you use CloudFlare, add [your zone ID](https://blog.cloudflare.com/cloudflare-tips-frequently-used-cloudflare-ap/#comment-2486013580) to `environment.php` and uncomment the `purge_cloudflare` task in `config/deployer/regolith-recipe.php`.
 	1. _Warning:_ Before enabling the HSTS header in `.htaccess`, make sure the site has an active SSL certificate, and that you understand the consequences of HSTS. You may also need to tweak it to include subdomains, preloading, etc.
 	1. Plugin and theme dependencies are managed by simply adding them to `.gitignore`. That file acts as the central and canonical list of dependencies. `install-dependencies.sh` and `regolith-recipe.php` extract the items from there.
+		1. _Warning:_ Make sure all 3rd-party plugins/themes are in .gitignore, and that no custom ones are there. See the notes in that file for details.
 1. Run `./bin/install-dependencies.sh` to install dependencies and perform other setup tasks.
 1. If you're setting up a Multisite install, see [multisite.md](./multisite.md).
 1. Install the deployment wrapper script:
@@ -29,6 +33,6 @@ You'll need SSH access to your production server, and it must have Git and WP-CL
     1. `ssh` to your production server and `cd` to the site's root directory (e.g., `cd /home/jane-production/foo.org`)
     1. Run `ln -snf ./current/web public_html`, so that Apache's DocumentRoot will always link to the current release's `web` folder.
         1. On many hosts, [it's important to make it a relative symlink](https://iandunn.name/trouble-symlinking-documentroot-on-shared-hosting/).
-1. Set your monitoring service to look for the value of `REGOLITH_CONTENT_SENSOR_FLAG` in `wp-login.php` and `{domain}/?s={timestamp}` on production.
+1. Setup a monitoring service (like [Uptime Robot](https://uptimerobot.com/)) to look for the value of `REGOLITH_CONTENT_SENSOR_FLAG` in `wp-login.php` and `{domain}/?s={timestamp}` on production.
 
 At this point, your repo is independent of Regolith. You can manually merge in updates if you want, but don't feel like you have to.

@@ -2,6 +2,13 @@
 
 ## High
 
+setup wp-cron job to backup db
+    backup to folder outside web root, specified in environment.php (or maybe common)
+    just run `wp db export` (maybe w/ some params)
+    prune backup folder for X number of entries (defined in config)
+    remove unix cron when this is running on iandunn.name
+    add to readme - Automated database backups to a folder outside the web root
+
 don't even need wp-cli.yml to find correct path?
 	probably do if above web, but doulbe check
 
@@ -82,8 +89,23 @@ using wpcli for dependency management assumes that all dependencies are in the w
 	is there a way to integrate plugins hosted on github or premium themes
 	maybe need a combination of composer (but not wppackagist)
 
+setup file backups
+	config/custom code/etc is in version control, which is good enough
+	dependencies are managed by wpcli, so don't need to worry about those
+	uploads and maybe a few other things aren't currently covered, though
+		best way to do that?
+		they don't belong in version-control
+		rsync to pull down into dev environments?
+			could do that after deploy, or maybe it'd be a separate task
+			would rather run it by cron so don't rely on remembering to run it manually, but dev vm won't always be available or have requests hitting wp-cron
+	maybe this is better suited for something outside of regolith
+	if do this, then don't really need to have script to direct content 404s to production
+
 
 ## Medium
+
+add an open-source license to readme
+	gpl? MIT? unlicense?
 
 if multisite, then look for mu-plugins/sites/hostname.php and include if exists
 
@@ -136,6 +158,13 @@ add dev environment dependenies
 
 ## Low
 
+maybe move Reasoning section of readme to separate file
+
+maybe have a 'ongoing maintenance' section in docs
+	talks about things like adding new dependencies after install - careful b/c of note in .gitignore
+
+send PR to subscribe-to-comments to fix php warnings/notices
+
 add deploy task to ping slack channel
 	already exists, just set it up and have it disabled by default
 	https://github.com/deployphp/recipes/blob/bdcf49f8e409971b79583aeed618aa87ae714f93/docs/slack.md
@@ -175,3 +204,16 @@ is there a way to set a help description for `wp regolith` without having a clas
 	right now only have a description for `wp regolith purge-cloudflare-cache`
 
 maybe also add environment to title on front/back end, to increase awareness
+
+block_updates_for_custom_extensions() - better to remove it before it gets sent to w.org
+	that way doesn't mess with active_installs stat, doesn't leak private info
+	https://markjaquith.wordpress.com/2009/12/14/excluding-your-plugin-or-theme-from-update-checks/
+
+block_updates_for_custom_extensions - update if #32101-core is merged
+
+protect against dev committing 3rd party plugin to repo instead of listing as 3rd party dependency
+	could cause lots of problems, see note in .gitignore
+	maybe cron job to check all custom plugin/theme slugs to see if any also exist in w.org repo
+		could probably reuse the update_plugins site transient since it already has info?
+		need to hook in before block_updates_for_custom_extensions() changes it though
+	if they do, show an admin_notice warning to avoid that and make sure they're properly classified in .gitignore

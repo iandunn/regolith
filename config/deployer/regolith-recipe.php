@@ -162,7 +162,7 @@ task( 'deploy:install_dependencies', function() {
  * Purge CloudFlare's cache of the site
  */
 task( 'purge_cloudflare', function() {
-	writeln( run( "cd {{release_path}} && ~/bin/wp regolith purge-cloudflare-cache" )->toString() );
+	writeln( run( "cd {{release_path}} && wp regolith purge-cloudflare-cache" )->toString() );
 } )->desc( "Purge CloudFlare's cache" );
 
 /**

@@ -152,6 +152,31 @@ task( 'deploy:symlink', function() {
 } )->desc( 'Creating symlink to release' );
 
 /**
+ * Backup the database
+ */
+task( 'backup_database', function() {
+	$deploy_folder   = env( 'deploy_path' );
+	$current_folder  = "$deploy_folder/current";
+	$backup_folder   = "$deploy_folder/backups";
+	$backup_filename = sprintf( '%s/%s-%s.sql', $backup_folder, DB_NAME, time() );
+
+	/*
+	 * Return early if this is the first deploy to production
+	 *
+	 * run() throws an exception if the command exits with an error code, so we can't just call
+	 * `run( test -d $current_folder )`.
+	 */
+	if ( 'return' === run( "if [[ ! -d $current_folder ]]; then echo 'return' ; fi" )->toString() ) {
+		writeln( "<info>Database not backed up because the current release couldn't be found.</info>" );
+		return;
+	}
+
+	writeln( run( "mkdir -p $backup_folder"                             )->toString() );
+	writeln( run( "cd $current_folder && wp db export $backup_filename" )->toString() );
+	writeln( run( "zip -m $backup_filename.zip $backup_filename"        )->toString() );
+} )->desc( "Backup the database" );
+
+/**
  * Make sure all dependencies are installed on production
  */
 task( 'deploy:install_dependencies', function() {
@@ -238,6 +263,7 @@ task( 'tests:smoke', function() {
  */
 task( 'deploy', [
 	'deploy:prepare',
+	'backup_database',
 	'deploy:symlink_wp_config',
 	'deploy:release',
 	'deploy:update_code',

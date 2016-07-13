@@ -2,13 +2,6 @@
 
 ## High
 
-setup wp-cron job to backup db
-    backup to folder outside web root, specified in environment.php (or maybe common)
-    just run `wp db export` (maybe w/ some params)
-    prune backup folder for X number of entries (defined in config)
-    remove unix cron when this is running on iandunn.name
-    add to readme - Automated database backups to a folder outside the web root
-
 don't even need wp-cli.yml to find correct path?
 	probably do if above web, but doulbe check
 
@@ -140,7 +133,8 @@ update deployer download to use ssl when available
 recipe is more a script than a config file, maybe move it to bin/deployer/recipe.php ?
 
 should install deployer.phar to ~/bin instead of site_root/bin, b/c don't need 5 copies of it if have 5 sites
-	need to update how deployer() detects current config folder  
+	need to update how deployer() detects current config folder
+also want to install deployer alias script to ~/bin?
 
 setup a /monitor (or whatever) rewrite endpoint that sends nocache_headers, and update monitors to hit that
 	neceessary b/c uptimerobot doesn't support cachebusters, so it's just hitting cloudflare for front-end checks

@@ -1,4 +1,4 @@
-# Reasoning for Decisions
+# Design Decisions
 
 In geology, regolith is the layer of loose material that lies above the firm bedrock.
 

@@ -13,11 +13,48 @@ defined( 'WPINC' ) or die();
 
 add_filter( 'xmlrpc_enabled', '__return_false' );   // Disable for security -- http://core.trac.wordpress.org/ticket/21509#comment:5
 
+add_action( 'init',                       __NAMESPACE__ . '\schedule_cron_jobs'             );
+add_filter( 'cron_schedules',             __NAMESPACE__ . '\add_cron_schedules'             );
+add_action( 'regolith_backup_database',   __NAMESPACE__ . '\backup_database'                );
 add_filter( 'wp_mail',                    __NAMESPACE__ . '\intercept_outbound_mail'        );
 add_action( 'wp_footer',                  __NAMESPACE__ . '\content_sensor_flag',       999 );
 add_action( 'login_footer',               __NAMESPACE__ . '\content_sensor_flag',       999 );
 add_action( 'admin_bar_menu',             __NAMESPACE__ . '\admin_bar_environment'          );
 add_action( 'wp_before_admin_bar_render', __NAMESPACE__ . '\admin_bar_environment_css'      );
+
+/**
+ * Add custom schedules for WP-Cron
+ *
+ * @param array $schedules
+ *
+ * @return array
+ */
+function add_cron_schedules( $schedules ) {
+	$schedules['regolith_backup'] = array(
+		'interval' => REGOLITH_BACKUP_INTERVAL,
+		'display'  => 'Regolith Backup'
+	);
+
+	return $schedules;
+}
+
+/**
+ * Schedule WP-Cron jobs
+ */
+function schedule_cron_jobs() {
+	if ( 'production' === REGOLITH_ENVIRONMENT ) {
+		if ( ! wp_next_scheduled( 'regolith_backup_database' ) ) {
+			wp_schedule_event( time(), 'regolith_backup', 'regolith_backup_database' );
+		}
+	}
+}
+
+/**
+ * Launch our WP-CLI command to backup the database
+ */
+function backup_database() {
+	shell_exec( 'wp regolith backup-database' );
+}
 
 /**
  * Prevent sandbox e-mails from going to production email accounts

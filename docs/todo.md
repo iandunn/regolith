@@ -98,11 +98,23 @@ setup file backups
 		rsync to pull down into dev environments?
 			could do that after deploy, or maybe it'd be a separate task
 			would rather run it by cron so don't rely on remembering to run it manually, but dev vm won't always be available or have requests hitting wp-cron
+	also want to backup the sql backup files
+		keeping on production not completely safe
+		hosts don't always have backups, so if something happens to production then might not be able to get restore them
+			host could screw something up, developer might accidentally delete home dir, etc
+		need to encrypt them or something, though, because don't want user password hashes getting copied to insecure location
+			maybe rely on backup solution for that, or maybe build into `wp regolith backup-database`
 	maybe this is better suited for something outside of regolith
 	if do this, then don't really need to have script to direct content 404s to production
 
 
 ## Medium
+
+regolith\backup_database\rotate_files includes deployment backups
+	that can create problem is deploying frequently
+	e.g., instead of having 50 weeks of scheduled backups, would have 1 week of scheduled and 49 deploy backups from the past few days
+	maybe update the logic to only delete a file if it's past the number_to_keep AND it's older than REGOLITH_MIN_BACKUP_AGE
+	in that case, might be better to rewrite command to use glob() to get files and use php to determine which ones to keep
 
 add an open-source license to readme
 	gpl? MIT? unlicense?

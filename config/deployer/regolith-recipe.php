@@ -27,6 +27,12 @@ function initialize() {
 
 	set( 'shared_dirs', get_shared_directories() );
 
+	register_servers();
+}
+
+function register_servers() {
+	global $deployer_environment;
+
 	foreach ( $deployer_environment['servers'] as $environment => $settings ) {
 		$hostname = $settings['origin_ip'] ?: $settings['hostname'];
 

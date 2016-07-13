@@ -113,6 +113,8 @@ setup file backups
 
 ## Medium
 
+remove overwritten symlink tasks from deploy recipe when https://github.com/deployphp/deployer/issues/503 is fixed
+
 get wpsc working in mod_rewrite for homepage etc, rather than just php mode
 
 regolith\backup_database\rotate_files includes deployment backups
@@ -227,7 +229,3 @@ protect against dev committing 3rd party plugin to repo instead of listing as 3r
 		could probably reuse the update_plugins site transient since it already has info?
 		need to hook in before block_updates_for_custom_extensions() changes it though
 	if they do, show an admin_notice warning to avoid that and make sure they're properly classified in .gitignore
-
-setup array in config/ for additional URLs to call during `tests:smoke`
-	those values are really config, so they shouldn't be hard-coded into bin/
-	leave the ones for WP_HOME / WP_SITEURL hardcoded, though, just array_merge() in the extra ones

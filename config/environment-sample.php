@@ -49,4 +49,6 @@ $deployer_environment = array(
 			'deploy_path' => '/var/www/regolith-production.net',
 		),
 	),
+
+	'additional_test_urls' => array(),
 );

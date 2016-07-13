@@ -1,8 +1,10 @@
 # Install Multisite
 
+First, follow [the normal install instructions](./install.md), and then run through these additional steps when it asks you to.
+
 This is designed to work with subdomain installs, so you'll need to do some extra work if you want subdirectories.
 
-Each individual site needs to be configured to have `/wordpress` at the end of the Site URL.
+Each individual site needs to be configured to have `/wordpress` at the end of the Site URL; e.g., `https://example.org/wordpress`.
 
 
 ### .htaccess
@@ -24,6 +26,6 @@ Update with Multisite's rewrite rules
 		define( 'COOKIE_DOMAIN', null ); // allow it to be set dynamically based on the current domain
 		unset( $safe_server_name );
 
-### bin/deployer/regolith-recipe.php
+### config/environment.php
 
-Add any extra domains you want to test during deployment to the `tests:smoke` task.
+Add any extra URLs that you want to test during deployment to `$deployer_environment['additional_test_urls']`. Make sure to include a cache-busting parameter when necessary; e.g., `'https://example.org/?s=' . time()`.

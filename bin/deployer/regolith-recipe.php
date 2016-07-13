@@ -74,7 +74,6 @@ function register_servers() {
 	}
 }
 
-
 /**
  * Register tasks to run in relation to other tasks
  */
@@ -259,6 +258,7 @@ task( 'tests:smoke', function() {
 		str_replace( $development_hostname, $production_hostname, WP_HOME    ) . $cache_buster,
 		str_replace( $development_hostname, $production_hostname, WP_SITEURL ) . '/wp-login.php',
 	);
+	$urls = array_merge( $urls, $deployer_environment['additional_test_urls'] );
 
 	foreach ( $urls as $url ) {
 		$curl_response = runLocally( "curl --silent $url" );

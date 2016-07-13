@@ -13,13 +13,13 @@
 #
 DIR=$PWD
 
-while [[ ! -f $DIR/bin/deployer.phar ]]; do
+while [[ ! -f $DIR/bin/deployer/deployer.phar ]]; do
 	DIR=$( dirname $DIR )
 
 	if [[ '/' == $DIR ]]; then
 		echo "Deployer couldn't be found. Please make sure you're in the site's directory."
-		return
+		exit
 	fi
 done
 
-/usr/bin/php $DIR/bin/deployer.phar --file=$DIR/config/deployer/regolith-recipe.php $@
+/usr/bin/php $DIR/bin/deployer/deployer.phar --file=$DIR/bin/deployer/regolith-recipe.php $@

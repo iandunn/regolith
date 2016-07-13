@@ -9,7 +9,7 @@ ROOT_PATH=$( dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) )
 ENVIRONMENT=$( grep 'REGOLITH_ENVIRONMENT' $ROOT_PATH/config/environment.php | awk -F "'" '{print $4}' )
 PLUGINS=$( grep 'content/plugins/' $ROOT_PATH/.gitignore |awk -F '/' '{print $4}' | tr '\n' ' ' )
 THEMES=$(  grep 'content/themes/'  $ROOT_PATH/.gitignore |awk -F '/' '{print $4}' | tr '\n' ' ' )
-DEPLOYER_PATH="$ROOT_PATH/bin/deployer.phar"
+DEPLOYER_PATH="$ROOT_PATH/bin/deployer/deployer.phar"
 
 # Install Core
 if [[ ! -d $ROOT_PATH/web/wordpress ]]; then

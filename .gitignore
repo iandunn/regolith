@@ -1,7 +1,7 @@
 # Outside the web root
 /backups
-bin/deployer.phar
-config/environment.php
+/bin/deployer/deployer.phar
+/config/environment.php
 
 # Inside the web root
 web/.user.ini

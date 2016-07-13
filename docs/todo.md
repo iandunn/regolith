@@ -2,8 +2,10 @@
 
 ## High
 
+after 2016-07-20, verify that backup is running on weekly cron job
+
 don't even need wp-cli.yml to find correct path?
-	probably do if above web, but doulbe check
+	probably do if above web, but double check
 
 share content/cache/.htaccess and maybe a few other files so it doesn't get wiped out during deploy
     also ! to gitignore
@@ -129,8 +131,6 @@ should $deployer_environment be in enviornment.php? it's not specific to each en
 
 update deployer download to use ssl when available
 	https://github.com/deployphp/deployer/issues/700
-
-recipe is more a script than a config file, maybe move it to bin/deployer/recipe.php ?
 
 should install deployer.phar to ~/bin instead of site_root/bin, b/c don't need 5 copies of it if have 5 sites
 	need to update how deployer() detects current config folder

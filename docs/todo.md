@@ -2,46 +2,26 @@
 
 ## High
 
-after 2016-07-20, verify that backup is running on weekly cron job
-
-don't even need wp-cli.yml to find correct path?
-	probably do if above web, but double check
-
-share content/cache/.htaccess and maybe a few other files so it doesn't get wiped out during deploy
-    also ! to gitignore
-
-set cache headers for browsers and cloudflare
-	6 hours for homepage and other archives
-	8 days for individual posts/pages ?
-	8 days for content/*
-	make sure to not override nocache headers
-
 reconsider including https://github.com/roots/wp-password-bcrypt
-	don't want to ship with repo b/c would have to maintain, always want latest like w/ other dependencies
-	there's a copy in w.org repo, but not official so don't trust to be unmodified and to keep updated
+	decide whether want it to not
 
-send these headers?
-	X-Xss-Protection
-	X-Content-Type-Options
-	Content-Security-Policy
+	if want it, how to manage dependency?
+	see todo below for items outside w.org
+	there's a copy in w.org repo, but not official so don't trust to be unmodified and to kept updated
+		could watch commits / support to keep an eye on it, submit patches to update when its out of date
+		still an attack vector if can't trust author to keep their account protected w/ strong password, etc
 
-during first install on production, deployer creates the wordpress folder, so wp-cli doesn't install wp, then rest of script fails
-	maybe just use --force param
+using wpcli for dependency management assumes that all dependencies are in the w.org repos
+	is there a way to integrate plugins hosted on github or premium themes
+	maybe need a combination of composer (but not wppackagist)
 
-configure dev uploads to pull from production if not found
-	don't need to b/c db points to those urls anyway?
-	add to readme?
+	don't want to track in repo b/c would have to maintain, and would clutter repo,
+		always want latest like w/ other dependencies
+	git submodule, but then have to manually update
+		and submodules are a pain in the ass
+	could install one of those generic github updater plugins, i think scribu or pippen wrote one you could trust
 
-maybe write script to pull db from production and import into dev
-	https://github.com/markjaquith/WP-Stack/blob/master/lib/tasks.rb
-	or deployer.phar does that?
-	what about security though? it'll contain sensitive things like password hashes that you don't want just floating around random dev environments locally
-	add to readme?
-
-setup pre-commit hook for codesniffer, pre-release for phpmd?
-	needs to be setup server-side for proper enforcement?
-	maybe just ship the scripts in /bin/git, and give instructions to `ln -s` to them to `echo sh /bin/git/pre-commit.sh >> .git/hooks/pre-commit`
-	add to readme
+	maybe reconsider using composer, but would need to fix obstacles so maintenance isn't a hassle
 
 setup rewrite rules so can still access from /wp-admin ? at least seutp redirects
 	https://github.com/roots/bedrock/issues/58 (and links within)
@@ -54,6 +34,42 @@ setup rewrite rules so can still access from /wp-admin ? at least seutp redirect
 
 	at the very least, can redirecty wp-admin(.*) to wordpress/wp-admin{$1}
 
+
+after 2016-07-20, verify that backup is running on weekly cron job
+
+share content/cache/.htaccess and maybe a few other files so it doesn't get wiped out during deploy
+    also ! to gitignore
+
+set cache headers for browsers and cloudflare
+	6 hours for homepage and other archives
+	8 days for individual posts/pages ?
+	8 days for content/*
+	make sure to not override nocache headers
+
+send these headers?
+	X-Xss-Protection
+	X-Content-Type-Options
+	Content-Security-Policy
+
+during first install on production, deployer creates the wordpress folder, so wp-cli doesn't install wp, then rest of script fails
+	maybe just use --force param
+
+configure dev uploads to pull from production if not found
+	don't need to b/c db points to those urls anyway?
+	add to readme?
+	jaquith's WP Stack has something you can copy?
+
+maybe write script to pull db from production and import into dev
+	https://github.com/markjaquith/WP-Stack/blob/master/lib/tasks.rb
+	or deployer.phar does that?
+	what about security though? it'll contain sensitive things like password hashes that you don't want just floating around random dev environments locally
+	add to readme?
+
+setup pre-commit hook for codesniffer, pre-release for phpmd?
+	needs to be setup server-side for proper enforcement?
+	maybe just ship the scripts in /bin/git, and give instructions to `ln -s` to them to `echo sh /bin/git/pre-commit.sh >> .git/hooks/pre-commit`
+	add to readme
+
 themes still messed up on production
 	maybe deploy problem?
 	there's some internal caching that makes it hard to test
@@ -62,10 +78,6 @@ themes still messed up on production
 	when this is fixed, probably best to remove simone b/c don't actually use it
 symlink for simone not being created properly on production
 	fixed now? see what happens when try to setup new site
-
-add wp-cli helper for bakcing up tables?
-
-get wpsc working in mod_rewrite for homepage etc, rather than just php mode
 
 ship default config for login security solution, wordfence, etc
 	want it to enforce it all the time, so user can't change through wpadmin?
@@ -79,10 +91,6 @@ ship default config for login security solution, wordfence, etc
 	maybe use `wp dictator` to enforce
 		would store config in config/plugins/foo.yml
 		would need to write extension, or can it handle this already?
-
-using wpcli for dependency management assumes that all dependencies are in the w.org repos
-	is there a way to integrate plugins hosted on github or premium themes
-	maybe need a combination of composer (but not wppackagist)
 
 setup file backups
 	config/custom code/etc is in version control, which is good enough
@@ -104,6 +112,8 @@ setup file backups
 
 
 ## Medium
+
+get wpsc working in mod_rewrite for homepage etc, rather than just php mode
 
 regolith\backup_database\rotate_files includes deployment backups
 	that can create problem is deploying frequently
@@ -127,18 +137,15 @@ reconsider environmental variables for environment config
 
 reconsider adding log folder, it's nice to have them easily accessible from the IDE
 
-should $deployer_environment be in enviornment.php? it's not specific to each envirronment. could be in common.php?
-
 update deployer download to use ssl when available
 	https://github.com/deployphp/deployer/issues/700
 
 should install deployer.phar to ~/bin instead of site_root/bin, b/c don't need 5 copies of it if have 5 sites
 	need to update how deployer() detects current config folder
-also want to install deployer alias script to ~/bin?
+also want to install deployer alias script to ~/bin
 
 setup a /monitor (or whatever) rewrite endpoint that sends nocache_headers, and update monitors to hit that
 	neceessary b/c uptimerobot doesn't support cachebusters, so it's just hitting cloudflare for front-end checks
-
 
 how to handle deploy when changes need to be made to environment.php?
 what about when add new shared files? need to commit+deploy updated recipe before commit+deploy other?
@@ -160,11 +167,12 @@ add dev environment dependenies
 	e.g., debug-bar, debug-bar-cron, etc
 	install-dependencies.sh already knows which environment it is, so not hard to add extra variable for dev plugins and install those if dev environment
 	how to handle in .gitignore, though?
+		how to distinguish from regular?
+		any problems having then ignored by git? attacker could add to production and wouldn't notice, but if they can do that you're already screwed
+		would be another reason to consider using composer, if can get over the obstacles to it
 
 
 ## Low
-
-maybe move Reasoning section of readme to separate file
 
 maybe have a 'ongoing maintenance' section in docs
 	talks about things like adding new dependencies after install - careful b/c of note in .gitignore
@@ -174,12 +182,8 @@ send PR to subscribe-to-comments to fix php warnings/notices
 add deploy task to ping slack channel
 	already exists, just set it up and have it disabled by default
 	https://github.com/deployphp/recipes/blob/bdcf49f8e409971b79583aeed618aa87ae714f93/docs/slack.md
-
-move deploy recipe tasks to named functions for better readability?
-
-need the .gitkeep files?
-	shouldn't those folders get created during install?
-	if don't need, can remove them from git repo
+	need to pull that library into bin/deployer/recipes or something, and keep updated
+		maybe another reason to switch to composer? see other tasks
 
 don't need to set ABSPATH in config/wordpress/common.php?
 	always set by wp-load.php?
@@ -193,23 +197,23 @@ why checking wp_default_theme in mu-plugins/0-bedrock.php?
 	https://github.com/wp-cli/wp-cli/issues/1139
 
 name releases something easier to parse than the datetimestampallshovedtogetherintoanunreadablemess
-
-
-wp stack bit to hit uploads directly instead of streaming through php?
+	doesn't look like that's possible with deployer?
 
 check that db creds are correct before running install script, otherwise errors out and have to delete wp before trying again
 
 want to do anything about logging?
 	configure logs to be in ./logs ? or at least recommend it? 
 	not gonna work on shared hosting though maybe with symlinks
+	it'd be nice to have them in {root}/logs folder, but can't change apache location through htaccess
+	could put php there by ini_set() in config files, but then any errors that happened earlier would be in different log, and probably go unnoticed
 
-install: detect if plugins/themes already installed and run upgrade them instead of installing if htey are
-isntall: modularize into functions
+install: modularize into functions
 
 is there a way to set a help description for `wp regolith` without having a class for it?
-	right now only have a description for `wp regolith purge-cloudflare-cache`
+	right now only have a description for individual commands
 
 maybe also add environment to title on front/back end, to increase awareness
+	probably don't add it to production, just dev/staging
 
 block_updates_for_custom_extensions() - better to remove it before it gets sent to w.org
 	that way doesn't mess with active_installs stat, doesn't leak private info
@@ -223,3 +227,7 @@ protect against dev committing 3rd party plugin to repo instead of listing as 3r
 		could probably reuse the update_plugins site transient since it already has info?
 		need to hook in before block_updates_for_custom_extensions() changes it though
 	if they do, show an admin_notice warning to avoid that and make sure they're properly classified in .gitignore
+
+setup array in config/ for additional URLs to call during `tests:smoke`
+	those values are really config, so they shouldn't be hard-coded into bin/
+	leave the ones for WP_HOME / WP_SITEURL hardcoded, though, just array_merge() in the extra ones

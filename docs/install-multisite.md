@@ -10,7 +10,7 @@ Each individual site needs to be configured to have `/wordpress` at the end of t
 Update with Multisite's rewrite rules
 
 
-### config/common.php
+### config/wordpress/common.php
 
 1. Update values like normal
 1. Add Multisite constants. You can define DOMAIN_CURRENT_SITE dynamically:

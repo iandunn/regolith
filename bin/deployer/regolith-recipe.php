@@ -281,8 +281,10 @@ task( 'deploy', [
 
 after( 'deploy',  'success'          );
 after( 'success', 'current'          );
-//after( 'success', 'purge_cloudflare' );
 after( 'success', 'tests:smoke'      );
-
-//after( 'rollback', 'purge_cloudflare' );
 after( 'rollback', 'tests:smoke'      );
+
+if ( defined( 'REGOLITH_CLOUDFLARE_ZONE_ID' ) && REGOLITH_CLOUDFLARE_ZONE_ID ) {
+	after( 'success',  'purge_cloudflare' );
+	after( 'rollback', 'purge_cloudflare' );
+}

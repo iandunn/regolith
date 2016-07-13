@@ -176,6 +176,11 @@ add dev environment dependenies
 
 ## Low
 
+if multisite, maybe automatically add front- and back-end url for each site to smoke:tests
+	would be too much if had lots of sites
+		could maybe cap it at 3 sites chosen by random
+		and then user could still add extra ones in $deployer_environment if they wanted to
+
 maybe have a 'ongoing maintenance' section in docs
 	talks about things like adding new dependencies after install - careful b/c of note in .gitignore
 

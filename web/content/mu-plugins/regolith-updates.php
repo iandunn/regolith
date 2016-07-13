@@ -56,6 +56,11 @@ function block_updates_for_custom_extensions( $dependencies ) {
 		if ( 'site_transient_update_plugins' == current_filter() ) {
 			$dependency_path = '/plugins/' . dirname( $slug );
 		} else {
+			// Don't block updates for Core themes
+			if ( is_core_theme( $slug ) ) {
+				continue;
+			}
+
 			$dependency_path = '/themes/' . $slug;
 		}
 
@@ -65,6 +70,23 @@ function block_updates_for_custom_extensions( $dependencies ) {
 	}
 
 	return $dependencies;
+}
+
+/**
+ * Determine if the given theme is a Core-bundled theme
+ *
+ * Core's API doesn't expose which themes were bundled and which were installed, but we know that
+ * Regolith's custom content directory is `content` rather than `wp-content`, so we can use that to distinguish
+ * between bundled and installed themes.
+ *
+ * @param string $slug
+ *
+ * @return bool
+ */
+function is_core_theme( $slug ) {
+	$theme = wp_get_theme( $slug );
+
+	return false !== strpos( $theme->get_theme_root(), 'wordpress/wp-content/themes' );
 }
 
 /**

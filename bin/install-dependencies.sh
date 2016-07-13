@@ -15,6 +15,10 @@ DEPLOYER_PATH="$ROOT_PATH/bin/deployer/deployer.phar"
 if [[ ! -d $ROOT_PATH/web/wordpress ]]; then
 	echo ""
 	wp core download
+
+	# The default plugins directory isn't used by Regolith, and Core won't update it, so it'll just sit there with
+	# an old (and potentially vulnerable) version of Akismet
+	rm -rf $ROOT_PATH/web/wordpress/wp-content/plugins
 fi
 
 wp core is-installed

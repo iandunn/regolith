@@ -50,6 +50,7 @@ function get_shared_directories() {
 	$theme_dependencies     = preg_grep( '#content\/themes\/#',  $potential_dependencies );
 
 	$other_shared = array(
+		'backups',
 		'web/wordpress',
 		'web/content/uploads',
 		'web/content/wflogs',
@@ -153,12 +154,12 @@ task( 'deploy:symlink', function() {
 
 /**
  * Backup the database
+ *
+ * These won't be automatically restored during a `deploy:rollback` task, because that's not always desired. If
+ * you want to rollback the database, you'll need to do it manually.
  */
 task( 'backup_database', function() {
-	$deploy_folder   = env( 'deploy_path' );
-	$current_folder  = "$deploy_folder/current";
-	$backup_folder   = "$deploy_folder/backups";
-	$backup_filename = sprintf( '%s/%s-%s.sql', $backup_folder, DB_NAME, time() );
+	$current_folder = env( 'deploy_path' ) . '/current';
 
 	/*
 	 * Return early if this is the first deploy to production
@@ -171,9 +172,7 @@ task( 'backup_database', function() {
 		return;
 	}
 
-	writeln( run( "mkdir -p $backup_folder"                             )->toString() );
-	writeln( run( "cd $current_folder && wp db export $backup_filename" )->toString() );
-	writeln( run( "zip -m $backup_filename.zip $backup_filename"        )->toString() );
+	writeln( run( "cd $current_folder && wp regolith backup-database" )->toString() );
 } )->desc( "Backup the database" );
 
 /**

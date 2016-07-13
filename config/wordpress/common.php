@@ -15,13 +15,12 @@ define( 'WP_CONTENT_URL',    WP_HOME . $content_dir_path                        
 define( 'WP_CONTENT_DIR',    REGOLITH_ROOT_DIR . $document_root_path . $content_dir_path );
 define( 'WPCACHEHOME',       WP_CONTENT_DIR . '/plugins/wp-super-cache/'                 );
 
-define( 'WP_CACHE',                     true            );
-define( 'FORCE_SSL_ADMIN',              true            );
-define( 'DISALLOW_FILE_EDIT',           true            );
-define( 'REGOLITH_CONTENT_SENSOR_FLAG', 'Monitor-WP-OK' );
+define( 'WP_CACHE',                     true             );
+define( 'FORCE_SSL_ADMIN',              true             );
+define( 'DISALLOW_FILE_EDIT',           true             );
+define( 'REGOLITH_CONTENT_SENSOR_FLAG', 'Monitor-WP-OK'  );
 define( 'REGOLITH_BACKUP_INTERVAL',     60 * 60 * 24 * 7 ); // in seconds
 define( 'REGOLITH_BACKUPS_TO_KEEP',     50               ); // includes scheduled backups and backups made before every deployment
-// todo realign
 
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __DIR__ ) . "$document_root_path/wordpress/" );

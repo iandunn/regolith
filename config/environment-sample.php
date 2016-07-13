@@ -18,7 +18,7 @@ define( 'WP_HOME',                         'https://regolith.localhost' );
 define( 'DB_HOST',                         'localhost'                  );
 define( 'DB_PASSWORD',                     'password'                   );
 define( 'REGOLITH_MAIL_INTERCEPT_ADDRESS', 'foo@example.org'            );
-define( 'REGOLITH_CLOUDFLARE_ZONE_ID',      ''                          );
+define( 'REGOLITH_CLOUDFLARE_ZONE_ID',     ''                           );
 
 // https://api.wordpress.org/secret-key/1.1/salt/
 define( 'AUTH_KEY',         'put your unique phrase here' );

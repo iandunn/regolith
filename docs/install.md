@@ -4,7 +4,7 @@
 * You'll also need **SSH access** to your production server
 * **Git** and **WP-CLI** must be installed in all environments
 
-If your host doesn't have Git or WP-CLI, check [the troubleshooting guide](./troubleshooting.md).
+If your host doesn't have Git or WP-CLI installed, check [the troubleshooting guide](./troubleshooting.md).
 
 
 ## Installing Regolith
@@ -34,11 +34,11 @@ If your host doesn't have Git or WP-CLI, check [the troubleshooting guide](./tro
     1. `ssh` to your production server and `cd` to the site's root directory (e.g., `cd /home/jane-production/foo.org`)
     1. Run `ln -snf ./current/web public_html`, so that Apache's DocumentRoot will always link to the current release's `web` folder.
         1. On many hosts, [it's important to make it a relative symlink](https://iandunn.name/trouble-symlinking-documentroot-on-shared-hosting/).
-1. Setup a monitoring service (like [Uptime Robot](https://uptimerobot.com/)) to look for the value of `REGOLITH_CONTENT_SENSOR_FLAG` in `wp-login.php` and `{domain}/?s={timestamp}` on production.
+1. Setup HTTP content sensors with a monitoring service -- like [Uptime Robot](https://uptimerobot.com/) -- to look for the value of `REGOLITH_CONTENT_SENSOR_FLAG` in `{production_domain}/wordpress/wp-login.php` and `{production_domain}/?s={timestamp}`.
 
-At this point, your repo is independent of Regolith. You can manually merge in updates if you want, but don't feel like you have to.
+At this point, your repo is independent of Regolith. You can manually merge in updates if you want, but that isn't necessary.
 
 
 ## Troubleshooting
 
-If you run into any problems, check [the troubleshooting guide](./troubleshooting.md). If that doesn't help, [search for an existing issue](https://github.com/iandunn/regolith/issues). If there isn't one, create one.
+If you run into any problems, check [the troubleshooting guide](./troubleshooting.md).

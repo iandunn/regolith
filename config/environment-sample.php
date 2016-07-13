@@ -30,6 +30,14 @@ define( 'SECURE_AUTH_SALT', 'put your unique phrase here' );
 define( 'LOGGED_IN_SALT',   'put your unique phrase here' );
 define( 'NONCE_SALT',       'put your unique phrase here' );
 
+/*
+ * Deployer configuration is common to all environments, but the values are potentially sensitive, so we don't
+ * want them tracked in Git.
+ *
+ * Exposing `deploy_path` would be path disclosure, and exposing the origin IP would help attackers bypass
+ * CloudFlare. It's not possible to setup Origin Pull Authentication on shared hosting, so a little obscurity
+ * is ok here.
+ */
 $deployer_environment = array(
 	'repository' => 'git@gitlab.com:username/regolith-production.net.git',
 

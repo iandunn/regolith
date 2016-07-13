@@ -4,10 +4,9 @@ namespace Regolith\Deploy_Recipe;
 
 ini_set( 'display_errors', 1 );
 
-require_once( 'recipe/common.php'                          );
+require_once( 'recipe/common.php'                                            );
 require_once( dirname( dirname( __DIR__ ) ) . '/config/environment.php'      );
 require_once( dirname( dirname( __DIR__ ) ) . '/config/wordpress/common.php' );
-// todo realign
 
 initialize();
 

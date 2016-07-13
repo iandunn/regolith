@@ -20,7 +20,7 @@ If your host doesn't have Git or WP-CLI, check [the troubleshooting guide](./tro
 	1. Plugin and theme dependencies are managed by simply adding them to `.gitignore`. That file acts as the central and canonical list of dependencies. `install-dependencies.sh` and `regolith-recipe.php` extract the items from there.
 		1. _Warning:_ Make sure all 3rd-party plugins/themes are in .gitignore, and that no custom ones are there. See the notes in that file for details.
 1. Run `./bin/install-dependencies.sh` to install dependencies and perform other setup tasks.
-1. If you're setting up a Multisite install, see [multisite.md](./multisite.md).
+1. If you're setting up a Multisite install, run through the steps in [the Multisite installation notes](./install-multisite.md).
 1. Install the deployment wrapper script:
 	1. `cp /home/jane-development/foo.org/bin/deployer ~/bin/deployer`
 	1. `chmod +x ~/bin/deployer`

@@ -19,6 +19,6 @@ Regolith is a WordPress installation template that employs best practices, but i
 ## Documentation
 
 * [Installation](docs/install.md)
-* [Design Decisions](docs/decisions.md)
-* [Miscellaneous Notes](docs/miscellaneous.md)
+* [Design Decisions](docs/design-decisions.md)
+* [Miscellaneous Notes](docs/miscellaneous-notes.md)
 * [TODO List](docs/todo.md)

@@ -1,4 +1,4 @@
-# Multisite Setup
+# Install Multisite
 
 This is designed to work with subdomain installs, so you'll need to do some extra work if you want subdirectories.
 

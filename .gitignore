@@ -1,4 +1,5 @@
 # Outside the web root
+/backups
 bin/deployer.phar
 config/environment.php
 

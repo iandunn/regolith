@@ -4,13 +4,13 @@
 /config/environment.php
 
 # Inside the web root
-web/.user.ini
-web/content/cache
-web/content/upgrade
-web/content/uploads
-web/content/wfcache
-web/content/wflogs
-web/wordpress
+/web/.user.ini
+/web/content/cache
+/web/content/upgrade
+/web/content/uploads
+/web/content/wfcache
+/web/content/wflogs
+/web/wordpress
 
 #
 # Plugin and theme dependencies
@@ -24,15 +24,15 @@ web/wordpress
 # them to potentially be overridden with a different plugin/theme from the WordPress.org repository. See
 # block_updates_for_custom_extensions() for details.
 #
-web/content/plugins/akismet
-web/content/plugins/cloudflare
-web/content/plugins/google-authenticator
-web/content/plugins/google-authenticator-per-user-prompt
-web/content/plugins/login-security-solution
-web/content/plugins/quick-navigation-interface
-web/content/plugins/subscribe-to-comments
-web/content/plugins/vaultpress
-web/content/plugins/wordfence
-web/content/plugins/wp-super-cache
+/web/content/plugins/akismet
+/web/content/plugins/cloudflare
+/web/content/plugins/google-authenticator
+/web/content/plugins/google-authenticator-per-user-prompt
+/web/content/plugins/login-security-solution
+/web/content/plugins/quick-navigation-interface
+/web/content/plugins/subscribe-to-comments
+/web/content/plugins/vaultpress
+/web/content/plugins/wordfence
+/web/content/plugins/wp-super-cache
 
-web/content/themes/simone
+/web/content/themes/simone

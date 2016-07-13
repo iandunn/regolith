@@ -8,15 +8,23 @@ require_once( 'recipe/common.php'                                            );
 require_once( dirname( dirname( __DIR__ ) ) . '/config/environment.php'      );
 require_once( dirname( dirname( __DIR__ ) ) . '/config/wordpress/common.php' );
 
-initialize();
-
 /**
  * Initialize
  */
 function initialize() {
+	set_variables();
+	register_servers();
+	register_task_actions();
+}
+
+/*
+ * Setup Deployer variables
+ */
+function set_variables() {
 	global $deployer_environment;
 
-	set( 'repository', $deployer_environment['repository'] );
+	set( 'repository',  $deployer_environment['repository'] );
+	set( 'shared_dirs', get_shared_directories()            );
 
 	set( 'shared_files', [
 			'config/environment.php',
@@ -24,23 +32,6 @@ function initialize() {
 			'web/.user.ini',
 		]
 	);
-
-	set( 'shared_dirs', get_shared_directories() );
-
-	register_servers();
-}
-
-function register_servers() {
-	global $deployer_environment;
-
-	foreach ( $deployer_environment['servers'] as $environment => $settings ) {
-		$hostname = $settings['origin_ip'] ?: $settings['hostname'];
-
-		server( $environment, $hostname )
-			->user( $settings['username'] )
-			->forwardAgent()
-			->env( 'deploy_path', $settings['deploy_path'] );
-	}
 }
 
 /**
@@ -65,6 +56,38 @@ function get_shared_directories() {
 	$shared_directories = array_merge( $other_shared, $plugin_dependencies, $theme_dependencies );
 
 	return array_map( 'trim', $shared_directories );
+}
+
+/**
+ * Register servers to deploy to
+ */
+function register_servers() {
+	global $deployer_environment;
+
+	foreach ( $deployer_environment['servers'] as $environment => $settings ) {
+		$hostname = $settings['origin_ip'] ?: $settings['hostname'];
+
+		server( $environment, $hostname )
+			->user( $settings['username'] )
+			->forwardAgent()
+			->env( 'deploy_path', $settings['deploy_path'] );
+	}
+}
+
+
+/**
+ * Register tasks to run in relation to other tasks
+ */
+function register_task_actions() {
+	after( 'deploy',   'success'     );
+	after( 'success',  'current'     );
+	after( 'success',  'tests:smoke' );
+	after( 'rollback', 'tests:smoke' );
+
+	if ( defined( 'REGOLITH_CLOUDFLARE_ZONE_ID' ) && REGOLITH_CLOUDFLARE_ZONE_ID ) {
+		after( 'success',  'purge_cloudflare' );
+		after( 'rollback', 'purge_cloudflare' );
+	}
 }
 
 /**
@@ -262,7 +285,6 @@ task( 'tests:smoke', function() {
 	}
 } )->desc( 'Running smoke tests' );
 
-
 /**
  * Main task
  */
@@ -279,12 +301,4 @@ task( 'deploy', [
 	'cleanup',
 ] )->desc( 'Deploy the current site to production' );
 
-after( 'deploy',  'success'          );
-after( 'success', 'current'          );
-after( 'success', 'tests:smoke'      );
-after( 'rollback', 'tests:smoke'      );
-
-if ( defined( 'REGOLITH_CLOUDFLARE_ZONE_ID' ) && REGOLITH_CLOUDFLARE_ZONE_ID ) {
-	after( 'success',  'purge_cloudflare' );
-	after( 'rollback', 'purge_cloudflare' );
-}
+initialize();

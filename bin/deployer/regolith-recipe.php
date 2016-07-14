@@ -42,7 +42,7 @@ function set_variables() {
  * @return array
  */
 function get_shared_directories() {
-	$potential_dependencies = file( REGOLITH_ROOT_DIR . '/.gitignore' );
+	$potential_dependencies = file( REGOLITH_ROOT_DIR . '/.gitignore', FILE_IGNORE_NEW_LINES );
 	$plugin_dependencies    = preg_grep( '#content\/plugins\/#', $potential_dependencies );
 	$theme_dependencies     = preg_grep( '#content\/themes\/#',  $potential_dependencies );
 
@@ -55,7 +55,11 @@ function get_shared_directories() {
 
 	$shared_directories = array_merge( $other_shared, $plugin_dependencies, $theme_dependencies );
 
-	return array_map( 'trim', $shared_directories );
+	foreach ( $shared_directories as $index => $directory ) {
+		$shared_directories[ $index ] = trim( $directory, '/' );
+	}
+
+	return $shared_directories;
 }
 
 /**

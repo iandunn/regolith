@@ -2,6 +2,23 @@
 
 ## High
 
+htaccess redirect http->https doesn't work on /wordpress/wp-cron.php
+	other places its not working?
+
+multisite
+	config/common
+		maybe create a new multisite.php config file, then include it from wp-config if detect using multisite
+		but would need to use MULTISITE constnant to detect that, so that'd have to be in common
+			that'd defeat the purpose?
+			plus content_url changes, so wouldn't be able to isolate everything?
+
+		maybe unset $docroot and $contentdirpath here too instead of in wp-config?
+			maybe move delpoyer-environment to a separate file so it's not included in wp and has to be unset?
+
+	docs - still true that siteurl needs to end in /wordpress?
+	    doesn't seem to be necessary on iandunn.localhost
+
+
 reconsider including https://github.com/roots/wp-password-bcrypt
 	decide whether want it to not
 
@@ -69,6 +86,8 @@ setup pre-commit hook for codesniffer, pre-release for phpmd?
 	needs to be setup server-side for proper enforcement?
 	maybe just ship the scripts in /bin/git, and give instructions to `ln -s` to them to `echo sh /bin/git/pre-commit.sh >> .git/hooks/pre-commit`
 	add to readme
+
+setup pre-deploy hook to run any automated tests that are available?
 
 themes still messed up on production
 	maybe deploy problem?
@@ -234,3 +253,8 @@ protect against dev committing 3rd party plugin to repo instead of listing as 3r
 		could probably reuse the update_plugins site transient since it already has info?
 		need to hook in before block_updates_for_custom_extensions() changes it though
 	if they do, show an admin_notice warning to avoid that and make sure they're properly classified in .gitignore
+
+allow_dev_network_upgrades - problem is bigger than just network upgrades?
+	there are other instances of local requests, but never seen anything that mattered
+	maybe need better solution that works for all cases
+	maybe just install the cert for the server so that it recognizes it as valid? kind of a hassle though

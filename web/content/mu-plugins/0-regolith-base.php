@@ -27,6 +27,12 @@ function initialize() {
 		add_filter( 'network_site_url', __NAMESPACE__ . '\fix_network_site_url', 10, 3 );
 	}
 
+	if ( is_network_admin() ) {
+		add_filter( 'https_ssl_verify',       __NAMESPACE__ . '\allow_dev_network_upgrades' );
+		add_filter( 'https_local_ssl_verify', __NAMESPACE__ . '\allow_dev_network_upgrades' );
+	}
+
+	// Make bundled themes available in addition to our custom ones in web/content/themes
 	if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
 	    register_theme_directory( ABSPATH . 'wp-content/themes' );
 	}
@@ -97,6 +103,31 @@ function fix_network_site_url( $url, $path, $scheme ) {
 	}
 
 	return $url . $path;
+}
+
+/**
+ * Enable the Upgrade Network wizard in development environments
+ *
+ * The wizard will make HTTP requests to each site in the network as part of the upgrade process, and by default
+ * it will verify their SSL certificates while making the request. The sites only have self-signed certificates
+ * in development environments, so that verification will fail, and the wizard will abort.
+ *
+ * To avoid that, we disable verification for this specific case, but leave it enabled for all others. Because
+ * SSL verification is a critical security function, it's important to only disable it in dev environments.
+ *
+ * @param bool $verify
+ *
+ * @return bool
+ */
+function allow_dev_network_upgrades( $verify ) {
+	$is_network_upgrade = '/wordpress/wp-admin/network/upgrade.php' === $_SERVER['SCRIPT_NAME'];
+	$is_network_upgrade = $is_network_upgrade && isset( $_GET['action'] ) && 'upgrade' === $_GET['action'];
+
+	if ( 'development' === REGOLITH_ENVIRONMENT && $is_network_upgrade ) {
+		$verify = false;
+	}
+
+	return $verify;
 }
 
 initialize();

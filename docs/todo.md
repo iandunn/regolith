@@ -2,8 +2,6 @@
 
 ## High
 
-realign wp-config.php include
-
 htaccess redirect http->https doesn't work on /wordpress/wp-cron.php
 	other places its not working?
 

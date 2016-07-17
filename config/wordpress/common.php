@@ -22,9 +22,6 @@ if ( $is_multisite ) {
 	define( 'PATH_CURRENT_SITE',    '/'                                                );
 	define( 'SITE_ID_CURRENT_SITE', 1                                                  );
 	define( 'BLOG_ID_CURRENT_SITE', 1                                                  );
-
-	unset( $safe_server_name );
-	unset( $regolith_is_multisite );
 } else {
 	define( 'WP_CONTENT_URL', WP_HOME . $content_dir_path );
 }
@@ -43,4 +40,14 @@ define( 'REGOLITH_BACKUPS_TO_KEEP',     50               ); // includes schedule
 
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __DIR__ ) . "$document_root_path/wordpress/" );
+}
+
+// These are no longer necessary, so don't let them clutter the global space
+unset( $document_root_path    );
+unset( $content_dir_path      );
+unset( $regolith_is_multisite );
+unset( $safe_server_name      );
+
+if ( ! class_exists( '\Deployer\Deployer' ) ) {
+	unset( $deployer_environment );
 }

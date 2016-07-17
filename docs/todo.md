@@ -2,17 +2,14 @@
 
 ## High
 
+realign wp-config.php include
+
 htaccess redirect http->https doesn't work on /wordpress/wp-cron.php
 	other places its not working?
 
 multisite
 	how to support domain name aliases?
 		just need a function in sunrise?
-
-	config/common
-		maybe unset $docroot and $contentdirpath in common.php too instead of in wp-config?
-			maybe move delpoyer-environment to a separate file so it's not included in wp and has to be unset?
-			can't do that b/c it has sensitive info and shouldn't be tracked. too complicated if have more than 1 untracked file
 
 	docs - still true that siteurl needs to end in /wordpress?
 	    doesn't seem to be necessary on iandunn.localhost

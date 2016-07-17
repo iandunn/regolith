@@ -6,14 +6,13 @@ htaccess redirect http->https doesn't work on /wordpress/wp-cron.php
 	other places its not working?
 
 multisite
-	config/common
-		maybe create a new multisite.php config file, then include it from wp-config if detect using multisite
-		but would need to use MULTISITE constnant to detect that, so that'd have to be in common
-			that'd defeat the purpose?
-			plus content_url changes, so wouldn't be able to isolate everything?
+	how to support domain name aliases?
+		just need a function in sunrise?
 
-		maybe unset $docroot and $contentdirpath here too instead of in wp-config?
+	config/common
+		maybe unset $docroot and $contentdirpath in common.php too instead of in wp-config?
 			maybe move delpoyer-environment to a separate file so it's not included in wp and has to be unset?
+			can't do that b/c it has sensitive info and shouldn't be tracked. too complicated if have more than 1 untracked file
 
 	docs - still true that siteurl needs to end in /wordpress?
 	    doesn't seem to be necessary on iandunn.localhost

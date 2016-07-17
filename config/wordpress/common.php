@@ -3,15 +3,34 @@
 $table_prefix       = 'wp_';
 $document_root_path = '/web';
 $content_dir_path   = '/content';
+$is_multisite       = false;
 
 define( 'DB_NAME',    'regolith.localhost' );
 define( 'DB_USER',    'username'           );
 define( 'DB_CHARSET', 'utf8'               );
 define( 'DB_COLLATE', ''                   );
 
+if ( $is_multisite ) {
+	$safe_server_name = $_SERVER['SERVER_NAME'] ?: parse_url( WP_HOME, PHP_URL_HOST );
+	$safe_server_name = preg_replace( '[^\w\-.]', '', $safe_server_name ); // See footnote in https://stackoverflow.com/a/6474936/450127
+
+	define( 'WP_CONTENT_URL',       'https://' . $safe_server_name . $content_dir_path );
+	define( 'MULTISITE',            true                                               );
+	define( 'SUBDOMAIN_INSTALL',    true                                               );
+	define( 'COOKIE_DOMAIN',        null                                               ); // allow it to be set dynamically based on the current domain
+	define( 'DOMAIN_CURRENT_SITE',  parse_url( WP_HOME, PHP_URL_HOST )                 );
+	define( 'PATH_CURRENT_SITE',    '/'                                                );
+	define( 'SITE_ID_CURRENT_SITE', 1                                                  );
+	define( 'BLOG_ID_CURRENT_SITE', 1                                                  );
+
+	unset( $safe_server_name );
+	unset( $regolith_is_multisite );
+} else {
+	define( 'WP_CONTENT_URL', WP_HOME . $content_dir_path );
+}
+
 define( 'REGOLITH_ROOT_DIR', dirname( dirname( __DIR__ ) )                               );
 define( 'WP_SITEURL',        WP_HOME . '/wordpress'                                      );
-define( 'WP_CONTENT_URL',    WP_HOME . $content_dir_path                                 );
 define( 'WP_CONTENT_DIR',    REGOLITH_ROOT_DIR . $document_root_path . $content_dir_path );
 define( 'WPCACHEHOME',       WP_CONTENT_DIR . '/plugins/wp-super-cache/'                 );
 

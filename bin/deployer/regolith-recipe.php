@@ -82,15 +82,16 @@ function register_servers() {
  * Register tasks to run in relation to other tasks
  */
 function register_task_actions() {
-	after( 'deploy',   'success'     );
-	after( 'success',  'current'     );
-	after( 'success',  'tests:smoke' );
-	after( 'rollback', 'tests:smoke' );
+	after( 'deploy',  'success' );
+	after( 'success', 'current' );
 
 	if ( defined( 'REGOLITH_CLOUDFLARE_ZONE_ID' ) && REGOLITH_CLOUDFLARE_ZONE_ID ) {
 		after( 'success',  'purge_cloudflare' );
 		after( 'rollback', 'purge_cloudflare' );
 	}
+
+	after( 'success',  'tests:smoke' );
+	after( 'rollback', 'tests:smoke' );
 }
 
 /**

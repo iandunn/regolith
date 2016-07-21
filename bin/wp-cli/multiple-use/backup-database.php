@@ -13,14 +13,13 @@ namespace Regolith\Backup_Database;
  * @param array $assoc_args
  */
 function backup_database( $args ) {
-	$backup_folder = REGOLITH_ROOT_DIR . '/backups';
-	$backup_file   = sprintf( '%s/%s-%s.sql', $backup_folder, DB_NAME, time() );
+	$backup_file = sprintf( '%s/%s-%s.sql', REGOLITH_BACKUP_DIR, DB_NAME, time() );
 
-	\WP_CLI::launch( 'mkdir -p ' . escapeshellarg( $backup_folder ) );
-	\WP_CLI::run_command( array( 'db', 'export',   $backup_file   ) );
-	\WP_CLI::launch( 'gzip '     . escapeshellarg( $backup_file   ) );
+	\WP_CLI::launch( 'mkdir -p ' . escapeshellarg( REGOLITH_BACKUP_DIR ) );
+	\WP_CLI::run_command( array( 'db', 'export',   $backup_file        ) );
+	\WP_CLI::launch( 'gzip '     . escapeshellarg( $backup_file        ) );
 
-	rotate_files( $backup_folder );
+	rotate_files( REGOLITH_BACKUP_DIR );
 }
 
 /**

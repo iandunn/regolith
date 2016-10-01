@@ -16,7 +16,6 @@ add_filter( 'xmlrpc_enabled', '__return_false' );   // Disable for security -- h
 add_action( 'init',                       __NAMESPACE__ . '\schedule_cron_jobs'             );
 add_filter( 'cron_schedules',             __NAMESPACE__ . '\add_cron_schedules'             );
 add_action( 'regolith_backup_database',   __NAMESPACE__ . '\backup_database'                );
-add_filter( 'wp_mail',                    __NAMESPACE__ . '\intercept_outbound_mail'        );
 add_action( 'wp_footer',                  __NAMESPACE__ . '\content_sensor_flag',       999 );
 add_action( 'login_footer',               __NAMESPACE__ . '\content_sensor_flag',       999 );
 add_action( 'admin_bar_menu',             __NAMESPACE__ . '\admin_bar_environment'          );
@@ -54,52 +53,6 @@ function schedule_cron_jobs() {
  */
 function backup_database() {
 	shell_exec( 'wp regolith backup-database' );
-}
-
-/**
- * Prevent sandbox e-mails from going to production email accounts
- *
- * This is a quick and dirty alternative to tools like MailCatcher and MailHog. It's more appropriate because
- * Regolith projects typically don't use Ansible, etc to provision identical production and development
- * environments. so we want something at the application-level
- *
- * @param array $args
- *
- * @return array
- */
-function intercept_outbound_mail( $args ) {
-	if ( 'production' === REGOLITH_ENVIRONMENT ) {
-		return $args;
-	}
-
-	// Completely short-circuit the sending process if we don't have a valid address to send to
-	if ( ! defined( 'REGOLITH_MAIL_INTERCEPT_ADDRESS' ) || ! is_email( REGOLITH_MAIL_INTERCEPT_ADDRESS ) ) {
-		$args['to'] = '';
-		return $args;
-	}
-
-	// Some plugins will call wp_mail() with no params, just to initialize PHPMailer
-	if ( empty( $args['to'] ) ) {
-		return $args;
-	}
-
-	$original_message = $args['message'];
-	unset( $args['message'] );
-
-	$override_text = "This message was intercepted and redirected to you to prevent users getting e-mails from staging/development servers.\n\nwp_mail() arguments:\n\n%s\n\nOriginal message:\n-----------------------\n\n%s";
-	$args_text     = print_r( $args, true );
-
-	if ( 'text/html' == apply_filters( 'wp_mail_content_type', false ) ) {
-		$override_text = wpautop( $override_text );
-		$args_text     = sprintf( '<pre>%s</pre>', $args_text );
-	}
-
-	$args['to']      = REGOLITH_MAIL_INTERCEPT_ADDRESS;
-	$args['subject'] = sprintf( '[%s] %s', strtoupper( REGOLITH_ENVIRONMENT ), $args['subject'] );
-	$args['message'] = sprintf( $override_text, $args_text, $original_message );
-	$args['headers'] = '';    // wipe out CC and BCC
-
-	return $args;
 }
 
 /**

@@ -16,11 +16,7 @@ add_filter( 'wp_mail',           __NAMESPACE__ . '\intercept_outbound_mail' );
 /**
  * Prevent sandbox e-mails from going to production email accounts
  *
- * This is a quick and dirty alternative to tools like MailCatcher and MailHog. It's more appropriate because
- * Regolith projects typically don't use Ansible, etc to provision identical production and development
- * environments. so we want something at the application-level
- *
- * todo note doesn't cover smtp, only sendmail, but wouldn't have smtp configured in dev env anyway
+ * This is a quick and dirty fallback in case better tools like MailHog or MailCatcher aren't available.
  *
  * @param array $args
  *
@@ -28,6 +24,10 @@ add_filter( 'wp_mail',           __NAMESPACE__ . '\intercept_outbound_mail' );
  */
 function intercept_outbound_mail( $args ) {
 	if ( 'production' === REGOLITH_ENVIRONMENT ) {
+		return $args;
+	}
+
+	if ( better_interceptor_active() ) {
 		return $args;
 	}
 
@@ -59,4 +59,25 @@ function intercept_outbound_mail( $args ) {
 	$args['headers'] = '';    // wipe out CC and BCC
 
 	return $args;
+}
+
+/**
+ * Detect if a dedicated mail interceptor is installed
+ *
+ * @return bool
+ */
+function better_interceptor_active() {
+	$better_interceptor_active = false;
+
+	// MailHog
+	if ( shell_exec( 'which mailhog' ) ) {
+		$better_interceptor_active = true;
+	}
+
+	// MailCatcher
+	if ( false !== strpos( ini_get( 'sendmail_path' ), 'catchmail' ) ) {
+		$better_interceptor_active = true;
+	}
+
+	return $better_interceptor_active;
 }

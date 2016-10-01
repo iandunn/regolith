@@ -11,7 +11,7 @@ define( 'DB_CHARSET', 'utf8'               );
 define( 'DB_COLLATE', ''                   );
 
 if ( $is_multisite ) {
-	$safe_server_name = $_SERVER['SERVER_NAME'] ?: parse_url( WP_HOME, PHP_URL_HOST );
+	$safe_server_name = isset( $_SERVER['SERVER_NAME'] ) ? $_SERVER['SERVER_NAME'] : parse_url( WP_HOME, PHP_URL_HOST );
 	$safe_server_name = preg_replace( '[^\w\-.]', '', $safe_server_name ); // See footnote in https://stackoverflow.com/a/6474936/450127
 
 	define( 'WP_CONTENT_URL',       'https://' . $safe_server_name . $content_dir_path );

@@ -15,6 +15,7 @@ Regolith is a WordPress installation template that employs best practices, but i
 * Outputs a content flag designed for external monitoring services
 * Displays the current environment in the Admin Bar (i.e., _development_ or _production_)
 
+[Check out some screenshots](docs/screenshots.md) to get a taste of working with it.
 
 ## Documentation
 

@@ -5,6 +5,38 @@ WP-Cache Config Sample File
 See wp-cache.php for author details.
 */
 
+if ( ! function_exists( 'regolith_get_cache_page_secret' ) ) {
+	/**
+	 * Get the cache page secret via a constant from `environment.php`, because it's sensitive, and having it there
+	 * makes it more obvious than if it were buried here.
+	 *
+	 * Fall back to a random string, for backwards-compatibility with sites that deployed regolith before this was
+	 * added. This will break the cache page functionality, because the value will be different on every request,
+	 * but that's ok. The functionality is not essential, and it can be easily restored by setting the constant.
+	 *
+	 * A constant string wasn't used, because there isn't a good source of input that is constant, unique, and
+	 * private, while not being sensitive. Sensitive data (like NONCE_SALT) could be derived if the value of
+	 * `$cache_page_secret` were exposed. If that value was exposed, the attacker would most likely have access
+	 * to more sensitive things as well, like `wp-config.php`, but there could be scenarios where they don't, so
+	 * this is erring on the side of caution.
+	 *
+	 * @return string
+	 */
+	function regolith_get_cache_page_secret() {
+		if ( defined( 'REGOLITH_WP_SUPER_CACHE_SECRET' ) ) {
+			$cache_page_secret = REGOLITH_WP_SUPER_CACHE_SECRET;
+		} else {
+			try {
+				$cache_page_secret = bin2hex( random_bytes( 32 ) );
+			} catch ( Exception $exception ) {
+				$cache_page_secret = sha1( uniqid( microtime() . mt_rand(), true ) );
+			}
+		}
+
+		return $cache_page_secret;
+	}
+}
+
 $wp_cache_preload_on           = 1;
 $wp_cache_preload_taxonomies   = 1;
 $wp_cache_preload_email_volume = 'many';
@@ -25,7 +57,7 @@ $wp_cache_mfunc_enabled        = 0;
 $wp_supercache_304             = 0;
 $wp_cache_no_cache_for_get     = 0;
 $wp_cache_disable_utf8         = 0;
-$cache_page_secret             = 'ad270361c39c428c9465313363b02559';
+$cache_page_secret             = regolith_get_cache_page_secret();
 
 $wp_cache_home_path = '/wordpress/'; //Added by WP-Cache Manager
 $wp_cache_slash_check = 1; //Added by WP-Cache Manager

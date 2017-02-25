@@ -1,6 +1,6 @@
 <?php
 
-namespace Regolith\Deploy_Recipe;
+namespace Deployer;
 
 ini_set( 'display_errors', 1 );
 
@@ -11,20 +11,21 @@ require_once( dirname( dirname( __DIR__ ) ) . '/config/wordpress/common.php' );
 /**
  * Initialize
  */
-function initialize() {
-	set_variables();
-	register_servers();
+function initialize( $environment ) {
+	set_variables( $environment );
+	register_servers( $environment['servers'] );
 	register_task_actions();
 }
 
 /*
  * Setup Deployer variables
+ *
+ * @param array $environment
  */
-function set_variables() {
-	global $deployer_environment;
-
-	set( 'repository',  $deployer_environment['repository'] );
-	set( 'shared_dirs', get_shared_directories()            );
+function set_variables( $environment ) {
+	set( 'regolith_environment', $environment               );
+	set( 'repository',           $environment['repository'] );
+	set( 'shared_dirs',          get_shared_directories()   );
 
 	set( 'shared_files', [
 			'config/environment.php',
@@ -64,17 +65,17 @@ function get_shared_directories() {
 
 /**
  * Register servers to deploy to
+ *
+ * @param array $servers
  */
-function register_servers() {
-	global $deployer_environment;
-
-	foreach ( $deployer_environment['servers'] as $environment => $settings ) {
+function register_servers( $servers ) {
+	foreach ( $servers as $stage => $settings ) {
 		$hostname = $settings['origin_ip'] ?: $settings['hostname'];
 
-		server( $environment, $hostname )
+		server( $stage, $hostname )
 			->user( $settings['username'] )
 			->forwardAgent()
-			->env( 'deploy_path', $settings['deploy_path'] );
+			->set( 'deploy_path', $settings['deploy_path'] );
 	}
 }
 
@@ -176,10 +177,10 @@ task( 'deploy:shared', function() {
  */
 task( 'deploy:symlink', function() {
 	$relative_release_path = '.' . substr(
-		env( 'release_path' ),
-		strlen( env( 'deploy_path' ) )
+		get( 'release_path' ),
+		strlen( get( 'deploy_path' ) )
 	);
-	env( 'relative_release_path', $relative_release_path );
+	set( 'relative_release_path', $relative_release_path );
 
 	run( "cd {{deploy_path}} && ln -sfn {{relative_release_path}} current" ); // Atomic override symlink.
 	run( "cd {{deploy_path}} && rm release" ); // Remove release link.
@@ -192,7 +193,7 @@ task( 'deploy:symlink', function() {
  * you want to rollback the database, you'll need to do it manually.
  */
 task( 'backup_database', function() {
-	$current_folder = env( 'deploy_path' ) . '/current';
+	$current_folder = get( 'deploy_path' ) . '/current';
 
 	/*
 	 * Return early if this is the first deploy to production
@@ -212,7 +213,7 @@ task( 'backup_database', function() {
  * Make sure all dependencies are installed on production
  */
 task( 'deploy:install_dependencies', function() {
-	run( "bash {{release_path}}/bin/install-dependencies.sh" );
+	run( "cd {{release_path}} && bash {{release_path}}/bin/install-dependencies.sh" );
 } )->desc( 'Install any new plugin and theme dependencies' );;
 
 /**
@@ -229,7 +230,7 @@ task( 'purge_cloudflare', function() {
  * `deploy:symlink` for details.
  */
 task( 'rollback', function() {
-	$releases = env( 'releases_list' );
+	$releases = get( 'releases_list' );
 
 	if ( isset( $releases[1] ) ) {
 		$releaseDir = "./releases/{$releases[1]}";
@@ -249,21 +250,21 @@ task( 'rollback', function() {
 /**
  * Check production for fatal errors
  *
- * @see Must_Use\Common\content_sensor_flag()
+ * @see \Regolith\Miscellaneous\content_sensor_flag()
  */
 task( 'tests:smoke', function() {
-	global $deployer_environment;
+	$environment = get( 'regolith_environment' );
 
 	$all_passed           = true;
 	$development_hostname = parse_url( WP_HOME, PHP_URL_HOST );
-	$production_hostname  = $deployer_environment['servers']['production']['hostname'];
+	$production_hostname  = $environment['servers']['production']['hostname'];
 	$cache_buster         = '/?s=' . time();
 
 	$urls = array(
 		str_replace( $development_hostname, $production_hostname, WP_HOME    ) . $cache_buster,
 		str_replace( $development_hostname, $production_hostname, WP_SITEURL ) . '/wp-login.php',
 	);
-	$urls = array_merge( $urls, $deployer_environment['additional_test_urls'] );
+	$urls = array_merge( $urls, $environment['additional_test_urls'] );
 
 	foreach ( $urls as $url ) {
 		$curl_response = runLocally( "curl --silent $url" );
@@ -306,4 +307,4 @@ task( 'deploy', [
 	'cleanup',
 ] )->desc( 'Deploy the current site to production' );
 
-initialize();
+initialize( $deployer_environment );

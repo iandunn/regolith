@@ -40,6 +40,8 @@ function initialize() {
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		register_wp_cli_commands();
 	}
+
+	load_site_specific_mu_plugins();
 }
 
 /**
@@ -128,6 +130,30 @@ function allow_dev_network_upgrades( $verify ) {
 	}
 
 	return $verify;
+}
+
+/**
+ * Load mu-plugins for individual sites
+ */
+function load_site_specific_mu_plugins() {
+	global $current_site;
+
+	if ( ! is_multisite() || empty( $current_site->domain ) ) {
+		return;
+	}
+
+	// Strip the TLD because dev and production sites have different TLDs (e.g., regolith-example.org and regolith-example.localhost)
+	$second_level_domain = substr( $current_site->domain, 0, strrpos( $current_site->domain, '.' ) );
+	$plugin_folder       = sprintf( '%s/sites/%s', __DIR__ , $second_level_domain );
+	$plugins             = glob( $plugin_folder . '/*.php' );
+
+	if ( is_array( $plugins ) ) {
+		foreach ( $plugins as $plugin ) {
+			if ( is_file( $plugin ) ) {
+				require_once( $plugin );
+			}
+		}
+	}
 }
 
 initialize();

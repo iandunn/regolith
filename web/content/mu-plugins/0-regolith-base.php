@@ -136,14 +136,14 @@ function allow_dev_network_upgrades( $verify ) {
  * Load mu-plugins for individual sites
  */
 function load_site_specific_mu_plugins() {
-	global $current_site;
+	global $current_blog;
 
-	if ( ! is_multisite() || empty( $current_site->domain ) ) {
+	if ( ! is_multisite() || empty( $current_blog->domain ) ) {
 		return;
 	}
 
 	// Strip the TLD because dev and production sites have different TLDs (e.g., regolith-example.org and regolith-example.localhost)
-	$second_level_domain = substr( $current_site->domain, 0, strrpos( $current_site->domain, '.' ) );
+	$second_level_domain = substr( $current_blog->domain, 0, strrpos( $current_blog->domain, '.' ) );
 	$plugin_folder       = sprintf( '%s/sites/%s', __DIR__ , $second_level_domain );
 	$plugins             = glob( $plugin_folder . '/*.php' );
 

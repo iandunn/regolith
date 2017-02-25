@@ -39,3 +39,7 @@ if [[ 'development' = $ENVIRONMENT && ! -f $DEPLOYER_PATH ]]; then
 	curl -L --output $DEPLOYER_PATH --progress-bar http://deployer.org/deployer.phar
 	chmod +x $DEPLOYER_PATH
 fi
+
+# Update Git submodules
+git submodule init
+git submodule update --remote

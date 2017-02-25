@@ -20,6 +20,7 @@ add_action( 'wp_footer',                  __NAMESPACE__ . '\content_sensor_flag'
 add_action( 'login_footer',               __NAMESPACE__ . '\content_sensor_flag',       999 );
 add_action( 'admin_bar_menu',             __NAMESPACE__ . '\admin_bar_environment'          );
 add_action( 'wp_before_admin_bar_render', __NAMESPACE__ . '\admin_bar_environment_css'      );
+add_action( 'admin_print_styles',         __NAMESPACE__ . '\remove_intrusive_wordfence_ui'  );
 
 /**
  * Add custom schedules for WP-Cron
@@ -120,6 +121,36 @@ function admin_bar_environment_css() {
 						color: rgba( 240, 245, 250, 0.6 );
 					}
 	</style>
+
+	<?php
+}
+
+/**
+ * Remove intrusive WordFence user interface elements
+ */
+function remove_intrusive_wordfence_ui() {
+	?>
+
+	<!-- Begin Regolith remove_intrusive_wordfence_ui() -->
+	<style>
+		/* The notification banner is intrusive, and the content is just marketing */
+		#adminmenu .update-plugins.wf-notification-count-container {
+			display: none;
+		}
+
+		/*
+		 * The logo is in color when all others are in greyscale, making it stand out, which is distasteful
+		 * and visually distracting
+		 */
+		#toplevel_page_Wordfence .wp-menu-image img {
+			display: none;
+		}
+
+		#toplevel_page_Wordfence .wp-menu-image::before {
+			content: "\f160";
+		}
+	</style>
+	<!-- End Regolith remove_intrusive_wordfence_ui() -->
 
 	<?php
 }

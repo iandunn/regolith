@@ -28,6 +28,7 @@
 /web/content/plugins/cloudflare
 /web/content/plugins/google-authenticator
 /web/content/plugins/google-authenticator-per-user-prompt
+/web/content/plugins/google-authenticator-encourage-user-activation
 /web/content/plugins/login-security-solution
 /web/content/plugins/quick-navigation-interface
 /web/content/plugins/subscribe-to-comments

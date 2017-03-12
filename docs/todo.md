@@ -2,12 +2,120 @@
 
 ## High
 
+theme updates not installing automatically
+	maybe only on iandunn.name, but probably all of regolith
+
+why isn't content/debug.log being created?
+	want it to make sure custom mu-plugins etc don't have bugs that aren't caught via display_errors
+
+mail through smtp
+	maybe add something to regolith with best practices for setting sender, return-path, etc
+	see wcorg-mailer::mail(), any mu-plugins you created, https://core.trac.wordpress.org/ticket/37736#comment:4
+	might be different from what wcorg does b/c Envelope-FROM is set by server, rather than suggested by message Sender header
+	add constant for mail from address, but leave mail from name alone?
+	warn user that they must set the sender constant to a valid address or could cause failures?
+
+	docs: setup spf so web server and mailchimp (or whoever) can send
+	create bounce@, abuse@, postmaster@ address, set as return-path
+
+	setup smtp address, and configure phpmailer to send through that rather than local sendmail?
+	or maybe external service?
+		https://www.mailgun.com/pricing is free, so why not?
+
+		update docs
+		setup config in a way that it will fallback to sendmail if no credentials for the domain
+
+		add to readme as a feature
+			smtp for reliably delivering transaction emails. i recommend using mailgun so you get additional features, but it'll work with any smtp account
+
+add wp_mail_failed callback
+	v1
+		simple error_log()
+			test that logs for both sendmail and SMTP
+		maybe also send notice to admin_email via sendmail ? something else
+		maybe retry. if using smtp, retry with sendmail?
+
+	v2
+		better to error log, but have some kind of professional error log anaylizer which can send notifications when critical errors detected
+		research best practices
+
+maybe remove the mail inteceptor and just assume that mailhog/mailcatcher available?
+	good b/c removes unused code
+	bad b/c could lead to other people running into problems
+	maybe just document that you assume dev environments have mailcatcher/hog installed? that's unrealistic expectation for audience?
+	probably remove it, but maybe keep some kind of failsafe, or at least document expectations
+
+log error monitoring
+	cant have pro thing like nagios on shared hosting
+	maybe just want something simple like this
+		bin/log-monitor.sh
+		setup unix cron job to run continuously
+		call every minute. if another process running, exit
+		- maybe better way to run always besides cron?
+		tails specified logs - php, wp, apache, mysql, others?
+		if detect "fatal error" or other custom pattern, dumps that line to sep file along w/ timestamp, origin file
+		every 5 min, send contents of that file to email addy. maybe truncate at 1mb or something
+		try squash avoid duplicates into single, but add a note that there were multiple
+		after sent, empty the file
+
+	but instead of reinventing wheel, look for existing solution
+		https://www.elastic.co/products/logstash
+		http://nxlog-ce.sourceforge.net/
+		http://www.fluentd.org/
+		https://alioth.debian.org/projects/logcheck/
+		https://sourceforge.net/projects/logwatch/
+		https://mmonit.com/monit/
+		https://github.com/etsy/logster
+
+
+
+add support for multiple plugin directories
+	plugins-custom
+	plugins-external - gitignore dependencies go here
+	plugins-local    - gitignore the whole folder. this might take care of the `add dev environment dependenies` task. wouldn't be tracked, but no big deal?
+
+	maybe look at implementing the non-ui parts of https://github.com/chrisguitarguy/WP-Plugin-Directories
+		that'd be simpler than maintaining symlinks
+
+	if use wordcamp.dev approach
+		add a link to the final symlink script to the wpstackexchange answer
+
+	add to readme
+		"better folder structure, including support for [multiple plugin directories](https://wordpress.stackexchange.com/a/233581/3898)
+		need docs on how to setup multiple plugin dirs? no b/c the symlink script'll have to be run automatically during install and deploys?
+			well, still need something telling them to run it manually when adding new custom plugins?
+		want something in design decisions about multiple plugin dirs?
+			can focus on custom plugins without being cluttered/distracted by externals
+
+
+	maybe setup better plugins folder layout
+		https://wordpress.stackexchange.com/a/233581/3898
+		it'd be nice to do symlink script as wp-cli command
+			probably fine as long as wp-cli commands registered in mu-plugins
+		how would this interact w/ the `shared` folder symlinks on production?
+			probably need to update deployment recipe to handle it
+
+
+composer
+	automatically get latest stable, instead of having to specify version
+		akismet.zip just links to trunk, not to the latest stable
+		published stable zip always has version number in it
+		is there a akismet-latest.zip that redirects to latest, jsut like there is for core?
+			if not, maybe add one
+	use wporg repo directly, instead of packagist
+
+don't need wp-config symlink once 4.6?
+	https://core.trac.wordpress.org/ticket/26592
+	could remove deployer task, update config/wordpress/common to be canonical source?\
+	no, needs to be in index.php?
+
 htaccess redirect http->https doesn't work on /wordpress/wp-cron.php
 	other places its not working?
 
 multisite
 	how to support domain name aliases?
 		just need a function in sunrise?
+		er, actually, just setup redirects in htaccess? no reason to add complexity to wp layer
 
 	docs - still true that siteurl needs to end in /wordpress?
 	    doesn't seem to be necessary on iandunn.localhost
@@ -22,6 +130,9 @@ reconsider including https://github.com/roots/wp-password-bcrypt
 		could watch commits / support to keep an eye on it, submit patches to update when its out of date
 		still an attack vector if can't trust author to keep their account protected w/ strong password, etc
 
+	probably not worth it, unless you solve composer problems for other tasks
+		https://roots.io/wordpress-password-security-follow-up/
+
 using wpcli for dependency management assumes that all dependencies are in the w.org repos
 	is there a way to integrate plugins hosted on github or premium themes
 	maybe need a combination of composer (but not wppackagist)
@@ -30,6 +141,8 @@ using wpcli for dependency management assumes that all dependencies are in the w
 		always want latest like w/ other dependencies
 	git submodule, but then have to manually update
 		and submodules are a pain in the ass
+		actually, now you can can track latest with `git submodule add -b master {url}`
+		works for publish-iandunn-2017. don't need to .gitignore it either :)
 	could install one of those generic github updater plugins, i think scribu or pippen wrote one you could trust
 
 	maybe reconsider using composer, but would need to fix obstacles so maintenance isn't a hassle
@@ -74,11 +187,20 @@ maybe write script to pull db from production and import into dev
 	https://github.com/markjaquith/WP-Stack/blob/master/lib/tasks.rb
 	or deployer.phar does that?
 	what about security though? it'll contain sensitive things like password hashes that you don't want just floating around random dev environments locally
+		https://github.com/10up/wp-hammer looks nice, but it copies the db locally before pruning user pw hashes, etc, so not great for security/privacy
 	add to readme?
+
+
+	build a script to pull prod database into dev environment
+		need to change passwords to 'password' to avoid exposing them in a less secure environment
+		maybe change emails too to avoid accidentally sending messages to real users from dev if mailhog isn't setup, but already have mu-plugin to prevent that, so probalgby fine
+		need to change urls from foo.org to foo.localhost
+			maybe have config var to define `$dev_tld = 'localhost'` to assist with that
 
 setup pre-commit hook for codesniffer, pre-release for phpmd?
 	needs to be setup server-side for proper enforcement?
 	maybe just ship the scripts in /bin/git, and give instructions to `ln -s` to them to `echo sh /bin/git/pre-commit.sh >> .git/hooks/pre-commit`
+		probably better: https://github.com/Automattic/wp-calypso/blob/f219e05c834edbee92515a25648bb42086576ffb/docs/coding-guidelines/javascript.md#setting-up-githooks
 	add to readme
 
 setup pre-deploy hook to run any automated tests that are available?
@@ -123,10 +245,24 @@ setup file backups
 	maybe this is better suited for something outside of regolith
 	if do this, then don't really need to have script to direct content 404s to production
 
+maybe assign `$regolith_smtp` inside a `switch() {}` so that aliases etc can easily reuse creds
+
+remove overwritten symlink tasks from deploy recipe now that https://github.com/deployphp/deployer/issues/503 is fixed
+
 
 ## Medium
 
-remove overwritten symlink tasks from deploy recipe when https://github.com/deployphp/deployer/issues/503 is fixed
+rename environment.php to something like secrets.php to make it more obvious that it's for sensitive things
+	non-sensitive things taht are environment specific are already in config/wordpress/development.php or production.php
+
+watch wptv video for https://2017.london.wordcamp.org/session/wrapping-a-modern-php-architecture-around-a-legacy-wordpress-site/
+	see if want to integrate any ideas and best practices
+
+add config constant for google analytics ID, then add your mu plugin function
+also look at other common mu-plugins from mt cluster sites functinoality and add those
+
+maybe break config/common into multiple files for readability
+	but maybe combine dev.php and prod.php into the main file, or to a switch() in a single file, since they're so small
 
 get wpsc working in mod_rewrite for homepage etc, rather than just php mode
 
@@ -139,8 +275,6 @@ regolith\backup_database\rotate_files includes deployment backups
 add an open-source license to readme
 	gpl? MIT? unlicense?
 
-if multisite, then look for mu-plugins/sites/hostname.php and include if exists
-
 probably need to split install.md up into different scenarios
 	setting up new dev environment for new site
 	setting up new dev environment from existing regolith production site
@@ -149,8 +283,6 @@ probably need to split install.md up into different scenarios
 reconsider environmental variables for environment config
 	could use apache `SetEnv WP_ENV production` in the dir above the folder where regolith is cloned
 	how to get that to work automatically with wpcli?
-
-reconsider adding log folder, it's nice to have them easily accessible from the IDE
 
 update deployer download to use ssl when available
 	https://github.com/deployphp/deployer/issues/700
@@ -186,8 +318,12 @@ add dev environment dependenies
 		any problems having then ignored by git? attacker could add to production and wouldn't notice, but if they can do that you're already screwed
 		would be another reason to consider using composer, if can get over the obstacles to it
 
+setup sso for multisite?
+	https://github.com/humanmade/Mercator/blob/master/sso.php
 
 ## Low
+
+monitoring flag should be later. right now there are things like admin bar running after it, which would break and wouldn't be detected
 
 if multisite, maybe automatically add front- and back-end url for each site to smoke:tests
 	would be too much if had lots of sites
@@ -210,6 +346,7 @@ don't need to set ABSPATH in config/wordpress/common.php?
 	or is it always set by common.php, so don't need to check if it's already been set?
 	https://core.trac.wordpress.org/changeset/7971
 	https://core.trac.wordpress.org/ticket/26592
+	4.6 makes changes to this
 
 why checking wp_default_theme in mu-plugins/0-bedrock.php?
     never had problems without that, unless that's why wp-cli would install things to the core folder
@@ -222,15 +359,21 @@ name releases something easier to parse than the datetimestampallshovedtogetheri
 check that db creds are correct before running install script, otherwise errors out and have to delete wp before trying again
 
 want to do anything about logging?
-	configure logs to be in ./logs ? or at least recommend it? 
+	configure logs to be in ./logs ? or at least recommend it?
 	not gonna work on shared hosting though maybe with symlinks
-	it'd be nice to have them in {root}/logs folder, but can't change apache location through htaccess
+	it'd be nice to have them in {root}/logs folder for quick IDE access in dev environment, but can't change apache location through htaccess
 	could put php there by ini_set() in config files, but then any errors that happened earlier would be in different log, and probably go unnoticed
+
+maybe create an empty `tmp | temp | temporary` folder in /
+    sometimes nice to have those files easily acceessible
+    don't want wp_get_temp() to pick wp-content b/c security
+    set wp-config constant to tell wp_get_temp to use it
 
 install: modularize into functions
 
 is there a way to set a help description for `wp regolith` without having a class for it?
 	right now only have a description for individual commands
+	might work if you just add a 'regolith' command that does nothing, but has the docs
 
 maybe also add environment to title on front/back end, to increase awareness
 	probably don't add it to production, just dev/staging
@@ -252,3 +395,5 @@ allow_dev_network_upgrades - problem is bigger than just network upgrades?
 	there are other instances of local requests, but never seen anything that mattered
 	maybe need better solution that works for all cases
 	maybe just install the cert for the server so that it recognizes it as valid? kind of a hassle though
+
+add install-deps.sh to screenshots page

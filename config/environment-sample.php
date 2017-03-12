@@ -5,7 +5,7 @@
  *
  * Some of the values are critically sensitive, and it's also intended to have values that are
  * specific to the individual machine running it (e.g., different developers would have different
- * database passwords on their machines.
+ * database passwords on their machines).
  *
  * The production copy of this file won't be modified during deployment, so any changes you make to it
  * will need to be manually adjusted on production. In some cases you can make those changes on
@@ -19,6 +19,7 @@ define( 'DB_HOST',                         'localhost'                  );
 define( 'DB_PASSWORD',                     'password'                   );
 define( 'REGOLITH_MAIL_INTERCEPT_ADDRESS', 'foo@example.org'            );
 define( 'REGOLITH_WP_SUPER_CACHE_SECRET',  'replace me with  strong password' );
+define( 'WPCOM_API_KEY',                   ''                           ); // Akismet API key
 define( 'REGOLITH_CLOUDFLARE_ZONE_ID',     ''                           );
 
 // https://api.wordpress.org/secret-key/1.1/salt/

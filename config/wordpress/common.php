@@ -26,7 +26,6 @@ if ( $is_multisite ) {
 	define( 'WP_CONTENT_URL', WP_HOME . $content_dir_path );
 }
 
-define( 'REGOLITH_ROOT_DIR',   dirname( dirname( __DIR__ ) )                               );
 define( 'REGOLITH_BACKUP_DIR', REGOLITH_ROOT_DIR . '/backups'                              );
 define( 'WP_SITEURL',          WP_HOME . '/wordpress'                                      );
 define( 'WP_CONTENT_DIR',      REGOLITH_ROOT_DIR . $document_root_path . $content_dir_path );

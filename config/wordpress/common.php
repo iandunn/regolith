@@ -7,8 +7,8 @@ $is_multisite       = false;
 
 define( 'DB_NAME',    'regolith.localhost' );
 define( 'DB_USER',    'username'           );
-define( 'DB_CHARSET', 'utf8'               );
-define( 'DB_COLLATE', ''                   );
+define( 'DB_CHARSET', 'utf8mb4'            );
+define( 'DB_COLLATE', 'utf8mb4_unicode_ci' );
 
 if ( $is_multisite ) {
 	$safe_server_name = isset( $_SERVER['SERVER_NAME'] ) ? $_SERVER['SERVER_NAME'] : parse_url( WP_HOME, PHP_URL_HOST );

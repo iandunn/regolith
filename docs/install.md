@@ -22,7 +22,7 @@ If your host doesn't have Git or WP-CLI installed, check [the troubleshooting gu
 1. Run `./bin/install-dependencies.sh` to install dependencies and perform other setup tasks.
 1. If you're setting up a Multisite install, run through the steps in [the Multisite installation notes](./install-multisite.md).
 1. Install the deployment wrapper script:
-	1. `cp /home/jane-development/foo.org/bin/deployer ~/bin/deployer`
+	1. `cp /home/jane-development/foo.org/bin/deployer/deployer ~/bin/deployer`
 	1. `chmod +x ~/bin/deployer`
 	1. If `~/bin` isn't already in your `$PATH`, then `echo "PATH=\$PATH:~/bin" >> ~/.bash_profile`
 	1. You can now call `deployer` from any subdirectory of the site.

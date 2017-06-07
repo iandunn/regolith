@@ -43,7 +43,7 @@ function set_variables( $environment ) {
  * @return array
  */
 function get_shared_directories() {
-	$potential_dependencies = file( REGOLITH_ROOT_DIR . '/.gitignore', FILE_IGNORE_NEW_LINES );
+	$potential_dependencies = file( dirname( dirname( __DIR__ ) ) . '/.gitignore', FILE_IGNORE_NEW_LINES );
 	$plugin_dependencies    = preg_grep( '#content\/plugins\/#', $potential_dependencies );
 	$theme_dependencies     = preg_grep( '#content\/themes\/#',  $potential_dependencies );
 

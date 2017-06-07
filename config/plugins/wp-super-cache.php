@@ -66,7 +66,7 @@ if ( ! defined( 'WPCACHEHOME' ) ) {
 	define( 'WPCACHEHOME', WP_CONTENT_DIR . "/plugins/wp-super-cache/" );
 }
 
-$cache_compression   = 1;
+$cache_compression   = 0;
 $cache_enabled       = true;
 $super_cache_enabled = true;
 $cache_max_time      = 86400;

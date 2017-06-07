@@ -12,7 +12,7 @@ THEMES=$(  grep 'content/themes/'  $ROOT_PATH/.gitignore |awk -F '/' '{print $5}
 DEPLOYER_PATH="$ROOT_PATH/bin/deployer/deployer.phar"
 
 # Install Core
-if [[ ! -d $ROOT_PATH/web/wordpress ]]; then
+if [[ ! -d $ROOT_PATH/web/wordpress/wp-admin ]]; then
 	echo ""
 	wp core download
 

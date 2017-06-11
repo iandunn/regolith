@@ -2,6 +2,9 @@
 
 ## High
 
+disable automatic upadte emails
+	then disable thunderbird filters since they'll no longer be needed
+
 theme updates not installing automatically
 	maybe only on iandunn.name, but probably all of regolith
 
@@ -174,6 +177,7 @@ send these headers?
 	X-Xss-Protection
 	X-Content-Type-Options
 	Content-Security-Policy
+	also ones recommended by https://securityheaders.io/ and https://observatory.mozilla.org/
 
 during first install on production, deployer creates the wordpress folder, so wp-cli doesn't install wp, then rest of script fails
 	maybe just use --force param
@@ -321,6 +325,7 @@ add dev environment dependenies
 setup sso for multisite?
 	https://github.com/humanmade/Mercator/blob/master/sso.php
 
+
 ## Low
 
 monitoring flag should be later. right now there are things like admin bar running after it, which would break and wouldn't be detected
@@ -397,3 +402,9 @@ allow_dev_network_upgrades - problem is bigger than just network upgrades?
 	maybe just install the cert for the server so that it recognizes it as valid? kind of a hassle though
 
 add install-deps.sh to screenshots page
+
+show active mu-plugins on indidivual site wp-admin/plugins.php pages
+	normally mu are only shown in the network admin, but regolith will activate site-specific plugins on each site, so it's nice to see that they're active
+
+look through https://codex.wordpress.org/User:Hakre/Technical_Installation
+	it's old, but may have some things that are still useful

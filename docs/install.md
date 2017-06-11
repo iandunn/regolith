@@ -22,7 +22,7 @@ If your host doesn't have Git or WP-CLI installed, check [the troubleshooting gu
 1. Run `./bin/install-dependencies.sh` to install dependencies and perform other setup tasks.
 1. If you're setting up a Multisite install, run through the steps in [the Multisite installation notes](./install-multisite.md).
 1. Install the deployment wrapper script:
-	1. `cp /home/jane-development/foo.org/bin/deployer ~/bin/deployer`
+	1. `cp /home/jane-development/foo.org/bin/deployer/deployer ~/bin/deployer`
 	1. `chmod +x ~/bin/deployer`
 	1. If `~/bin` isn't already in your `$PATH`, then `echo "PATH=\$PATH:~/bin" >> ~/.bash_profile`
 	1. You can now call `deployer` from any subdirectory of the site.
@@ -34,6 +34,7 @@ If your host doesn't have Git or WP-CLI installed, check [the troubleshooting gu
     1. `ssh` to your production server and `cd` to the site's root directory (e.g., `cd /home/jane-production/foo.org`)
     1. Run `ln -snf ./current/web public_html`, so that Apache's DocumentRoot will always link to the current release's `web` folder.
         1. On many hosts, [it's important to make it a relative symlink](https://iandunn.name/trouble-symlinking-documentroot-on-shared-hosting/).
+    1. Copy and paste the contents of environment.php (down to the bottom of the salts) to the file on the production server: /home/jane-production/foo.org/current/config/environment.php and change the details to suit the production server. This is required because environment.php is never checked in to source control as it contains sensitive and machine specific information.
 1. Setup HTTP content sensors with a monitoring service -- like [Uptime Robot](https://uptimerobot.com/) -- to look for the value of `REGOLITH_CONTENT_SENSOR_FLAG` in `{production_domain}/wordpress/wp-login.php` and `{production_domain}/?s={timestamp}`.
 
 At this point, your repo is independent of Regolith. You can manually merge in updates if you want, but that isn't necessary.

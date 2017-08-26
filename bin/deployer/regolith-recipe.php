@@ -256,13 +256,12 @@ task( 'tests:smoke', function() {
 	$environment = get( 'regolith_environment' );
 
 	$all_passed           = true;
-	$development_hostname = parse_url( WP_HOME, PHP_URL_HOST );
-	$production_hostname  = $environment['servers']['production']['hostname'];
+	$production_url       = $environment['servers']['production']['url'];
 	$cache_buster         = '/?s=' . time();
 
 	$urls = array(
-		str_replace( $development_hostname, $production_hostname, WP_HOME    ) . $cache_buster,
-		str_replace( $development_hostname, $production_hostname, WP_SITEURL ) . '/wp-login.php',
+		$production_url . $cache_buster,
+		$production_url . '/wordpress/wp-login.php',
 	);
 	$urls = array_merge( $urls, $environment['additional_test_urls'] );
 

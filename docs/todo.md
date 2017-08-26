@@ -381,7 +381,7 @@ is there a way to set a help description for `wp regolith` without having a clas
 	might work if you just add a 'regolith' command that does nothing, but has the docs
 
 maybe also add environment to title on front/back end, to increase awareness
-	probably don't add it to production, just dev/staging
+	probably don't add it to production, just dev
 
 block_updates_for_custom_extensions() - better to remove it before it gets sent to w.org
 	that way doesn't mess with active_installs stat, doesn't leak private info

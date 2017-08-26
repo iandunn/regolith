@@ -45,7 +45,7 @@ function intercept_outbound_mail( $args ) {
 	$original_message = $args['message'];
 	unset( $args['message'] );
 
-	$override_text = "This message was intercepted and redirected to you to prevent users getting e-mails from staging/development servers.\n\nwp_mail() arguments:\n\n%s\n\nOriginal message:\n-----------------------\n\n%s";
+	$override_text = "This message was intercepted and redirected to you to prevent users getting e-mails from development servers.\n\nwp_mail() arguments:\n\n%s\n\nOriginal message:\n-----------------------\n\n%s";
 	$args_text     = print_r( $args, true );
 
 	if ( 'text/html' == apply_filters( 'wp_mail_content_type', false ) ) {

@@ -2,6 +2,10 @@
 
 ## High
 
+configure php error log to be outside webroot, because some hosts have insecure defaults
+
+maybe integrate gravityscan
+
 disable automatic upadte emails
 	then disable thunderbird filters since they'll no longer be needed
 
@@ -253,8 +257,26 @@ maybe assign `$regolith_smtp` inside a `switch() {}` so that aliases etc can eas
 
 remove overwritten symlink tasks from deploy recipe now that https://github.com/deployphp/deployer/issues/503 is fixed
 
+write a bash script to check the PHP error log for fatal errors
+	if it detects one, it writes the current timestamp to a file in /tmp and sends an email w/ the error to alert you
+	but if the previous timestamp was less than 1 hour ago, it won't send the email, so that you only get 1 email per hour
+	then setup a unix cron job to run every minute
+	maybe not. what scenarios does this protect against that uptimemonitor + REGOLITH_CONTENT_SENSOR_FLAG doesn't?
 
 ## Medium
+
+add support for deploying to ssh ports other than 22. already done for silencedmajority.org, just need to port/test
+
+maybe remove web/wordpress/wp-content folder, since can install default themes/plugins in web/content if really want them
+	could be nice to avoid issues w/ bundled themes/plugins not being updated b/c bugs?
+	would core re-add it, or start using web/content by default?
+	would need to remove the register_theme_directory() call in muplugin
+	
+maybe add install instructions to set file system permissions
+	could do in install-dependencies
+	maybe also set for wp mods:
+		define( 'FS_CHMOD_DIR', ( 0755 & ~ umask() ) );
+		define( 'FS_CHMOD_FILE', ( 0644 & ~ umask() ) );
 
 rename environment.php to something like secrets.php to make it more obvious that it's for sensitive things
 	non-sensitive things taht are environment specific are already in config/wordpress/development.php or production.php
@@ -327,6 +349,8 @@ setup sso for multisite?
 
 
 ## Low
+
+maybe setup calvalcade, but probably not a clear benefit for this type of site
 
 monitoring flag should be later. right now there are things like admin bar running after it, which would break and wouldn't be detected
 

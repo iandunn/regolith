@@ -30,12 +30,16 @@ If your host doesn't have Git or WP-CLI installed, check [the troubleshooting gu
 1. Once you've verified that everything is setup correctly in your local environment:
     1. Run `git remote set-url origin {your_repo_url}` and commit your changes.
     1. `git push` to your site's repository.
+    1. Run `deployer -vvv deploy:prepare` to test if the connection, paths, etc are setup correctly.
     1. Run `deployer deploy` to deploy the site to production.
     1. `ssh` to your production server and `cd` to the site's root directory (e.g., `cd /home/jane-production/foo.org`)
     1. Run `ln -snf ./current/web public_html`, so that Apache's DocumentRoot will always link to the current release's `web` folder.
         1. On many hosts, [it's important to make it a relative symlink](https://iandunn.name/trouble-symlinking-documentroot-on-shared-hosting/).
-    1. Upload a copy of your local `environment.php` to production, and update the values to match production's config. This is required because `environment.php` is never checked in to source control (because it contains sensitive and machine-specific information).
+    1. Upload a copy of your local `environment.php` to the production server's `shared/config` folder, and update the values to match production's config.
+        1. This is required because `environment.php` is never checked in to source control (because it contains sensitive and machine-specific information).
+    1. Run `current/bin/install-dependencies.sh`
 1. Setup HTTP content sensors with a monitoring service -- like [Uptime Robot](https://uptimerobot.com/) -- to look for the value of `REGOLITH_CONTENT_SENSOR_FLAG` in `{production_domain}/wordpress/wp-login.php` and `{production_domain}/?s={timestamp}`.
+	1 The timestamp serves as a cachebuster. If the monitoring service doesn't allow timestamp tokens, then you can also use Super Cache's `donotcachepage` parameter along with the value of `REGOLITH_WP_SUPER_CACHE_SECRET`.
 
 At this point, your repo is independent of Regolith. You can manually merge in updates if you want, but that isn't necessary.
 

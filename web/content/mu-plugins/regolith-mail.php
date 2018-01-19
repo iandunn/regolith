@@ -75,7 +75,7 @@ function better_interceptor_active() {
 	}
 
 	// MailCatcher
-	if ( false !== strpos( ini_get( 'sendmail_path' ), 'catchmail' ) ) {
+	if ( false !== stripos( ini_get( 'sendmail_path' ), 'catchmail' ) ) {
 		$better_interceptor_active = true;
 	}
 

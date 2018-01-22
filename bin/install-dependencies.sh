@@ -36,7 +36,7 @@ wp theme install $THEMES
 # Install Deployer
 if [[ 'development' = $ENVIRONMENT && ! -f $DEPLOYER_PATH ]]; then
 	echo "Downloading Deployer..."
-	curl -L --output $DEPLOYER_PATH --progress-bar http://deployer.org/deployer.phar
+	curl -L --output $DEPLOYER_PATH --progress-bar https://deployer.org/releases/v4.3.1/deployer.phar
 	chmod +x $DEPLOYER_PATH
 fi
 

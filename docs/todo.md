@@ -11,6 +11,7 @@ disable automatic upadte emails
 
 theme updates not installing automatically
 	maybe only on iandunn.name, but probably all of regolith
+	probably delete wordpress/wp-content/themes anyway. if want one of those themes, can add it to the normal content dir, so that they're all in one place. simpler that way
 
 why isn't content/debug.log being created?
 	want it to make sure custom mu-plugins etc don't have bugs that aren't caught via display_errors
@@ -221,19 +222,7 @@ themes still messed up on production
 	when this is fixed, probably best to remove simone b/c don't actually use it
 symlink for simone not being created properly on production
 	fixed now? see what happens when try to setup new site
-
-ship default config for login security solution, wordfence, etc
-	want it to enforce it all the time, so user can't change through wpadmin?
-	or just want to be able to impose it during setting up new site, so don't have to go through config all over again?
-
-	could store config files in config/plugins/foo.php
-		then have filters read from there and use set_option filter
-			faster than doing it from get_option
-		or have wp-cli command to `wp option update foo bar`
-
-	maybe use `wp dictator` to enforce
-		would store config in config/plugins/foo.yml
-		would need to write extension, or can it handle this already?
+	__probably just remove wp's theme folder and use the custom one entirely, see notes in other todos__
 
 setup file backups
 	config/custom code/etc is in version control, which is good enough
@@ -271,12 +260,25 @@ maybe remove web/wordpress/wp-content folder, since can install default themes/p
 	could be nice to avoid issues w/ bundled themes/plugins not being updated b/c bugs?
 	would core re-add it, or start using web/content by default?
 	would need to remove the register_theme_directory() call in muplugin
-	
+	yeah, probably want to do this
+
 maybe add install instructions to set file system permissions
 	could do in install-dependencies
 	maybe also set for wp mods:
 		define( 'FS_CHMOD_DIR', ( 0755 & ~ umask() ) );
 		define( 'FS_CHMOD_FILE', ( 0644 & ~ umask() ) );
+
+ship default config for more plugins
+	subscribe to comments
+	vaultpress - although merging into jetpack?
+	cloudflare - move some of it from environment.php to config/plugins/cloudflare.php? probably
+	wordfence
+		it turns out wordfence is... special
+		stores in custom database table, uses over-engineered set of classes to access/set
+		no custom filters to modify defaults or actual values
+			could send a PR, but they don't have a github repo or anything. could ask on forums 
+		wp doesn't have a filter in `wp_cache_get('alloptions', 'wordfence');`
+		could do a cron job to overwrite values in the database? that's fraking awful, but may be the best way
 
 rename environment.php to something like secrets.php to make it more obvious that it's for sensitive things
 	non-sensitive things taht are environment specific are already in config/wordpress/development.php or production.php

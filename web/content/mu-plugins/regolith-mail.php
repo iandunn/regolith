@@ -5,7 +5,7 @@ Plugin Name: Regolith - Mail
 Description: Functionality related to sending email
 Version:     0.1
 Author:      Ian Dunn
-Author URI:  http://iandunn.name
+Author URI:  https://iandunn.name
 */
 
 namespace Regolith\Miscellaneous;
@@ -32,7 +32,7 @@ function intercept_outbound_mail( $args ) {
 	}
 
 	// Completely short-circuit the sending process if we don't have a valid address to send to
-	if ( ! defined( 'REGOLITH_MAIL_INTERCEPT_ADDRESS' ) || ! is_email( REGOLITH_MAIL_INTERCEPT_ADDRESS ) ) {
+	if ( ! defined( 'REGOLITH_DEV_NOTIFICATIONS' ) || ! is_email( REGOLITH_DEV_NOTIFICATIONS ) ) {
 		$args['to'] = '';
 		return $args;
 	}
@@ -53,7 +53,7 @@ function intercept_outbound_mail( $args ) {
 		$args_text     = sprintf( '<pre>%s</pre>', $args_text );
 	}
 
-	$args['to']      = REGOLITH_MAIL_INTERCEPT_ADDRESS;
+	$args['to']      = REGOLITH_DEV_NOTIFICATIONS;
 	$args['subject'] = sprintf( '[%s] %s', strtoupper( REGOLITH_ENVIRONMENT ), $args['subject'] );
 	$args['message'] = sprintf( $override_text, $args_text, $original_message );
 	$args['headers'] = '';    // wipe out CC and BCC

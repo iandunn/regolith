@@ -5,7 +5,7 @@ Plugin Name: Regolith - Miscellaneous
 Description: Functionality that doesn't fit in the other Regolith mu-plugins
 Version:     0.1
 Author:      Ian Dunn
-Author URI:  http://iandunn.name
+Author URI:  https://iandunn.name
 */
 
 namespace Regolith\Miscellaneous;

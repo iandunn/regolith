@@ -2,7 +2,7 @@
 
 In geology, regolith is the layer of loose material that lies above the firm bedrock.
 
-This project was inspired by [Bedrock](https://github.com/roots/bedrock), but the tooling and workflow choices are a bit looser, to fit my personal side-projects, where more rigorous tools and workflows would be overkill and inconvenient.
+This project was inspired by [Bedrock](https://github.com/roots/bedrock) and [the Twelve-Factor WordPress App](https://roots.io/twelve-factor-wordpress/), but the tooling and workflow choices are a bit looser, to fit my personal side-projects, where more rigorous tools and workflows would be overkill and inconvenient.
 
 * **WP-CLI over Composer:** Composer is great, but it feels a bit unnecessary if you always want to be running the latest versions of Core and plugins/themes.
 	* Core updates are very safe and backwards-compatible, and the plugins/themes I use are too, so I'm comfortable updating automatically. Monitoring can catch fatal errors immediately, and on the rare occasional that something breaks, it's not the end of the world.

@@ -5,7 +5,7 @@ Plugin Name: Regolith - Updates
 Description: Automatically update Core, plugins and themes
 Version:     0.1
 Author:      Ian Dunn
-Author URI:  http://iandunn.name
+Author URI:  https://iandunn.name
 */
 
 namespace Regolith\Updates;

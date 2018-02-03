@@ -289,9 +289,6 @@ watch wptv video for https://2017.london.wordcamp.org/session/wrapping-a-modern-
 add config constant for google analytics ID, then add your mu plugin function
 also look at other common mu-plugins from mt cluster sites functinoality and add those
 
-maybe break config/common into multiple files for readability
-	but maybe combine dev.php and prod.php into the main file, or to a switch() in a single file, since they're so small
-
 get wpsc working in mod_rewrite for homepage etc, rather than just php mode
 
 regolith\backup_database\rotate_files includes deployment backups

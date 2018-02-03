@@ -32,7 +32,6 @@ define( 'WP_CONTENT_DIR',      REGOLITH_ROOT_DIR . $document_root_path . $conten
 define( 'WPCACHEHOME',         WP_CONTENT_DIR . '/plugins/wp-super-cache/'                 );
 
 define( 'WP_CACHE',                     true             );
-define( 'FORCE_SSL_ADMIN',              'production' === REGOLITH_ENVIRONMENT );
 define( 'DISALLOW_FILE_EDIT',           true             );
 define( 'DISALLOW_UNFILTERED_HTML',     true             );
 define( 'REGOLITH_CONTENT_SENSOR_FLAG', 'Monitor-WP-OK'  );
@@ -41,6 +40,24 @@ define( 'REGOLITH_BACKUPS_TO_KEEP',     50               ); // includes schedule
 
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __DIR__ ) . "$document_root_path/wordpress/" );
+}
+
+switch( REGOLITH_ENVIRONMENT ) {
+	case 'development':
+		define( 'SAVEQUERIES',     true );
+		define( 'WP_DEBUG',        true );
+		define( 'SCRIPT_DEBUG',    true );
+		define( 'FORCE_SSL_ADMIN', false );
+		break;
+
+	case 'production':
+		ini_set( 'display_errors', 0 );
+
+		define( 'WP_DEBUG_DISPLAY', false );
+		define( 'SCRIPT_DEBUG',     false );
+		define( 'FORCE_SSL_ADMIN',  true  );
+
+		break;
 }
 
 // These are no longer necessary, so don't let them clutter the global space

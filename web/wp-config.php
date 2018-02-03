@@ -11,6 +11,5 @@
 define( 'REGOLITH_ROOT_DIR', dirname( __DIR__ ) );
 
 require_once( REGOLITH_ROOT_DIR . '/config/environment.php'      );
-require_once( REGOLITH_ROOT_DIR . '/config/wordpress/common.php' );
-require_once( REGOLITH_ROOT_DIR . '/config/wordpress/' . REGOLITH_ENVIRONMENT . '.php' );
+require_once( REGOLITH_ROOT_DIR . '/config/wordpress.php'   );
 require_once( ABSPATH . 'wp-settings.php' );

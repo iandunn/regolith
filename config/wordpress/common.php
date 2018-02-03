@@ -32,7 +32,7 @@ define( 'WP_CONTENT_DIR',      REGOLITH_ROOT_DIR . $document_root_path . $conten
 define( 'WPCACHEHOME',         WP_CONTENT_DIR . '/plugins/wp-super-cache/'                 );
 
 define( 'WP_CACHE',                     true             );
-define( 'FORCE_SSL_ADMIN',              true             );
+define( 'FORCE_SSL_ADMIN',              'production' === REGOLITH_ENVIRONMENT );
 define( 'DISALLOW_FILE_EDIT',           true             );
 define( 'DISALLOW_UNFILTERED_HTML',     true             );
 define( 'REGOLITH_CONTENT_SENSOR_FLAG', 'Monitor-WP-OK'  );

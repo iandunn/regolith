@@ -1,4 +1,7 @@
 # BEGIN Regolith
+# Some major and otherwise reputable hosts have this enabled by default, even though it's a privacy/security risk
+Options -Indexes
+
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 	RewriteBase /

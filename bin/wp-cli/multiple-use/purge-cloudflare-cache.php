@@ -1,8 +1,9 @@
 <?php
 
 namespace Regolith\Purge_CloudFlare_Cache;
+use WP_CLI;
 
-\WP_CLI::add_command( 'regolith purge-cloudflare-cache', __NAMESPACE__ . '\purge_cloudflare_cache' );
+WP_CLI::add_command( 'regolith purge-cloudflare-cache', __NAMESPACE__ . '\purge_cloudflare_cache' );
 
 /**
  * Purge CloudFlare's cache of the site
@@ -15,7 +16,7 @@ namespace Regolith\Purge_CloudFlare_Cache;
  */
 function purge_cloudflare_cache( $args ) {
 	if ( ! is_plugin_active( 'cloudflare/cloudflare.php' ) ) {
-		\WP_CLI::error( 'The CloudFlare plugin must be installed and configured.' );
+		WP_CLI::error( 'The CloudFlare plugin must be installed and configured.' );
 	}
 
 	$url = sprintf(
@@ -38,13 +39,13 @@ function purge_cloudflare_cache( $args ) {
 	$response = wp_remote_request( $url, $request_parameters );
 
 	if ( is_wp_error( $response ) ) {
-		\WP_CLI::error( $response->get_error_message() );
+		WP_CLI::error( $response->get_error_message() );
 	}
 
 	$body = json_decode( wp_remote_retrieve_body( $response ) );
 
 	if ( isset( $body->success ) && true === $body->success ) {
-		\WP_CLI::success( 'Purged the cache successfully.' );
+		WP_CLI::success( 'Purged the cache successfully.' );
 		return;
 	}
 
@@ -56,5 +57,5 @@ function purge_cloudflare_cache( $args ) {
 		$error_message = 'Unknown error';
 	}
 
-	\WP_CLI::error( $error_message );
+	WP_CLI::error( $error_message );
 }

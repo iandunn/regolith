@@ -4,6 +4,7 @@
 	* If your if host has old versions of Git, WP-CLI, etc installed globally, then you may need to install the latest versions into your `~/bin` directory and `export PATH="$HOME/bin:$PATH"`
 
 * If you're using **CloudFlare**, make sure you have Regolith's deployment configuration setup to connect to the origin IP directly, instead of being proxied through CloudFlare. CloudFlare blocks SSH, so you won't be able to deploy through their proxy.
+	* If you've setup page rules to cache dynamic content, then temporarily turn on `Development Mode` to bypass the cache.
 
 * If you're having trouble cloning Git repos during deployment:
 	* Make sure you can connect via SSH, e.g. `ssh -vvv git@gitlab.com`.

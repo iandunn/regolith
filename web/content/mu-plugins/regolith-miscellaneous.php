@@ -16,11 +16,13 @@ add_filter( 'xmlrpc_enabled', '__return_false' );   // Disable for security -- h
 add_action( 'init',                       __NAMESPACE__ . '\schedule_cron_jobs'             );
 add_filter( 'cron_schedules',             __NAMESPACE__ . '\add_cron_schedules'             );
 add_action( 'regolith_backup_database',   __NAMESPACE__ . '\backup_database'                );
+add_action( 'wp_head',                    __NAMESPACE__ . '\google_analytics'               );
 add_action( 'wp_footer',                  __NAMESPACE__ . '\content_sensor_flag',       999 );
 add_action( 'login_footer',               __NAMESPACE__ . '\content_sensor_flag',       999 );
 add_action( 'admin_bar_menu',             __NAMESPACE__ . '\admin_bar_environment'          );
 add_action( 'wp_before_admin_bar_render', __NAMESPACE__ . '\admin_bar_environment_css'      );
 add_action( 'admin_print_styles',         __NAMESPACE__ . '\remove_intrusive_wordfence_ui'  );
+
 
 /**
  * Add custom schedules for WP-Cron
@@ -55,6 +57,33 @@ function schedule_cron_jobs() {
 function backup_database() {
 	shell_exec( 'wp regolith backup-database' );
 }
+
+/**
+ * Output Google Analytics code
+ */
+function google_analytics() {
+	if ( 'production' !== REGOLITH_ENVIRONMENT || empty( REGOLITH_GOOGLE_ANALYTICS_ID ) ) {
+		return;
+	}
+
+	?>
+
+	<!-- Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo esc_attr( REGOLITH_GOOGLE_ANALYTICS_ID ); ?>"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+
+		function gtag() {
+			dataLayer.push( arguments );
+		}
+
+		gtag( 'js', new Date() );
+		gtag( 'config', '<?php echo esc_js( REGOLITH_GOOGLE_ANALYTICS_ID ); ?>' );
+	</script>
+
+	<?php
+}
+
 
 /**
  * Add a flag at the end of the page for external monitoring services to check

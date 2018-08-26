@@ -46,6 +46,7 @@ define( 'DISALLOW_UNFILTERED_HTML',     true             );
 define( 'REGOLITH_CONTENT_SENSOR_FLAG', 'Monitor-WP-OK'  );
 define( 'REGOLITH_BACKUP_INTERVAL',     60 * 60 * 24 * 7 ); // in seconds
 define( 'REGOLITH_BACKUPS_TO_KEEP',     50               ); // includes scheduled backups and backups made before every deployment
+define( 'REGOLITH_GOOGLE_ANALYTICS_ID', 'UA-000000000-0' );
 
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __DIR__ ) . "$document_root_path/wordpress/" );

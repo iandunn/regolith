@@ -73,7 +73,7 @@ switch ( REGOLITH_ENVIRONMENT ) {
 // These are no longer necessary, so don't let them clutter the global space
 unset( $document_root_path    );
 unset( $content_dir_path      );
-unset( $regolith_is_multisite );
+unset( $is_multisite          );
 unset( $safe_server_name      );
 
 if ( ! class_exists( '\Deployer\Deployer' ) ) {

@@ -12,6 +12,7 @@ If your host doesn't have Git or WP-CLI installed, check [the troubleshooting gu
 1. In your development environment, clone this repository 1 level above Apache's `DocumentRoot`.
 	1. For example, if `DocumentRoot` is `/home/jane-development/foo.org/public_html`, then clone Regolith to `/home/jane-development/foo.org`.
 1. If you have an existing database, import it.
+1. (optional) Configure your web server to store PHP/Apache/MySQL/etc logs in the `logs/` folder.
 1. Review/update all the default configuration.
 	1. Copy `config/environment-sample.php` to `config/environment.php`
 	1. Update the values in `config/*`, `.gitignore`, and anything else you want to customize.

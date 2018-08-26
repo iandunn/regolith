@@ -11,6 +11,10 @@ PLUGINS=$( grep 'content/plugins/' $ROOT_PATH/.gitignore |awk -F '/' '{print $5}
 THEMES=$(  grep 'content/themes/'  $ROOT_PATH/.gitignore |awk -F '/' '{print $5}' | tr '\n' ' ' )
 DEPLOYER_PATH="$ROOT_PATH/bin/deployer/deployer.phar"
 
+# Make sure folders exists
+mkdir $ROOT_PATH/logs
+mkdir $ROOT_PATH/tmp
+
 # Install Core
 if [[ ! -d $ROOT_PATH/web/wordpress ]]; then
 	echo ""

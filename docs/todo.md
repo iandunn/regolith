@@ -2,7 +2,34 @@
 
 ## High
 
-configure php error log to be outside webroot, because some hosts have insecure defaults
+
+jaquith is right, capistrano/deployer is overkill for these kinds of sites, and even for  ones bbigger than this
+	https://markjaquith.wordpress.com/2018/02/12/updating-plugins-using-git-and-wp-cli/
+	remove deployer and replace w/ simpler bash script to ssh to server and git pull
+	can do rollback to script to print last 10 commits and select 1 to rollback to
+	update install instructions, setup sample config, remove deployer stuff, merge new script/config from iandunn.localhost
+
+easy to install, just setup db, git clone, edit config and htaccess then run install script
+	automate everything else
+	update install instructions
+
+-----
+
+add phpcs.xml and phpmd.xml
+	try to just pull external
+	setup hooks
+
+port REGOLITH_MAINTENANCe_MODE from SM
+	already did? just need to commit?
+	make the content of the message a constant too, so it's in config rather than being hardcoded
+	send a 503 header to indicate temporarily unavailable
+	add note next to constant that enables, warn dev that not intended to protect sensitive content, see function doc for details 
+
+add support for clearing php OPCache during deploy
+	copy from iandunn.name
+
+
+rotate files in {root}/logs
 
 maybe integrate gravityscan
 
@@ -12,9 +39,6 @@ disable automatic upadte emails
 theme updates not installing automatically
 	maybe only on iandunn.name, but probably all of regolith
 	probably delete wordpress/wp-content/themes anyway. if want one of those themes, can add it to the normal content dir, so that they're all in one place. simpler that way
-
-why isn't content/debug.log being created?
-	want it to make sure custom mu-plugins etc don't have bugs that aren't caught via display_errors
 
 mail through smtp
 	maybe add something to regolith with best practices for setting sender, return-path, etc
@@ -75,6 +99,11 @@ log error monitoring
 		https://mmonit.com/monit/
 		https://github.com/etsy/logster
 
+write a bash script to check the PHP error log for fatal errors
+	if it detects one, it writes the current timestamp to a file in /tmp and sends an email w/ the error to alert you
+	but if the previous timestamp was less than 1 hour ago, it won't send the email, so that you only get 1 email per hour
+	then setup a unix cron job to run every minute
+	maybe not. what scenarios does this protect against that uptimemonitor + REGOLITH_CONTENT_SENSOR_FLAG doesn't?
 
 
 add support for multiple plugin directories
@@ -246,11 +275,11 @@ maybe assign `$regolith_smtp` inside a `switch() {}` so that aliases etc can eas
 
 remove overwritten symlink tasks from deploy recipe now that https://github.com/deployphp/deployer/issues/503 is fixed
 
-write a bash script to check the PHP error log for fatal errors
-	if it detects one, it writes the current timestamp to a file in /tmp and sends an email w/ the error to alert you
-	but if the previous timestamp was less than 1 hour ago, it won't send the email, so that you only get 1 email per hour
-	then setup a unix cron job to run every minute
-	maybe not. what scenarios does this protect against that uptimemonitor + REGOLITH_CONTENT_SENSOR_FLAG doesn't?
+	
+deploy task to `chmod -w config/plugins/wp-super-cache.php` so WPSC doesn't overwrite it w/ bad values. add comment to top of file explaning why its' unwritable on prod, and to chmod +w to made mods, commit changes, then chmod -w to lock them in place again
+	keep in mind migrating away from delpoyer, so wait until that's done, then add this to whatever script wraps around `git pull`
+
+
 
 ## Medium
 
@@ -261,17 +290,21 @@ maybe remove web/wordpress/wp-content folder, since can install default themes/p
 	would core re-add it, or start using web/content by default?
 	would need to remove the register_theme_directory() call in muplugin
 	yeah, probably want to do this
+	if so, then update bin/install-dependencies.sh to `rm -rf wordpress/wp-content` after the `Install Core` section
+		do it even if core is already installed, in case an update re-installs the folder. shouldn't happen but be safe
+	also remove is_core_theme() and caller in regolith-updates.php?
 
 maybe add install instructions to set file system permissions
 	could do in install-dependencies
 	maybe also set for wp mods:
 		define( 'FS_CHMOD_DIR', ( 0755 & ~ umask() ) );
 		define( 'FS_CHMOD_FILE', ( 0644 & ~ umask() ) );
+	also see w.ogr hosting best practices github article on permissions - taylor levett's github i think
 
 ship default config for more plugins
 	subscribe to comments
 	vaultpress - although merging into jetpack?
-	cloudflare - move some of it from environment.php to config/plugins/cloudflare.php? probably
+	cloudflare - move some of it from environment.php to config/plugins/cloudflare.php? probably. er, no b/c those are sensitive values?
 	wordfence
 		it turns out wordfence is... special
 		stores in custom database table, uses over-engineered set of classes to access/set
@@ -287,6 +320,8 @@ watch wptv video for https://2017.london.wordcamp.org/session/wrapping-a-modern-
 	see if want to integrate any ideas and best practices
 
 add config constant for google analytics ID, then add your mu plugin function
+	port from SM
+	
 also look at other common mu-plugins from mt cluster sites functinoality and add those
 
 get wpsc working in mod_rewrite for homepage etc, rather than just php mode
@@ -346,6 +381,11 @@ add dev environment dependenies
 setup sso for multisite?
 	https://github.com/humanmade/Mercator/blob/master/sso.php
 
+add cron job to run `wp db optimize` once a week
+	backup db first, maybe increase default # of stored backups since this'll add a lot more
+	er, maybe not -- https://www.xaprb.com/blog/2010/02/07/how-often-should-you-use-optimize-table/
+
+
 
 ## Low
 
@@ -386,11 +426,7 @@ name releases something easier to parse than the datetimestampallshovedtogetheri
 
 check that db creds are correct before running install script, otherwise errors out and have to delete wp before trying again
 
-want to do anything about logging?
-	configure logs to be in ./logs ? or at least recommend it?
-	not gonna work on shared hosting though maybe with symlinks
-	it'd be nice to have them in {root}/logs folder for quick IDE access in dev environment, but can't change apache location through htaccess
-	could put php there by ini_set() in config files, but then any errors that happened earlier would be in different log, and probably go unnoticed
+
 
 maybe create an empty `tmp | temp | temporary` folder in /
     sometimes nice to have those files easily acceessible
@@ -431,3 +467,4 @@ show active mu-plugins on indidivual site wp-admin/plugins.php pages
 
 look through https://codex.wordpress.org/User:Hakre/Technical_Installation
 	it's old, but may have some things that are still useful
+

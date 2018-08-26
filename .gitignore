@@ -2,6 +2,7 @@
 /backups
 /bin/deployer/deployer.phar
 /config/environment.php
+/logs
 
 # Inside the web root
 /web/.user.ini

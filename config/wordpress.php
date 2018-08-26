@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * Make sure this exists and is writable by PHP.
+ *
+ * Note: There's a small chance that an error will occur before this directive is set. If that happens, then the
+ * error will be logged to PHP's default `error_log` instead. If you hosting allows, you can avoid that by
+ * configuring your web server to log errors to the same file specified here.
+ */
+ini_set( 'error_log', REGOLITH_ROOT_DIR . '/logs/php-errors.log' );
+
 $table_prefix       = 'wp_';
 $document_root_path = '/web';
 $content_dir_path   = '/content';

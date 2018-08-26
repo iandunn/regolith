@@ -3,6 +3,7 @@
 /bin/deployer/deployer.phar
 /config/environment.php
 /logs
+/tmp
 
 # Inside the web root
 /web/.user.ini

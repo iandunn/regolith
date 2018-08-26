@@ -21,7 +21,7 @@ define( 'REGOLITH_DEV_NOTIFICATIONS',      'foo@example.org'            );
 define( 'REGOLITH_WP_SUPER_CACHE_SECRET',  'replace me with  strong password' );
 define( 'WPCOM_API_KEY',                   ''                           ); // Akismet API key
 define( 'REGOLITH_CLOUDFLARE_ZONE_ID',     ''                           );
-define( 'WP_TEMP_DIR',                     '/home/username/tmp'         ); // Avoid leaking data in shared /tmp. Make sure this exists and is writable by PHP.
+define( 'WP_TEMP_DIR',                     REGOLITH_ROOT_DIR . '/tmp'   ); // Avoid leaking data in shared /tmp.
 
 // https://api.wordpress.org/secret-key/1.1/salt/
 define( 'AUTH_KEY',         'put your unique phrase here' );

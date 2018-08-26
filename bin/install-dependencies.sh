@@ -20,9 +20,9 @@ if [[ ! -d $ROOT_PATH/web/wordpress ]]; then
 	echo ""
 	wp core download
 
-	# The default plugins directory isn't used by Regolith, and Core won't update it, so it'll just sit there with
-	# an old (and potentially vulnerable) version of Akismet
-	rm -rf $ROOT_PATH/web/wordpress/wp-content/plugins
+	# The default content directory isn't used by Regolith, and Core won't update it, so it'll just sit there with
+	# old (and potentially vulnerable) plugins/themes.
+	rm -rf $ROOT_PATH/web/wordpress/wp-content/
 fi
 
 wp core is-installed

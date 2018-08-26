@@ -32,11 +32,6 @@ function initialize() {
 		add_filter( 'https_local_ssl_verify', __NAMESPACE__ . '\allow_dev_network_upgrades' );
 	}
 
-	// Make bundled themes available in addition to our custom ones in web/content/themes
-	if ( ! defined( 'WP_DEFAULT_THEME' ) ) {
-	    register_theme_directory( ABSPATH . 'wp-content/themes' );
-	}
-
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		register_wp_cli_commands();
 	}

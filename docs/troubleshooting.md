@@ -9,7 +9,6 @@
 	* Make sure you can connect via SSH, e.g. `ssh -vvv git@gitlab.com`.
 	* [Some hosts block port `22` to GitLab and other platforms](https://stackoverflow.com/questions/45619796/i-cant-clone-gitlab-repo-from-siteground-ssh-session/48242510#48242510), etc. That StackOverflow thread has a solution, by using port `443` instead. That is specific to GitLab, though. Other repository hosts might not work, or might need a different solution.
 	* If you're still having trouble after verifying that you can connect with SSH, try [creating a deploy key](https://docs.gitlab.com/ce/ssh/README.html#deploy-keys) specifically for the repo and production server.
-		* This shouldn't be necessary, since Deployer is setup to forward your local credentials through SSH agent, but :shrug:.
 		* Make sure the key only has `read` access to the specific repository you need to clone, _not_ all repositories, and _not_ `write` access.
 		* **DO NOT UPLOAD YOUR PRIVATE SSH KEY TO THE PRODUCTION SERVER**. That would be akin to uploading a plain-text file with all your passwords in it.
 

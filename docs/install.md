@@ -22,17 +22,10 @@ If your host doesn't have Git or WP-CLI installed, check [the troubleshooting gu
 		1. _Warning:_ Make sure all 3rd-party plugins/themes are in .gitignore, and that no custom ones are there. See the notes in that file for details.
 1. Run `./bin/install-dependencies.sh` to install dependencies and perform other setup tasks.
 1. If you're setting up a Multisite install, run through the steps in [the Multisite installation notes](./install-multisite.md).
-1. Install the deployment wrapper script:
-	1. `cp /home/jane-development/foo.org/bin/deployer/deployer ~/bin/deployer`
-	1. `chmod +x ~/bin/deployer`
-	1. If `~/bin` isn't already in your `$PATH`, then `echo "PATH=\$PATH:~/bin" >> ~/.bash_profile`
-	1. You can now call `deployer` from any subdirectory of the site.
-1. Update the path in `web/.user-sample.ini` and copy it to `web/.user.ini`, then restart php-fpm (or wait for your host to do it automatically).
+
 1. Once you've verified that everything is setup correctly in your local environment:
     1. Run `git remote set-url origin {your_repo_url}` and commit your changes.
     1. `git push` to your site's repository.
-    1. Run `deployer -vvv deploy:prepare` to test if the connection, paths, etc are setup correctly.
-    1. Run `deployer deploy` to deploy the site to production.
     1. `ssh` to your production server and `cd` to the site's root directory (e.g., `cd /home/jane-production/foo.org`)
     1. Run `ln -snf ./current/web public_html`, so that Apache's DocumentRoot will always link to the current release's `web` folder.
         1. On many hosts, [it's important to make it a relative symlink](https://iandunn.name/trouble-symlinking-documentroot-on-shared-hosting/).
@@ -42,7 +35,13 @@ If your host doesn't have Git or WP-CLI installed, check [the troubleshooting gu
 1. Setup HTTP content sensors with a monitoring service -- like [Uptime Robot](https://uptimerobot.com/) -- to look for the value of `REGOLITH_CONTENT_SENSOR_FLAG` in `{production_domain}/wordpress/wp-login.php` and `{production_domain}/?s={timestamp}`.
 	1 The timestamp serves as a cachebuster. If the monitoring service doesn't allow timestamp tokens, then you can also use Super Cache's `donotcachepage` parameter along with the value of `REGOLITH_WP_SUPER_CACHE_SECRET`.
 
+1. From your local development environment, run `bin/deploy.sh` to deploy the site to production.
+    1. For added convenience, you can optionally add a `deploy` function to your `~/.bashrc` file, and have it automatically call the `deploy` regardless of which directory you're in. That way you don't have to specify the path to the folder. You can make it support multiple sites as well, so that you can use a single consistent command for all sites you work on, even if they use different deployment mechanisms. See [iandunn/dotfiles/.bashrc](https://github.com/iandunn/dotfiles/blob/6d02e3b774f1d34677399a7480f6726c46d90743/.bashrc#L158-L209) for an example.
+
+
 At this point, your repo is independent of Regolith. You can manually merge in updates if you want, but that isn't necessary.
+
+
 
 
 ## Troubleshooting

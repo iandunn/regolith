@@ -19,6 +19,6 @@ Update with Multisite's rewrite rules (from the Network Setup wizard).
 1. Set `$is_multisite = true`
 
 
-### config/environment.php
+### config/deploy.sh
 
-Add any extra URLs that you want to test during deployment to `$deployer_environment['additional_test_urls']`. Make sure to include a cache-busting parameter when necessary; e.g., `'https://example.org/?s=' . time()`.
+Add any extra URLs that you want to test after deployment.

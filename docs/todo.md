@@ -2,19 +2,6 @@
 
 ## High
 
-
-jaquith is right, capistrano/deployer is overkill for these kinds of sites, and even for  ones bbigger than this
-	https://markjaquith.wordpress.com/2018/02/12/updating-plugins-using-git-and-wp-cli/
-	remove deployer and replace w/ simpler bash script to ssh to server and git pull
-	can do rollback to script to print last 10 commits and select 1 to rollback to
-	update install instructions, setup sample config, remove deployer stuff, merge new script/config from iandunn.localhost
-
-easy to install, just setup db, git clone, edit config and htaccess then run install script
-	automate everything else
-	update install instructions
-
------
-
 add phpcs.xml and phpmd.xml
 	try to just pull external
 	setup hooks
@@ -26,8 +13,6 @@ port REGOLITH_MAINTENANCe_MODE from SM
 	send a 503 header to indicate temporarily unavailable
 	add note next to constant that enables, warn dev that not intended to protect sensitive content, see function doc for details 
 
-add support for clearing php OPCache during deploy
-	copy from iandunn.name
 
 
 rotate files in {root}/logs
@@ -142,10 +127,6 @@ composer
 			if not, maybe add one
 	use wporg repo directly, instead of packagist
 
-don't need wp-config symlink once 4.6?
-	https://core.trac.wordpress.org/ticket/26592
-	could remove deployer task, update config/wordpress/common to be canonical source?\
-	no, needs to be in index.php?
 
 htaccess redirect http->https doesn't work on /wordpress/wp-cron.php
 	other places its not working?
@@ -199,8 +180,6 @@ setup rewrite rules so can still access from /wp-admin ? at least seutp redirect
 
 after 2016-07-20, verify that backup is running on weekly cron job
 
-share content/cache/.htaccess and maybe a few other files so it doesn't get wiped out during deploy
-    also ! to gitignore
 
 set cache headers for browsers and cloudflare
 	6 hours for homepage and other archives
@@ -224,7 +203,6 @@ configure dev uploads to pull from production if not found
 
 maybe write script to pull db from production and import into dev
 	https://github.com/markjaquith/WP-Stack/blob/master/lib/tasks.rb
-	or deployer.phar does that?
 	what about security though? it'll contain sensitive things like password hashes that you don't want just floating around random dev environments locally
 		https://github.com/10up/wp-hammer looks nice, but it copies the db locally before pruning user pw hashes, etc, so not great for security/privacy
 	add to readme?
@@ -247,7 +225,7 @@ setup pre-deploy hook to run any automated tests that are available?
 themes still messed up on production
 	maybe deploy problem?
 	there's some internal caching that makes it hard to test
-	i htink it'd be fixed if i installed a theme, added it to shared, then deployed, but something about having no extra themes makes it fail
+	i htink it'd be fixed if i installed a theme, then deployed, but something about having no extra themes makes it fail
 	not mvp, because your sites have custom themes. just add simone as part of install and fix later
 	when this is fixed, probably best to remove simone b/c don't actually use it
 symlink for simone not being created properly on production
@@ -274,7 +252,6 @@ setup file backups
 
 maybe assign `$regolith_smtp` inside a `switch() {}` so that aliases etc can easily reuse creds
 
-remove overwritten symlink tasks from deploy recipe now that https://github.com/deployphp/deployer/issues/503 is fixed
 
 	
 deploy task to `chmod -w config/plugins/wp-super-cache.php` so WPSC doesn't overwrite it w/ bad values. add comment to top of file explaning why its' unwritable on prod, and to chmod +w to made mods, commit changes, then chmod -w to lock them in place again
@@ -284,7 +261,6 @@ deploy task to `chmod -w config/plugins/wp-super-cache.php` so WPSC doesn't over
 
 ## Medium
 
-add support for deploying to ssh ports other than 22. already done for silencedmajority.org, just need to port/test
 
 maybe remove web/wordpress/wp-content folder, since can install default themes/plugins in web/content if really want them
 	could be nice to avoid issues w/ bundled themes/plugins not being updated b/c bugs?
@@ -345,19 +321,8 @@ reconsider environmental variables for environment config
 	could use apache `SetEnv WP_ENV production` in the dir above the folder where regolith is cloned
 	how to get that to work automatically with wpcli?
 
-update deployer download to use ssl when available
-	https://github.com/deployphp/deployer/issues/700
-
-should install deployer.phar to ~/bin instead of site_root/bin, b/c don't need 5 copies of it if have 5 sites
-	need to update how deployer() detects current config folder
-also want to install deployer alias script to ~/bin
-
 setup a /monitor (or whatever) rewrite endpoint that sends nocache_headers, and update monitors to hit that
 	neceessary b/c uptimerobot doesn't support cachebusters, so it's just hitting cloudflare for front-end checks
-
-how to handle deploy when changes need to be made to environment.php?
-what about when add new shared files? need to commit+deploy updated recipe before commit+deploy other?
-	maybe fine now that running install_dependencies.sh after deploy?
 
 wp super cache
 	after deploys
@@ -394,21 +359,10 @@ maybe setup calvalcade, but probably not a clear benefit for this type of site
 
 monitoring flag should be later. right now there are things like admin bar running after it, which would break and wouldn't be detected
 
-if multisite, maybe automatically add front- and back-end url for each site to smoke:tests
-	would be too much if had lots of sites
-		could maybe cap it at 3 sites chosen by random
-		and then user could still add extra ones in $deployer_environment if they wanted to
-
 maybe have a 'ongoing maintenance' section in docs
 	talks about things like adding new dependencies after install - careful b/c of note in .gitignore
 
 send PR to subscribe-to-comments to fix php warnings/notices
-
-add deploy task to ping slack channel
-	already exists, just set it up and have it disabled by default
-	https://github.com/deployphp/recipes/blob/bdcf49f8e409971b79583aeed618aa87ae714f93/docs/slack.md
-	need to pull that library into bin/deployer/recipes or something, and keep updated
-		maybe another reason to switch to composer? see other tasks
 
 don't need to set ABSPATH in config/wordpress/common.php?
 	always set by wp-load.php?
@@ -421,9 +375,6 @@ why checking wp_default_theme in mu-plugins/0-bedrock.php?
     never had problems without that, unless that's why wp-cli would install things to the core folder
     if that was the cause, then update the issue just for anyone else that runs into it
 	https://github.com/wp-cli/wp-cli/issues/1139
-
-name releases something easier to parse than the datetimestampallshovedtogetherintoanunreadablemess
-	doesn't look like that's possible with deployer?
 
 check that db creds are correct before running install script, otherwise errors out and have to delete wp before trying again
 

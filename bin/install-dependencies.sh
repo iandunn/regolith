@@ -9,11 +9,12 @@ ROOT_PATH=$( dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) )
 ENVIRONMENT=$( grep 'REGOLITH_ENVIRONMENT' $ROOT_PATH/config/environment.php | awk -F "'" '{print $4}' )
 PLUGINS=$( grep 'content/plugins/' $ROOT_PATH/.gitignore |awk -F '/' '{print $5}' | tr '\n' ' ' )
 THEMES=$(  grep 'content/themes/'  $ROOT_PATH/.gitignore |awk -F '/' '{print $5}' | tr '\n' ' ' )
-DEPLOYER_PATH="$ROOT_PATH/bin/deployer/deployer.phar"
+
+cd $ROOT_PATH
 
 # Setup untracked files and folders
-mkdir $ROOT_PATH/tmp
-mkdir $ROOT_PATH/logs
+mkdir -p $ROOT_PATH/tmp
+mkdir -p $ROOT_PATH/logs
 touch $ROOT_PATH/logs/httpd-access.log
 touch $ROOT_PATH/logs/httpd-errors.log
 touch $ROOT_PATH/logs/php-errors.log
@@ -32,6 +33,13 @@ wp core is-installed
 if [[ $? -eq 1 ]]; then
 	echo -e "\nSetting up database tables. Enter site values:"
 	wp core install --prompt --skip-email
+
+	# Activate whatever theme is available, since the bundled themes were deleted above.
+	# Otherwise the user will get a confusing blank page on the front end, but no errors.
+	wp theme activate $(wp theme list --format=csv |awk 'NR==2' |awk -F ',' '{print $1}')
+
+	# This is required in order to make the REST API (and Regolith's endpoints) work.
+	wp option update permalink_structure "/%postname%/"
 fi
 
 # Install plugins/themes
@@ -39,14 +47,3 @@ echo ""
 wp plugin install $PLUGINS
 echo ""
 wp theme install $THEMES
-
-# Install Deployer
-if [[ 'development' = $ENVIRONMENT && ! -f $DEPLOYER_PATH ]]; then
-	echo "Downloading Deployer..."
-	curl -L --output $DEPLOYER_PATH --progress-bar https://deployer.org/releases/v4.3.1/deployer.phar
-	chmod +x $DEPLOYER_PATH
-fi
-
-# Update Git submodules
-git submodule init
-git submodule update --remote

@@ -21,7 +21,7 @@ define( 'REGOLITH_DEV_NOTIFICATIONS',      'foo@example.org'            );
 define( 'REGOLITH_WP_SUPER_CACHE_SECRET',  'replace me with  strong password' );
 define( 'WPCOM_API_KEY',                   ''                           ); // Akismet API key
 define( 'REGOLITH_CLOUDFLARE_ZONE_ID',     ''                           );
-define( 'WP_TEMP_DIR',                     REGOLITH_ROOT_DIR . '/tmp'   ); // Avoid leaking data in shared /tmp.
+define( 'REGOLITH_OPCACHE_RESET_KEY',      ''                           );
 
 // https://api.wordpress.org/secret-key/1.1/salt/
 define( 'AUTH_KEY',         'put your unique phrase here' );
@@ -32,27 +32,3 @@ define( 'AUTH_SALT',        'put your unique phrase here' );
 define( 'SECURE_AUTH_SALT', 'put your unique phrase here' );
 define( 'LOGGED_IN_SALT',   'put your unique phrase here' );
 define( 'NONCE_SALT',       'put your unique phrase here' );
-
-/*
- * Deployer configuration is common to all environments, but the values are potentially sensitive, so we don't
- * want them tracked in Git.
- *
- * Exposing `deploy_path` would be path disclosure, and exposing the origin IP would help attackers bypass
- * CloudFlare. It's not possible to setup Origin Pull Authentication on shared hosting, so a little obscurity
- * is ok here.
- */
-$deployer_environment = array(
-	'repository' => 'git@gitlab.com:username/regolith-production.net.git',
-
-	'servers' => array(
-		'production' => array(
-			'ssh_hostname' => 'regolith-production.net',
-			'url'         => 'https://regolith-production.net',
-			'origin_ip'   => '',    // If using an HTTP proxy like CloudFlare, enter your origin server IP. Otherwise, leave blank.
-			'username'    => 'regolith',
-			'deploy_path' => '/var/www/regolith-production.net',
-		),
-	),
-
-	'additional_test_urls' => array(),
-);

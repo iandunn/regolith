@@ -36,6 +36,7 @@ if ( $is_multisite ) {
 }
 
 define( 'REGOLITH_BACKUP_DIR', REGOLITH_ROOT_DIR . '/backups'                              );
+define( 'WP_TEMP_DIR',         REGOLITH_ROOT_DIR . '/tmp'                                  ); // Avoid leaking data in shared /tmp.
 define( 'WP_SITEURL',          WP_HOME . '/wordpress'                                      );
 define( 'WP_CONTENT_DIR',      REGOLITH_ROOT_DIR . $document_root_path . $content_dir_path );
 define( 'WPCACHEHOME',         WP_CONTENT_DIR . '/plugins/wp-super-cache/'                 );
@@ -75,7 +76,3 @@ unset( $document_root_path    );
 unset( $content_dir_path      );
 unset( $is_multisite          );
 unset( $safe_server_name      );
-
-if ( ! class_exists( '\Deployer\Deployer' ) ) {
-	unset( $deployer_environment );
-}

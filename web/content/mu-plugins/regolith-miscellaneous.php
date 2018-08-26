@@ -9,6 +9,8 @@ Author URI:  https://iandunn.name
 */
 
 namespace Regolith\Miscellaneous;
+use WP_Error, WP_REST_Request;
+
 defined( 'WPINC' ) or die();
 
 add_filter( 'xmlrpc_enabled', '__return_false' );   // Disable for security -- http://core.trac.wordpress.org/ticket/21509#comment:5
@@ -16,6 +18,7 @@ add_filter( 'xmlrpc_enabled', '__return_false' );   // Disable for security -- h
 add_action( 'init',                       __NAMESPACE__ . '\schedule_cron_jobs'             );
 add_filter( 'cron_schedules',             __NAMESPACE__ . '\add_cron_schedules'             );
 add_action( 'regolith_backup_database',   __NAMESPACE__ . '\backup_database'                );
+add_action( 'rest_api_init',              __NAMESPACE__ . '\register_rest_routes'           );
 add_action( 'wp_head',                    __NAMESPACE__ . '\google_analytics'               );
 add_action( 'wp_footer',                  __NAMESPACE__ . '\content_sensor_flag',       999 );
 add_action( 'login_footer',               __NAMESPACE__ . '\content_sensor_flag',       999 );
@@ -56,6 +59,48 @@ function schedule_cron_jobs() {
  */
 function backup_database() {
 	shell_exec( 'wp regolith backup-database' );
+}
+
+
+/**
+ * Register routes for the REST API.
+ */
+function register_rest_routes() {
+	register_rest_route( 'regolith/v1', '/reset_opcache', array(
+		'methods'  => 'POST',
+		'callback' => __NAMESPACE__ . '\reset_opcache',
+	) );
+}
+
+/**
+ * Reset OPCache.
+ *
+ * This is a REST API endpoint because `opcache_reset()` must be called via php-fpm, because OPCache is not
+ * enabled in CLI mode.
+ *
+ * @param WP_REST_Request $request
+ *
+ * @return string|WP_Error
+ */
+function reset_opcache( $request ) {
+	// Require a valid authorization token, to prevent this being used in a DDoS attack.
+	if ( empty( REGOLITH_OPCACHE_RESET_KEY ) || REGOLITH_OPCACHE_RESET_KEY !== $request->get_header( 'X-Regolith-Authorization' ) ) {
+		return new WP_Error( 'invalid_key', 'Authorization key invalid.' );
+	}
+
+	if ( ! function_exists( 'opcache_reset' ) ) {
+		return new WP_Error( 'php_old', 'Your version of PHP is too old to have OPCache.' );
+	}
+
+	if ( ! ini_get( 'opcache.enable' ) ) {
+		return new WP_Error( 'opcache_disabled', 'OPCache is not enabled on this server.' );
+	}
+
+	if ( opcache_reset() ) {
+		return 'success';
+	} else {
+		return new WP_Error( 'reset_failed', 'Failed to reset OPCache.' );
+	}
 }
 
 /**

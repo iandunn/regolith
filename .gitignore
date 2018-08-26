@@ -1,6 +1,5 @@
 # Outside the web root
 /backups
-/bin/deployer/deployer.phar
 /config/environment.php
 /logs
 /tmp

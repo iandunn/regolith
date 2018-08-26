@@ -4,7 +4,7 @@
 
 ![Screenshot of the files pane within a PhpStorm project](images/folder-structure.png)
 
-## Deploying with [Deployer](http://deployer.org)
+## Deploying
 
 ![Screenshot of a terminal with the output from the deployment command](images/deploying.png)
 

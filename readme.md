@@ -10,7 +10,7 @@ Regolith is a WordPress installation template that employs best practices, but i
 * Manage 3rd party plugin/theme dependencies with a simple text file and [WP-CLI](http://wp-cli.org/)
 	* The list of dependencies is tracked in Git, but their code is not, so your repository stays lean and uncluttered
 * Core/plugin/theme updates are installed automatically every hour (including major releases of Core)
-* Deploy to production with [Deployer](http://deployer.org), and immediately run smoke tests to catch fatal errors
+* Deploy to production with a simple shell script, which automatically backs up the database, pulls the latest Git commits, purges caches, and runs smoke tests to catch fatal errors.
 * Automatically backup production database on a customizable schedule, and before every deployment
 * Support for bin scripts and custom WP-CLI commands
 * Outputs a content flag designed for external monitoring services

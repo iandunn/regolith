@@ -14,9 +14,13 @@ WP_CLI::add_command( 'regolith purge-cloudflare-cache', __NAMESPACE__ . '\purge_
  * @param array $args
  * @param array $assoc_args
  */
-function purge_cloudflare_cache( $args ) {
+function purge_cloudflare_cache( $args, $assoc_args ) {
 	if ( ! is_plugin_active( 'cloudflare/cloudflare.php' ) ) {
-		WP_CLI::error( 'The CloudFlare plugin must be installed and configured.' );
+		WP_CLI::error( 'The CloudFlare plugin must be activated.' );
+	}
+
+	if ( ! get_option( 'cloudflare_api_email' ) || ! get_option( 'cloudflare_api_key' ) ) {
+		WP_CLI::error( 'The CloudFlare plugin must be configured with an email address and API key.' );
 	}
 
 	$url = sprintf(
@@ -45,7 +49,7 @@ function purge_cloudflare_cache( $args ) {
 	$body = json_decode( wp_remote_retrieve_body( $response ) );
 
 	if ( isset( $body->success ) && true === $body->success ) {
-		WP_CLI::success( 'Purged the cache successfully.' );
+		WP_CLI::success( 'Purged CloudFlare cache successfully.' );
 		return;
 	}
 

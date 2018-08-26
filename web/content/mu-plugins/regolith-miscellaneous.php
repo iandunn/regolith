@@ -95,7 +95,7 @@ function google_analytics() {
  * When making requests to the front-end, service should add a cachebuster to the URL, like /?s={timestamp}
  */
 function content_sensor_flag() {
-	printf( '<!-- %s -->', \REGOLITH_CONTENT_SENSOR_FLAG );
+	printf( '<!-- %s -->', REGOLITH_CONTENT_SENSOR_FLAG );
 }
 
 /**

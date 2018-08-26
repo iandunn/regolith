@@ -18,6 +18,7 @@ easy to install, just setup db, git clone, edit config and htaccess then run ins
 add phpcs.xml and phpmd.xml
 	try to just pull external
 	setup hooks
+	run phpcs and phpmd over the regolith code
 
 port REGOLITH_MAINTENANCe_MODE from SM
 	already did? just need to commit?
@@ -425,7 +426,6 @@ name releases something easier to parse than the datetimestampallshovedtogetheri
 	doesn't look like that's possible with deployer?
 
 check that db creds are correct before running install script, otherwise errors out and have to delete wp before trying again
-
 
 
 maybe create an empty `tmp | temp | temporary` folder in /

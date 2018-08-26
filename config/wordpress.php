@@ -52,7 +52,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __DIR__ ) . "$document_root_path/wordpress/" );
 }
 
-switch( REGOLITH_ENVIRONMENT ) {
+switch ( REGOLITH_ENVIRONMENT ) {
 	case 'development':
 		define( 'SAVEQUERIES',     true );
 		define( 'WP_DEBUG',        true );

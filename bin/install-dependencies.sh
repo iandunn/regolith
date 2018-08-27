@@ -20,7 +20,7 @@ touch $ROOT_PATH/logs/httpd-errors.log
 touch $ROOT_PATH/logs/php-errors.log
 
 # Install Core
-if [[ ! -d $ROOT_PATH/web/wordpress ]]; then
+if [[ ! -d $ROOT_PATH/web/wordpress/wp-admin ]]; then
 	echo ""
 	wp core download
 

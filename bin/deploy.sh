@@ -1,7 +1,7 @@
 #!/bin/bash
 
 COLOR_BAD='\033[0;31m'  # red
-COLOR_GOOD='\033[0;92m' #green
+COLOR_GOOD='\033[0;92m' # green
 COLOR_RESET='\033[0m'
 REGOLITH_DIR="$( dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd ) )"
 
@@ -15,7 +15,8 @@ function update_git_checkout() {
 	if [[ $git_result = *"master is up to date"* ]] || [[ $git_result = *"Fast-forwarded master to"* ]]; then
 		printf "${COLOR_GOOD}Success:${COLOR_RESET} Git checkout has been updated.\n"
 	else
-		printf "${COLOR_BAD}ERROR:${COLOR_RESET} Could not update Git checkout.\n"
+		printf "${COLOR_BAD}ERROR:${COLOR_RESET} Could not update Git checkout. Aborting deployment.\n"
+		exit 1
 	fi
 }
 

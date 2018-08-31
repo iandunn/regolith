@@ -6,6 +6,7 @@
 
 # Inside the web root
 /web/.user.ini
+/web/.well-known
 /web/content/cache
 /web/content/upgrade
 /web/content/uploads

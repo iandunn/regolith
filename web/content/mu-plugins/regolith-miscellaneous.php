@@ -19,6 +19,7 @@ add_action( 'init',                       __NAMESPACE__ . '\schedule_cron_jobs' 
 add_filter( 'cron_schedules',             __NAMESPACE__ . '\add_cron_schedules'             );
 add_action( 'regolith_backup_database',   __NAMESPACE__ . '\backup_database'                );
 add_action( 'rest_api_init',              __NAMESPACE__ . '\register_rest_routes'           );
+add_action( 'template_redirect',          __NAMESPACE__ . '\coming_soon_page'               );
 add_action( 'wp_head',                    __NAMESPACE__ . '\google_analytics'               );
 add_action( 'wp_footer',                  __NAMESPACE__ . '\content_sensor_flag',       999 );
 add_action( 'login_footer',               __NAMESPACE__ . '\content_sensor_flag',       999 );
@@ -100,6 +101,24 @@ function reset_opcache( $request ) {
 	} else {
 		return new WP_Error( 'reset_failed', 'Failed to reset OPCache.' );
 	}
+}
+
+/**
+ * Show a "undergoing maintenance" page to logged-out visitors.
+ *
+ * This can be used when you're first setting up a site, or performing maintenance and don't want regular visitors
+ * seeing the site. Logged-out visitors will see this page instead of the normal site, but users can still log in
+ * and view the site normally.
+ *
+ * _WARNING_: This doesn't block RSS feeds, the REST API, etc. It's not meant to prevent a determined person from seeing
+ * content, just as a simple cosmetic block.
+ */
+function coming_soon_page() {
+	if ( ! REGOLITH_MAINTENANCE_MODE || current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	wp_die( REGOLITH_MAINTENANCE_MODE_MESSAGE );
 }
 
 /**

@@ -19,10 +19,10 @@ define( 'DB_USER',    'username'           );
 define( 'DB_CHARSET', 'utf8mb4'            );
 define( 'DB_COLLATE', 'utf8mb4_unicode_ci' );
 
-if ( $is_multisite ) {
-	$safe_server_name = isset( $_SERVER['SERVER_NAME'] ) ? $_SERVER['SERVER_NAME'] : parse_url( WP_HOME, PHP_URL_HOST );
-	$safe_server_name = preg_replace( '[^\w\-.]', '', $safe_server_name ); // See footnote in https://stackoverflow.com/a/6474936/450127
+$safe_server_name = $_SERVER['SERVER_NAME'] ?? parse_url( WP_HOME, PHP_URL_HOST );
+$safe_server_name = preg_replace( '[^\w\-.]', '', $safe_server_name ); // See footnote in https://stackoverflow.com/a/6474936/450127
 
+if ( $is_multisite ) {
 	define( 'WP_CONTENT_URL',       'https://' . $safe_server_name . $content_dir_path );
 	define( 'MULTISITE',            true                                               );
 	define( 'SUBDOMAIN_INSTALL',    true                                               );
@@ -48,6 +48,14 @@ define( 'REGOLITH_CONTENT_SENSOR_FLAG', 'Monitor-WP-OK'  );
 define( 'REGOLITH_BACKUP_INTERVAL',     60 * 60 * 24 * 7 ); // in seconds
 define( 'REGOLITH_BACKUPS_TO_KEEP',     50               ); // includes scheduled backups and backups made before every deployment
 define( 'REGOLITH_GOOGLE_ANALYTICS_ID', 'UA-000000000-0' );
+define( 'REGOLITH_MAINTENANCE_MODE',    false            ); // Note: This is not intended to hide content. See `Regolith\Miscellaneous\coming_soon_page()` for details.
+
+define( 'REGOLITH_MAINTENANCE_MODE_MESSAGE', sprintf( '
+	<p>%s is currently undergoing maintenance, but please check back soon.</p>
+	<!-- %s -->',
+	$safe_server_name,
+	REGOLITH_CONTENT_SENSOR_FLAG
+) );
 
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __DIR__ ) . "$document_root_path/wordpress/" );

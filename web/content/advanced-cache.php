@@ -15,7 +15,7 @@ function wpcache_broken_message() {
 
 	$skip_output = ( $doing_ajax || $xmlrpc_request || $rest_request || $robots_request );
 	if ( false == strpos( $_SERVER['REQUEST_URI'], 'wp-admin' ) && ! $skip_output ) {
-		echo "<!-- WP Super Cache is installed but broken. The constant WPCACHEHOME must be set in the file wp-config.php and point at the WP Super Cache plugin directory. -->";
+		echo '<!-- WP Super Cache is installed but broken. The constant WPCACHEHOME must be set in the file wp-config.php and point at the WP Super Cache plugin directory. -->';
 	}
 }
 
@@ -30,5 +30,3 @@ if ( false == defined( 'WPCACHEHOME' ) ) {
 if ( defined( 'ADVANCEDCACHEPROBLEM' ) ) {
 	register_shutdown_function( 'wpcache_broken_message' );
 }
-
-?>

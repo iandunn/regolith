@@ -4,7 +4,7 @@
  * Make sure this exists and is writable by PHP.
  *
  * Note: There's a small chance that an error will occur before this directive is set. If that happens, then the
- * error will be logged to PHP's default `error_log` instead. If you hosting allows, you can avoid that by
+ * error will be logged to PHP's default `error_log` instead. If your host allows, you can avoid that by
  * configuring your web server to log errors to the same file specified here.
  */
 ini_set( 'error_log', REGOLITH_ROOT_DIR . '/logs/php-errors.log' );
@@ -35,9 +35,9 @@ if ( $is_multisite ) {
 	define( 'WP_CONTENT_URL', WP_HOME . $content_dir_path );
 }
 
+define( 'WP_SITEURL',          WP_HOME . '/wordpress'                                      );
 define( 'REGOLITH_BACKUP_DIR', REGOLITH_ROOT_DIR . '/backups'                              );
 define( 'WP_TEMP_DIR',         REGOLITH_ROOT_DIR . '/tmp'                                  ); // Avoid leaking data in shared /tmp.
-define( 'WP_SITEURL',          WP_HOME . '/wordpress'                                      );
 define( 'WP_CONTENT_DIR',      REGOLITH_ROOT_DIR . $document_root_path . $content_dir_path );
 define( 'WPCACHEHOME',         WP_CONTENT_DIR . '/plugins/wp-super-cache/'                 );
 

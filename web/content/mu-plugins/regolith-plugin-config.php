@@ -25,10 +25,10 @@ defined( 'WPINC' ) or die();
 require_once( REGOLITH_ROOT_DIR . '/config/plugins/google-auth-eua.php'         );
 require_once( REGOLITH_ROOT_DIR . '/config/plugins/login-security-solution.php' );
 
-add_action( 'muplugins_loaded', __NAMESPACE__ . '\override_individual_settings'   );
+add_action( 'muplugins_loaded', __NAMESPACE__ . '\override_individual_settings' );
 
-add_filter( 'pre_option_gaeua_settings',                  'Regolith\Google_Auth_EUA\get_settings'          );
-add_filter( 'pre_option_login-security-solution-options', 'Regolith\Login_Security_Solution\get_settings'  );
+add_filter( 'pre_option_gaeua_settings',                  'Regolith\Google_Auth_EUA\get_settings'         );
+add_filter( 'pre_option_login-security-solution-options', 'Regolith\Login_Security_Solution\get_settings' );
 
 
 /**

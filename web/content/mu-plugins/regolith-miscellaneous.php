@@ -9,7 +9,7 @@ Author URI:  https://iandunn.name
 */
 
 namespace Regolith\Miscellaneous;
-use WP_Error, WP_REST_Request;
+use WP_Error, WP_REST_Request, WP_Admin_Bar;
 
 defined( 'WPINC' ) or die();
 
@@ -47,11 +47,11 @@ function add_cron_schedules( $schedules ) {
  * Schedule WP-Cron jobs
  */
 function schedule_cron_jobs() {
-	if ( 'production' === REGOLITH_ENVIRONMENT ) {
-		if ( ! wp_next_scheduled( 'regolith_backup_database' ) ) {
-			wp_schedule_event( time(), 'regolith_backup', 'regolith_backup_database' );
-		}
+	if ( 'production' !== REGOLITH_ENVIRONMENT || wp_next_scheduled( 'regolith_backup_database' ) ) {
+		return;
 	}
+
+	wp_schedule_event( time(), 'regolith_backup', 'regolith_backup_database' );
 }
 
 /**
@@ -60,7 +60,6 @@ function schedule_cron_jobs() {
 function backup_database() {
 	shell_exec( 'wp regolith backup-database' );
 }
-
 
 /**
  * Register routes for the REST API.
@@ -129,7 +128,6 @@ function google_analytics() {
 	<?php
 }
 
-
 /**
  * Add a flag at the end of the page for external monitoring services to check
  *
@@ -137,7 +135,8 @@ function google_analytics() {
  * Apache and MySQL are available, and that there were no fatal PHP errors while rendering the page. Based on
  * that, we can assume that everything is ok.
  *
- * When making requests to the front-end, service should add a cachebuster to the URL, like /?s={timestamp}
+ * When making requests to the front-end, the monitoring service should add a cachebuster to the URL, like
+ * `/?s={timestamp}`.
  */
 function content_sensor_flag() {
 	printf( '<!-- %s -->', REGOLITH_CONTENT_SENSOR_FLAG );
@@ -149,7 +148,7 @@ function content_sensor_flag() {
  * This helps increase awareness of the current environment, to make it less likely that someone will
  * accidentally modify content on production that they meant to modify in a development environment.
  *
- * @param \WP_Admin_Bar $admin_bar
+ * @param WP_Admin_Bar $admin_bar
  */
 function admin_bar_environment( $admin_bar ) {
 	if ( ! is_super_admin() ) {

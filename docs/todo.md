@@ -2,6 +2,8 @@
 
 ## High
 
+setup google analyhtics array for multisite support, rather than constant for only 1 site
+
 add phpcs.xml and phpmd.xml
 	try to just pull external
 	setup hooks

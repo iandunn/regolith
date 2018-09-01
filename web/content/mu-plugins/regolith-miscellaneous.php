@@ -118,7 +118,7 @@ function coming_soon_page() {
 		return;
 	}
 
-	wp_die( REGOLITH_MAINTENANCE_MODE_MESSAGE );
+	wp_die( REGOLITH_MAINTENANCE_MODE_MESSAGE, 'Undergoing maintenance', array( 'response' => 503 ) );
 }
 
 /**

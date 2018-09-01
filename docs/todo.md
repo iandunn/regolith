@@ -2,20 +2,17 @@
 
 ## High
 
+performance http headers
+	run Page Speed and other tests against iandunn.name to see what they recommend
+
+
+
 setup google analyhtics array for multisite support, rather than constant for only 1 site
 
 add phpcs.xml and phpmd.xml
 	try to just pull external
 	setup hooks
 	run phpcs and phpmd over the regolith code
-
-port REGOLITH_MAINTENANCe_MODE from SM
-	already did? just need to commit?
-	make the content of the message a constant too, so it's in config rather than being hardcoded
-	send a 503 header to indicate temporarily unavailable
-	add note next to constant that enables, warn dev that not intended to protect sensitive content, see function doc for details 
-
-
 
 rotate files in {root}/logs
 

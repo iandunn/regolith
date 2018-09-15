@@ -5,28 +5,28 @@
 # Updates are handled by Core's auto-update mechanism.
 #
 
-ROOT_PATH=$( dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) )
-ENVIRONMENT=$( grep 'REGOLITH_ENVIRONMENT' $ROOT_PATH/config/environment.php | awk -F "'" '{print $4}' )
-PLUGINS=$( grep 'content/plugins/' $ROOT_PATH/.gitignore |awk -F '/' '{print $5}' | tr '\n' ' ' )
-THEMES=$(  grep 'content/themes/'  $ROOT_PATH/.gitignore |awk -F '/' '{print $5}' | tr '\n' ' ' )
+REGOLITH_DIR=$( dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd ) )
+ENVIRONMENT=$( grep 'REGOLITH_ENVIRONMENT' $REGOLITH_DIR/config/environment.php | awk -F "'" '{print $4}' )
+PLUGINS=$( grep 'content/plugins/' $REGOLITH_DIR/.gitignore |awk -F '/' '{print $5}' | tr '\n' ' ' )
+THEMES=$(  grep 'content/themes/'  $REGOLITH_DIR/.gitignore |awk -F '/' '{print $5}' | tr '\n' ' ' )
 
-cd $ROOT_PATH
+cd $REGOLITH_DIR
 
 # Setup untracked files and folders
-mkdir -p $ROOT_PATH/tmp
-mkdir -p $ROOT_PATH/logs
-touch $ROOT_PATH/logs/httpd-access.log
-touch $ROOT_PATH/logs/httpd-errors.log
-touch $ROOT_PATH/logs/php-errors.log
+mkdir -p $REGOLITH_DIR/tmp
+mkdir -p $REGOLITH_DIR/logs
+touch $REGOLITH_DIR/logs/httpd-access.log
+touch $REGOLITH_DIR/logs/httpd-errors.log
+touch $REGOLITH_DIR/logs/php-errors.log
 
 # Install Core
-if [[ ! -d $ROOT_PATH/web/wordpress/wp-admin ]]; then
+if [[ ! -d $REGOLITH_DIR/web/wordpress/wp-admin ]]; then
 	echo ""
 	wp core download
 
 	# The default content directory isn't used by Regolith, and Core won't update it, so it'll just sit there with
 	# old (and potentially vulnerable) plugins/themes.
-	rm -rf $ROOT_PATH/web/wordpress/wp-content/
+	rm -rf $REGOLITH_DIR/web/wordpress/wp-content/
 fi
 
 wp core is-installed

@@ -1,8 +1,9 @@
 <?php
 
 namespace Regolith\Backup_Database;
+use WP_CLI;
 
-\WP_CLI::add_command( 'regolith backup-database', __NAMESPACE__ . '\backup_database' );
+WP_CLI::add_command( 'regolith backup-database', __NAMESPACE__ . '\backup_database' );
 
 /**
  * Backup the database
@@ -15,9 +16,9 @@ namespace Regolith\Backup_Database;
 function backup_database( $args ) {
 	$backup_file = sprintf( '%s/%s-%s.sql', REGOLITH_BACKUP_DIR, DB_NAME, time() );
 
-	\WP_CLI::launch( 'mkdir -p ' . escapeshellarg( REGOLITH_BACKUP_DIR ) );
-	\WP_CLI::run_command( array( 'db', 'export',   $backup_file        ) );
-	\WP_CLI::launch( 'gzip '     . escapeshellarg( $backup_file        ) );
+	WP_CLI::launch( 'mkdir -p ' . escapeshellarg( REGOLITH_BACKUP_DIR ) );
+	WP_CLI::run_command( array( 'db', 'export',   $backup_file        ) );
+	WP_CLI::launch( 'gzip '     . escapeshellarg( $backup_file        ) );
 
 	rotate_files( REGOLITH_BACKUP_DIR );
 }
@@ -39,5 +40,5 @@ function rotate_files( $backup_folder ) {
 	 * Don't exit on failure, because `xargs` passes an empty string to `rm` when there aren't
 	 * REGOLITH_BACKUPS_TO_KEEP files yet, causing `rm` to fail. That's expected behavior.
 	 */
-	\WP_CLI::launch( $rotate_command, false );
+	WP_CLI::launch( $rotate_command, false );
 }

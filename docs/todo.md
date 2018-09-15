@@ -2,10 +2,17 @@
 
 ## High
 
+maybe fork wp-hammer if it's not being maintained, but chat w/ 10up first to see if anyone else there is interested in maintaining it, or if i can help
+
+add multisite support to bin/sync-production-data
+	add multisite support to wp-hammer
+	local site_meta_safelist=" 'site_name', 'admin_email', 'admin_user_id', 'db_version', 'home', 'registration', 'upload_filetypes', 'blog_upload_space', 'fileupload_maxk', 'siteurl', 'site_admins', 'allowedthemes', 'illegal_names', 'wpmu_upgrade_site', 'welcome_email', 'first_post', 'add_new_users', 'upload_space_check_disabled', 'subdomain_install', 'global_terms_enabled', 'ms_files_rewriting', 'initial_db_version', 'active_sitewide_plugins', 'WPLANG', 'can_compress_scripts', 'welcome_user_email' "
+	wp db query "DELETE FROM $(wp db prefix)sitemeta WHERE option_name NOT IN ( $site_meta_safelist ) "
+	wp db query "TRUNCATE $(wp db prefix)registration_log "
+	loop through all site options, comments, etc tables and run all these queries
+
 performance http headers
 	run Page Speed and other tests against iandunn.name to see what they recommend
-
-
 
 setup google analyhtics array for multisite support, rather than constant for only 1 site
 
@@ -191,27 +198,6 @@ send these headers?
 	X-Content-Type-Options
 	Content-Security-Policy
 	also ones recommended by https://securityheaders.io/ and https://observatory.mozilla.org/
-
-during first install on production, deployer creates the wordpress folder, so wp-cli doesn't install wp, then rest of script fails
-	maybe just use --force param
-
-configure dev uploads to pull from production if not found
-	don't need to b/c db points to those urls anyway?
-	add to readme?
-	jaquith's WP Stack has something you can copy?
-
-maybe write script to pull db from production and import into dev
-	https://github.com/markjaquith/WP-Stack/blob/master/lib/tasks.rb
-	what about security though? it'll contain sensitive things like password hashes that you don't want just floating around random dev environments locally
-		https://github.com/10up/wp-hammer looks nice, but it copies the db locally before pruning user pw hashes, etc, so not great for security/privacy
-	add to readme?
-
-
-	build a script to pull prod database into dev environment
-		need to change passwords to 'password' to avoid exposing them in a less secure environment
-		maybe change emails too to avoid accidentally sending messages to real users from dev if mailhog isn't setup, but already have mu-plugin to prevent that, so probalgby fine
-		need to change urls from foo.org to foo.localhost
-			maybe have config var to define `$dev_tld = 'localhost'` to assist with that
 
 setup pre-commit hook for codesniffer, pre-release for phpmd?
 	needs to be setup server-side for proper enforcement?
@@ -418,3 +404,6 @@ show active mu-plugins on indidivual site wp-admin/plugins.php pages
 look through https://codex.wordpress.org/User:Hakre/Technical_Installation
 	it's old, but may have some things that are still useful
 
+look into maybe using https://www.vaultproject.io/ to store user wp-config secrets instead of files
+	can install it on shared hosting? probalby in ~ dir
+	probably too much effort for too little reward

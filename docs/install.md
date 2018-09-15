@@ -2,7 +2,9 @@
 
 * Regolith is designed to work with **Apache**, but Nginx will also work fine with some minimal modifications.
 * You'll also need **SSH access** to your production server.
-* **Git** and **WP-CLI** must be installed in all environments.
+* **Git** and **WP-CLI** must be installed in all environments. If they're not installed on production, but you do have SSH access, then you can probably install them manually inside your home directory.
+* **PHP 7.0+**. If you can't use that, you could make some minor code changes to make it compatible with PHP 5.3.
+* Unix-based operating systems (Linux, OS X, etc) in all environments. It may be possible to run on Windows with Cygwin, but I haven't tested it.
 
 If your host doesn't have Git or WP-CLI installed, check [the troubleshooting guide](./troubleshooting.md).
 
@@ -41,6 +43,10 @@ If you run into any problems, check [the troubleshooting guide](./troubleshootin
 ### Setup Production Environment
 
 1. Create the production database and database user account. Import any existing data.
+1. Generate an SSH key pair if you don't already have one, and copy your public key to the server.
+	1. `ssh-keygen -t rsa -b 4096 -C "your_email@example.com"`
+	1. `ssh-copy-id -i ~/.ssh/mykey user@host`
+	1. At this point, you should be able to `ssh user@host` without entering a password.
 1. `ssh` to your production server and `cd` to the site's root directory (e.g., `cd /home/jane-production/example.org`)
 1. `git clone` your remote repository to a folder one level above Apache's `DocumentRoot`.
 	1. For example, if `DocumentRoot` is `/home/jane-production/example.org/public_html`, then clone Regolith to `/home/jane-production/example.org`.
@@ -57,3 +63,5 @@ If you run into any problems, check [the troubleshooting guide](./troubleshootin
     1. For added convenience, you can optionally add a `deploy` function to your `~/.bashrc` file, and have it automatically call the `deploy` script regardless of which directory you're in. That way you don't have to specify the path to the folder. You can also make it support multiple sites as well, so that you can use a single consistent command for all sites you work on, even if they use different deployment mechanisms. See [iandunn/dotfiles/.bashrc](https://github.com/iandunn/dotfiles/blob/6d02e3b774f1d34677399a7480f6726c46d90743/.bashrc#L158-L209) for an example.
 1. Setup HTTP content sensors with a monitoring service -- like [Uptime Robot](https://uptimerobot.com/) -- to look for the value of `REGOLITH_CONTENT_SENSOR_FLAG` in `https://example.org/wp-login.php` and `https://example.org/?s={timestamp}`.
 	1 The timestamp serves as a cachebuster. If the monitoring service doesn't allow timestamp tokens, then you can also use Super Cache's `donotcachepage` parameter along with the value of `REGOLITH_WP_SUPER_CACHE_SECRET`.
+1. (optional) [Tweak OPCache settings](https://tideways.com/profiler/blog/fine-tune-your-opcache-configuration-to-avoid-caching-suprises).
+1. (optional) Setup CloudFlare, including Page Rules to cache dynamic content.

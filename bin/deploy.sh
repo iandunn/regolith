@@ -1,10 +1,8 @@
 #!/bin/bash
 
-COLOR_BAD='\033[0;31m'  # red
-COLOR_GOOD='\033[0;92m' # green
-COLOR_RESET='\033[0m'
 REGOLITH_DIR="$( dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd ) )"
 
+source $REGOLITH_DIR/bin/helpers.sh
 source $REGOLITH_DIR/config/deploy.sh
 
 # Pull the latest Git commits.
@@ -13,9 +11,9 @@ function update_git_checkout() {
 	echo "$git_result"
 
 	if [[ $git_result = *"master is up to date"* ]] || [[ $git_result = *"Fast-forwarded master to"* ]]; then
-		printf "${COLOR_GOOD}Success:${COLOR_RESET} Git checkout has been updated.\n"
+		success_message "Git checkout has been updated."
 	else
-		printf "${COLOR_BAD}ERROR:${COLOR_RESET} Could not update Git checkout. Aborting deployment.\n"
+		error_message "Could not update Git checkout. Aborting deployment."
 		exit 1
 	fi
 }
@@ -24,11 +22,7 @@ function update_git_checkout() {
 #
 # This relies on the REGOLITH_CONTENT_SENSOR_FLAG, just like external monitoring does.
 function smoke_test() {
-	local content_sensor_flag=$( php -r "
-		ini_set( 'error_reporting', '0' ); // Don't complain about WP_HOME not being defined, etc
-		require_once( '$REGOLITH_DIR/config/wordpress.php' );
-		echo REGOLITH_CONTENT_SENSOR_FLAG;
-	" )
+	local content_sensor_flag=$( get_php_config REGOLITH_CONTENT_SENSOR_FLAG )
 
 	# Check both the front and back ends.
 	# Use a cachebuster to bypass static page caching and OPCache.
@@ -44,9 +38,9 @@ function smoke_test() {
 			local url=${SMOKE_TEST_URLS[$i]}/${query_params[$j]}
 
 			if detect_content_sensor $url $content_sensor_flag; then
-				printf "\n${COLOR_GOOD}Success:${COLOR_RESET} Found the content flag in $url."
+				success_message "Found the content flag in $url."
 			else
-				printf "\n${COLOR_BAD}WARNING:${COLOR_RESET} The content flag is missing from $url."
+				error_message "The content flag is missing from $url."
 			fi
 		done
 	done
@@ -64,7 +58,7 @@ function detect_content_sensor() {
 }
 
 
-echo "## Backing up database..."
+echo "\n## Backing up database..."
 ssh -tq $SSH_USERNAME@$SSH_HOSTNAME "wp regolith backup-database --path=$WP_PATH"
 
 printf "\n## Pulling latest Git commits...\n"

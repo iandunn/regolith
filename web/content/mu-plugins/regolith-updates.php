@@ -27,6 +27,10 @@ add_filter( 'upgrader_clear_destination',    __NAMESPACE__ . '\upgrader_symlink_
  * Schedule WP-Cron jobs
  */
 function schedule_cron_jobs() {
+	if ( wp_installing() ) {
+		return;
+	}
+
 	// Install updates every hour, to minimize the window where a known vulnerability is active
 	if ( ! wp_next_scheduled( 'wp_maybe_auto_update' ) ) {
 		wp_schedule_event( time(), 'hourly', 'wp_maybe_auto_update' );

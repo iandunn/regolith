@@ -65,3 +65,15 @@ If you run into any problems, check [the troubleshooting guide](./troubleshootin
 	1 The timestamp serves as a cachebuster. If the monitoring service doesn't allow timestamp tokens, then you can also use Super Cache's `donotcachepage` parameter along with the value of `REGOLITH_WP_SUPER_CACHE_SECRET`.
 1. (optional) [Tweak OPCache settings](https://tideways.com/profiler/blog/fine-tune-your-opcache-configuration-to-avoid-caching-suprises).
 1. (optional) Setup CloudFlare, including Page Rules to cache dynamic content.
+
+
+## Regular Usage
+
+After you have Regolith setup in your local and production environments, you can use a traditional workflow, like this example: 
+
+1. Make and test your code changes in your local environment.
+1. `git add`, `git commit`, `git push`
+1. `bin/deploy.sh`
+1. Verify the changes work on production.
+
+When you want to refresh you development environment from production, you can run `bin/sync-production-content.sh`, and then repeat the process above to deploy more code.

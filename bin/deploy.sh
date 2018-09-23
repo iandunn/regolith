@@ -12,7 +12,7 @@ function update_git_checkout() {
 	echo "$git_result"
 
 	if [[ $git_result = *"master is up to date"* ]] || [[ $git_result = *"Fast-forwarded master to"* ]]; then
-		success_message "Git checkout has been updated."
+		success_message "Git checkout has been updated.\n" "terse"
 	else
 		error_message "Could not update Git checkout. Aborting deployment."
 		exit 1
@@ -39,7 +39,8 @@ function smoke_test() {
 			local url=${SMOKE_TEST_URLS[$i]}/${query_params[$j]}
 
 			if detect_content_sensor $url $content_sensor_flag; then
-				success_message "Found the content flag in $url."
+				echo ""
+				success_message "Found the content flag in $url." "terse"
 			else
 				error_message "The content flag is missing from $url."
 			fi
@@ -59,7 +60,7 @@ function detect_content_sensor() {
 }
 
 
-echo "\n## Backing up database..."
+printf "## Backing up database...\n"
 ssh -tq $SSH_USERNAME@$SSH_HOSTNAME "wp regolith backup-database --path=$WP_PATH"
 
 printf "\n## Pulling latest Git commits...\n"

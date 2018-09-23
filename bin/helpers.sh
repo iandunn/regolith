@@ -102,8 +102,15 @@ function test_get_php_config() {
 # The a success message.
 #
 # $1 - The message to print
+# $2 - "terse" to avoid prefixing/postfixing the message with new lines
 function success_message() {
-	printf "\n${GREEN}Success:${DEFAULT_COLOR} $1\n"
+	local newline="\n"
+
+	if [ "terse" == $2 ]; then
+		newline=""
+	fi
+
+	printf "$newline${GREEN}Success:${DEFAULT_COLOR} $1$newline"
 }
 
 # The a warning message.

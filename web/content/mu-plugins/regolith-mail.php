@@ -78,7 +78,7 @@ function better_interceptor_active() {
 	$better_interceptor_active = false;
 
 	// MailHog
-	if ( false !== stripos( ini_get( 'sendmail_path' ), 'mailhog' ) || ! empty( getenv( 'MH_OUTGOING_SMTP' ) ) || shell_exec( 'which mailhog' ) ) {
+	if ( false !== stripos( ini_get( 'sendmail_path' ), 'mailhog' ) || ! empty( getenv( 'MH_OUTGOING_SMTP' ) ) || shell_exec( 'command -v mailhog' ) ) {
 		$better_interceptor_active = true;
 	}
 

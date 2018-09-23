@@ -5,6 +5,7 @@ REGOLITH_DIR="$( dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && 
 source $REGOLITH_DIR/bin/helpers.sh
 source $REGOLITH_DIR/config/deploy.sh
 
+
 # Pull the latest Git commits.
 function update_git_checkout() {
 	git_result=$( ssh -tq $SSH_USERNAME@$SSH_HOSTNAME "git -C $REPO_CHECKOUT pull --recurse-submodules" )

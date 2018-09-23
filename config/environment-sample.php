@@ -9,8 +9,8 @@
  *
  * The production copy of this file won't be modified during deployment, so any changes you make to it
  * will need to be manually adjusted on production. In some cases you can make those changes on
- * production before deployment in a forwards-compatible way, by defining a value based on the path
- * to the current release, etc.
+ * production before deployment in a forwards-compatible way, by using feature flags, detecting if a
+ * file you're about to deploy exists, etc.
  */
 
 define( 'REGOLITH_ENVIRONMENT',            'development'                );  // 'development' or 'production'

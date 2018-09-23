@@ -3,6 +3,8 @@
 Regolith is a WordPress installation template that employs best practices, but is also tailored for less demanding projects, and aims to automate as much maintenance as possible.
 
 * Organized file system layout.
+	* WordPress is installed in a subfolder, and the content directory is separate from it.
+	* Shell scripts, configuration files, docs, etc all live outside of the web root.
 * Designed to work with Apache and shared hosting.
 * Version your custom code and configuration in Git.
 	* Includes configuration and integration for several security and performance plugins/services.
@@ -14,11 +16,11 @@ Regolith is a WordPress installation template that employs best practices, but i
 * Send transactional emails via SMTP for better reliability.
 * Automatically backup production database on a customizable schedule, and before every deployment.
 * Run a script to import the production database and uploads into your local development environment. The local database is sanitized to remove passwords, email addresses, etc.
-* Support for bin scripts and custom WP-CLI commands.
 * Outputs a content flag designed for external monitoring services.
 * Displays the current environment in the Admin Bar (i.e., _development_ or _production_).
 
 [Check out the screenshots page](docs/screenshots.md) to see some of the above features.
+
 
 ## Documentation
 

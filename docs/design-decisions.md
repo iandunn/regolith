@@ -6,7 +6,7 @@ This project was inspired by [Bedrock](https://github.com/roots/bedrock) and [th
 
 * **WP-CLI over Composer:** Composer is nice, but it's overkill and inconvenient if you always want to be running the latest versions of Core and plugins/themes, and can tolerate a small amount of risk to avoid the hassle.
 	* Core updates are very safe and backwards-compatible, and the plugins/themes I use are too, so I'm comfortable updating automatically. Monitoring can catch fatal errors immediately, and on the rare occasional that something breaks, it's not the end of the world.
-	* Plugins and themes already need to be stored in `.gitignore`, so that's used as the canonical list of dependencies. Installation and deployment scripts feed that list into WP-CLI to make sure new environments and production have all the dependencies.
+	* Plugins and themes already need to be listed in `.gitignore`, so that's used as the canonical list of dependencies. Installation and deployment scripts feed that list into WP-CLI to make sure new environments and production have all the dependencies.
 	* Also, [WPackagist.org doesn't have a way to verify packages](https://github.com/outlandishideas/wpackagist/issues/169), so I don't feel comfortable using it.
 * **Custom shell script over Capistrano/Deployer/etc:** The features that those projects provide aren't very useful or important for the types of sites that Regolith is used for, and they add a lot of extra work to setup and maintain. In short, they're [overkill](https://markjaquith.wordpress.com/2018/01/30/simple-wordpress-deploys-using-git/). The custom BASH script does everything we need, and is much easier to setup and maintain.
 * **Apache over Nginx:** Nginx is great, but most shared hosting servers run Apache.

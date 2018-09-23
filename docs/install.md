@@ -54,7 +54,7 @@ If you run into any problems, check [the troubleshooting guide](./troubleshootin
 	1. If your host doesn't let you change that, you can replace the existing `DocumentRoot` folder with a symlink to the `web` folder.
 1. Upload a copy of your local `environment.php` to the production server's `config/` folder, and update the values to match production's config.
     1. This is required because `environment.php` is never checked in to source control (because it contains sensitive and machine-specific information).
-1. Update any paths in `web/.user.ini`
+1. Update any paths in `web/.user.ini`. It'll probably take a few minutes for changes to this file to take effect.
 1. Run `bin/install-dependencies.sh`
 1. Visit the site to make sure everything is loading correctly.
 	1. If you're seeing a blank page on the front end, log in to the back end and make sure a valid theme is activated.
@@ -77,11 +77,11 @@ If you run into any problems, check [the troubleshooting guide](./troubleshootin
 
 ## Regular Usage
 
-After you have Regolith setup in your local and production environments, you can use a traditional workflow, like this example: 
+After you have Regolith setup in your local and production environments, you can use a traditional workflow, like this example:
 
 1. Make and test your code changes in your local environment.
 1. `git add`, `git commit`, `git push`
 1. `bin/deploy.sh`
 1. Verify the changes work on production.
 
-When you want to refresh you development environment from production, you can run `bin/sync-production-content.sh`, and then repeat the process above to deploy more code.
+Periodically, when you want to refresh the content in your development environment from the production site, you can run `bin/sync-production-content.sh`.

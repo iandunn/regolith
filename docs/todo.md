@@ -28,6 +28,30 @@ log error monitoring
 		https://github.com/etsy/logster
 
 
+using wpcli for dependency management assumes that all dependencies are in the w.org repos
+	is there a way to integrate plugins hosted on github or premium themes
+	maybe need a combination of composer (but not wppackagist)
+
+	don't want to track in repo b/c would have to maintain, and would clutter repo,
+		always want latest like w/ other dependencies
+	git submodule, but then have to manually update
+		and submodules are a pain in the ass
+		actually, now you can can track latest with `git submodule add -b master {url}`
+		works for publish-iandunn-2017. don't need to .gitignore it either :)
+		still have to make commit to update hash in parent repo though, instead of it being automatic like svn externals. annoying as hell.
+			maybe https://dev.to/dwd/git-submodules-revisited-1p54 can solve that? need to read closer
+		setup an example in regolith and add to docs, to make it easy to remember how to do it -- see https://github.com/iandunn/regolith/issues/9
+
+	could install one of those generic github updater plugins, i think scribu or pippen wrote one you could trust
+		ewww
+
+	maybe reconsider using composer, but would need to fix obstacles so maintenance isn't a hassle
+
+
+now that not using deployer, install-deps script should delete plugins/themes that aren't in gitignore?
+	otherwise, removing from gitignore would not remove the plugin/theme
+
+
 maybe fork wp-hammer if it's not being maintained, but chat w/ 10up first to see if anyone else there is interested in maintaining it, or if i can help
 	could at least temporarily do `wp package install {your github fork url}`
 	would need to update sync-content script to detect your fork (or maybe the commands themselves) rather than the source repo
@@ -136,24 +160,7 @@ reconsider including https://github.com/roots/wp-password-bcrypt
 	probably not worth it, unless you solve composer problems for other tasks
 		https://roots.io/wordpress-password-security-follow-up/
 
-using wpcli for dependency management assumes that all dependencies are in the w.org repos
-	is there a way to integrate plugins hosted on github or premium themes
-	maybe need a combination of composer (but not wppackagist)
 
-	don't want to track in repo b/c would have to maintain, and would clutter repo,
-		always want latest like w/ other dependencies
-	git submodule, but then have to manually update
-		and submodules are a pain in the ass
-		actually, now you can can track latest with `git submodule add -b master {url}`
-		works for publish-iandunn-2017. don't need to .gitignore it either :)
-		still have to make commit to update hash in parent repo though, instead of it being automatic like svn externals. annoying as hell.
-			maybe https://dev.to/dwd/git-submodules-revisited-1p54 can solve that? need to read closer
-		setup an example in regolith and add to docs, to make it easy to remember how to do it -- see https://github.com/iandunn/regolith/issues/9
-
-	could install one of those generic github updater plugins, i think scribu or pippen wrote one you could trust
-		ewww
-
-	maybe reconsider using composer, but would need to fix obstacles so maintenance isn't a hassle
 
 
 setup rewrite rules so can still access from /wp-admin ? at least seutp redirects
@@ -234,14 +241,9 @@ maybe symlink user.ini to config folder, similar to wp-super-cache config
 	or maybe get rid of it, because it's host-specific, and just leave in install instructions?
 	seems like it may be fairly common across major hosts though
 
-maybe remove web/wordpress/wp-content folder, since can install default themes/plugins in web/content if really want them
-	could be nice to avoid issues w/ bundled themes/plugins not being updated b/c bugs?
-	would core re-add it, or start using web/content by default?
-	would need to remove the register_theme_directory() call in muplugin
-	yeah, probably want to do this
-	if so, then update bin/install-dependencies.sh to `rm -rf wordpress/wp-content` after the `Install Core` section
-		do it even if core is already installed, in case an update re-installs the folder. shouldn't happen but be safe
-	also remove is_core_theme() and caller in regolith-updates.php?
+
+maybe delete `web/wordpress/wp-content` during `bin/install-deps.sh`, even if core is already installed, in case an update re-installs the folder.
+	shouldn't happen but best be safe
 
 maybe add install instructions to set file system permissions
 	could do in install-dependencies

@@ -63,13 +63,14 @@ If you run into any problems, check [the troubleshooting guide](./troubleshootin
 ### Optional Steps for Production
 
 1. Setup HTTP content sensors with a monitoring service -- like [Uptime Robot](https://uptimerobot.com/) -- to look for the value of `REGOLITH_CONTENT_SENSOR_FLAG` in `https://example.org/wp-login.php` and `https://example.org/?s={timestamp}`.
-	1 The timestamp serves as a cachebuster. If the monitoring service doesn't allow timestamp tokens, then you can also use Super Cache's `donotcachepage` parameter along with the value of `REGOLITH_WP_SUPER_CACHE_SECRET`.
+	1. The timestamp serves as a cachebuster. If the monitoring service doesn't allow timestamp tokens, then you can also use Super Cache's `donotcachepage` parameter along with the value of `REGOLITH_WP_SUPER_CACHE_SECRET`.
 1. Setup CloudFlare, including Page Rules to cache dynamic content.
 1. Configure the SMTP settings in `environment.php` to send outbound email through a transactional mail service.
     1. I like [Mailgun](https://mailgun.com), but any service that supports SMTP should work.
 	1. I _don't_ recommend Gmail or other consumer email services, because they're not designed to be used in this way. I've seen Gmail start rejecting messages all of the sudden for various reasons, without any advanced warning or failure notification.
 	1. Don't forget to update your SPF and/or DKIM records too.
 1. [Tweak OPCache settings](https://tideways.com/profiler/blog/fine-tune-your-opcache-configuration-to-avoid-caching-suprises).
+	1. `bin/deploy.sh` will reset the OPCache contents, so you should be able to set `opcache.validate_timestamps = 0`, to avoid the performance penalty associated with checking the timestamps. I haven't tested that yet, though. If you do, keep in mind that you'll need to manually reset the cache if you ever directly modify production files (while troubleshooting, etc).
 1. Configure your web server to store PHP/Apache/etc logs in the `logs/` folder.
 
 

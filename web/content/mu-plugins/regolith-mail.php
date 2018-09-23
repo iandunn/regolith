@@ -10,11 +10,13 @@ Author URI:  https://iandunn.name
 
 namespace Regolith\Miscellaneous;
 use PHPMailer, phpmailerException;
+use WP_Error;
 
 defined( 'WPINC' ) or die();
 
 add_filter( 'wp_mail',           __NAMESPACE__ . '\intercept_outbound_mail' );
 add_action( 'phpmailer_init', __NAMESPACE__ . '\configure_smtp'          );
+add_action( 'wp_mail_failed', __NAMESPACE__ . '\log_errors'              );
 
 
 /**
@@ -125,3 +127,18 @@ function configure_smtp( $phpmailer ) {
 	$phpmailer->AddReplyTo( $config['reply_to_email'], $config['from_name'] );
 }
 
+/**
+ * Log an error when `wp_mail()` fails.
+ *
+ * @param WP_Error $error
+ */
+function log_errors( $error ) {
+	$log_message = sprintf(
+		"%s: %s. Message data: %s",
+		$error->get_error_code(),
+		$error->get_error_message(),
+		wp_json_encode( $error->get_error_data() )
+	);
+
+	trigger_error( $log_message, E_USER_ERROR );
+}

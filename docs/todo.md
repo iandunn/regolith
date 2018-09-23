@@ -33,17 +33,6 @@ theme updates not installing automatically
 	probably delete wordpress/wp-content/themes anyway. if want one of those themes, can add it to the normal content dir, so that they're all in one place. simpler that way
 
 
-add wp_mail_failed callback
-	v1
-		simple error_log()
-			test that logs for both sendmail and SMTP
-		maybe also send notice to admin_email via sendmail ? something else
-		maybe retry. if using smtp, retry with sendmail?
-
-	v2
-		better to error log, but have some kind of professional error log anaylizer which can send notifications when critical errors detected
-		research best practices
-
 maybe remove the mail inteceptor and just assume that mailhog/mailcatcher available?
 	good b/c removes unused code
 	bad b/c could lead to other people running into problems

@@ -13,7 +13,7 @@ use WP_Error, WP_REST_Request, WP_Admin_Bar;
 
 defined( 'WPINC' ) or die();
 
-add_filter( 'xmlrpc_enabled', '__return_false' );   // Disable for security -- http://core.trac.wordpress.org/ticket/21509#comment:5
+add_filter( 'xmlrpc_enabled', '__return_false', 999 );   // Disable for security -- http://core.trac.wordpress.org/ticket/21509#comment:5
 
 add_action( 'init',                       __NAMESPACE__ . '\schedule_cron_jobs'             );
 add_filter( 'cron_schedules',             __NAMESPACE__ . '\add_cron_schedules'             );

@@ -22,3 +22,11 @@ Update with Multisite's rewrite rules (from the Network Setup wizard).
 ### config/deploy.sh
 
 Add any extra URLs that you want to test after deployment.
+
+
+## Adding additional sites
+
+After the initial setup, you may want to do some or all of the following whenever you create an additional site:
+
+* Add the URL to the smoke test array in `config/deploy.sh`.
+* Run through some of the `Optional Steps for Production` in [install.md](./install.md).

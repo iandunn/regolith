@@ -52,7 +52,6 @@ If you run into any problems, check [the troubleshooting guide](./troubleshootin
 	1. For example, if `DocumentRoot` is `/home/jane-production/example.org/public_html`, then clone Regolith to `/home/jane-production/example.org`.
 1. Configure Apache's `DocumentRoot` to be the `web/` folder.
 	1. If your host doesn't let you change that, you can replace the existing `DocumentRoot` folder with a symlink to the `web` folder.
-1. (optional) Configure your web server to store PHP/Apache/etc logs in the `logs/` folder.
 1. Upload a copy of your local `environment.php` to the production server's `config/` folder, and update the values to match production's config.
     1. This is required because `environment.php` is never checked in to source control (because it contains sensitive and machine-specific information).
 1. Update any paths in `web/.user.ini`
@@ -61,10 +60,19 @@ If you run into any problems, check [the troubleshooting guide](./troubleshootin
 	1. If you're seeing a blank page on the front end, log in to the back end and make sure a valid theme is activated.
 1. From your local development environment, run `bin/deploy.sh` to test the deployment process.
     1. For added convenience, you can optionally add a `deploy` function to your `~/.bashrc` file, and have it automatically call the `deploy` script regardless of which directory you're in. That way you don't have to specify the path to the folder. You can also make it support multiple sites as well, so that you can use a single consistent command for all sites you work on, even if they use different deployment mechanisms. See [iandunn/dotfiles/.bashrc](https://github.com/iandunn/dotfiles/blob/6d02e3b774f1d34677399a7480f6726c46d90743/.bashrc#L158-L209) for an example.
+
+
+### Optional Steps for Production
+
 1. Setup HTTP content sensors with a monitoring service -- like [Uptime Robot](https://uptimerobot.com/) -- to look for the value of `REGOLITH_CONTENT_SENSOR_FLAG` in `https://example.org/wp-login.php` and `https://example.org/?s={timestamp}`.
 	1 The timestamp serves as a cachebuster. If the monitoring service doesn't allow timestamp tokens, then you can also use Super Cache's `donotcachepage` parameter along with the value of `REGOLITH_WP_SUPER_CACHE_SECRET`.
-1. (optional) [Tweak OPCache settings](https://tideways.com/profiler/blog/fine-tune-your-opcache-configuration-to-avoid-caching-suprises).
-1. (optional) Setup CloudFlare, including Page Rules to cache dynamic content.
+1. Setup CloudFlare, including Page Rules to cache dynamic content.
+1. Configure the SMTP settings in `environment.php` to send outbound email through a transactional mail service.
+    1. I like [Mailgun](https://mailgun.com), but any service that supports SMTP should work.
+	1. I _don't_ recommend Gmail or other consumer email services, because they're not designed to be used in this way. I've seen Gmail start rejecting messages all of the sudden for various reasons, without any advanced warning or failure notification.
+	1. Don't forget to update your SPF and/or DKIM records too.
+1. [Tweak OPCache settings](https://tideways.com/profiler/blog/fine-tune-your-opcache-configuration-to-avoid-caching-suprises).
+1. Configure your web server to store PHP/Apache/etc logs in the `logs/` folder.
 
 
 ## Regular Usage

@@ -32,25 +32,6 @@ theme updates not installing automatically
 	maybe only on iandunn.name, but probably all of regolith
 	probably delete wordpress/wp-content/themes anyway. if want one of those themes, can add it to the normal content dir, so that they're all in one place. simpler that way
 
-mail through smtp
-	maybe add something to regolith with best practices for setting sender, return-path, etc
-	see wcorg-mailer::mail(), any mu-plugins you created, https://core.trac.wordpress.org/ticket/37736#comment:4
-	might be different from what wcorg does b/c Envelope-FROM is set by server, rather than suggested by message Sender header
-	add constant for mail from address, but leave mail from name alone?
-	warn user that they must set the sender constant to a valid address or could cause failures?
-
-	docs: setup spf so web server and mailchimp (or whoever) can send
-	create bounce@, abuse@, postmaster@ address, set as return-path
-
-	setup smtp address, and configure phpmailer to send through that rather than local sendmail?
-	or maybe external service?
-		https://www.mailgun.com/pricing is free, so why not?
-
-		update docs
-		setup config in a way that it will fallback to sendmail if no credentials for the domain
-
-		add to readme as a feature
-			smtp for reliably delivering transaction emails. i recommend using mailgun so you get additional features, but it'll work with any smtp account
 
 add wp_mail_failed callback
 	v1

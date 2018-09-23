@@ -9,14 +9,20 @@ Author URI:  https://iandunn.name
 */
 
 namespace Regolith\Miscellaneous;
+use PHPMailer, phpmailerException;
+
 defined( 'WPINC' ) or die();
 
 add_filter( 'wp_mail',           __NAMESPACE__ . '\intercept_outbound_mail' );
+add_action( 'phpmailer_init', __NAMESPACE__ . '\configure_smtp'          );
+
 
 /**
  * Prevent sandbox e-mails from going to production email accounts
  *
  * This is a quick and dirty fallback in case better tools like MailHog or MailCatcher aren't available.
+ *
+ * _WARNING_: This will be bypassed if you use SMTP. See the note in `environment.php` for details.
  *
  * @param array $args
  *
@@ -81,3 +87,41 @@ function better_interceptor_active() {
 
 	return $better_interceptor_active;
 }
+
+/**
+ * Configure emails to be sent via SMTP for better reliability.
+ *
+ * @param PHPMailer $phpmailer
+ *
+ * @throws phpmailerException
+ */
+function configure_smtp( $phpmailer ) {
+	global $regolith_smtp;
+
+	// Don't use `WP_HOME` because on Multisite it's always the root site.
+	$current_site = parse_url( home_url(), PHP_URL_HOST );
+
+	if ( empty( $regolith_smtp[ $current_site ]['hostname'] ) ) {
+		return;
+	}
+
+	$config = $regolith_smtp[ $current_site ];
+
+	$phpmailer->IsSMTP();
+	$phpmailer->SMTPAuth   = true;
+	$phpmailer->SMTPSecure = 'tls';
+	$phpmailer->Host       = $config['hostname'];
+	$phpmailer->Port       = $config['port'];
+	$phpmailer->Username   = $config['username'];
+	$phpmailer->Password   = $config['password'];
+
+	/*
+	 * The third param should be `false` to avoid forging the `Sender` header, which could cause the message to
+	 * be rejected.
+	 *
+	 * See https://core.trac.wordpress.org/ticket/37736
+	 */
+	$phpmailer->setFrom(    $config['from_email'],     $config['from_name'], false );
+	$phpmailer->AddReplyTo( $config['reply_to_email'], $config['from_name'] );
+}
+

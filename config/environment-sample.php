@@ -32,3 +32,19 @@ define( 'AUTH_SALT',        'put your unique phrase here' );
 define( 'SECURE_AUTH_SALT', 'put your unique phrase here' );
 define( 'LOGGED_IN_SALT',   'put your unique phrase here' );
 define( 'NONCE_SALT',       'put your unique phrase here' );
+
+/*
+ * Add a subarray here for every site that should send mail via SMTP. If you're not using Multisite, then there'll
+ * only be one subarray.
+ */
+$regolith_smtp = array(
+	'regolith.iandunn.localhost' => array(
+		'hostname'       => 'smtp.mailgun.org',
+		'port'           => 587,
+		'username'       => 'postmaster@mailgun.regolith-production.org',
+		'password'       => 'password',
+		'from_name'      => 'Jane Doe',
+		'from_email'     => 'no-reply@mailgun.regolith-production.org',
+		'reply_to_email' => 'jane@regolith-production.org',
+	),
+);

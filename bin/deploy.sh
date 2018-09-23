@@ -12,6 +12,7 @@ function update_git_checkout() {
 	echo "$git_result"
 
 	if [[ $git_result = *"master is up to date"* ]] || [[ $git_result = *"Fast-forwarded master to"* ]]; then
+		git submodule update
 		success_message "Git checkout has been updated.\n" "terse"
 	else
 		error_message "Could not update Git checkout. Aborting deployment."

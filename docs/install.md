@@ -2,11 +2,9 @@
 
 * Regolith is designed to work with **Apache**, but Nginx will also work fine with some minimal modifications.
 * You'll also need **SSH access** to your production server.
-* **Git** and **WP-CLI** must be installed in all environments. If they're not installed on production, but you do have SSH access, then you can probably install them manually inside your home directory.
+* **Git** and **WP-CLI** must be installed in all environments. If your host doesn't have Git or WP-CLI installed, check [the troubleshooting guide](./troubleshooting.md) for a workaround.
 * **PHP 7.0+**. If you can't use that, you could make some minor code changes to make it compatible with PHP 5.3.
 * Unix-based operating systems (Linux, OS X, etc) in all environments. It may be possible to run on Windows with Cygwin, but I haven't tested it.
-
-If your host doesn't have Git or WP-CLI installed, check [the troubleshooting guide](./troubleshooting.md).
 
 
 ## Troubleshooting

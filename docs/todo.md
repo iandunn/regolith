@@ -262,7 +262,7 @@ ship default config for more plugins
 		wp doesn't have a filter in `wp_cache_get('alloptions', 'wordfence');`
 		could do a cron job to overwrite values in the database? that's fraking awful, but may be the best way
 
-rename environment.php to something like secrets.php to make it more obvious that it's for sensitive things
+rename environment.php to something like secrets.php or private.php to make it more obvious that it's for sensitive things
 	non-sensitive things taht are environment specific are already in config/wordpress/development.php or production.php
 
 watch wptv video for https://2017.london.wordcamp.org/session/wrapping-a-modern-php-architecture-around-a-legacy-wordpress-site/

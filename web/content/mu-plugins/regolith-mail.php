@@ -15,6 +15,9 @@ use WP_Error;
 defined( 'WPINC' ) or die();
 
 add_filter( 'wp_mail',           __NAMESPACE__ . '\intercept_outbound_mail' );
+add_filter( 'wp_mail',           __NAMESPACE__ . '\maybe_set_reply_to',      5 );  // Early priority so plugins can override.
+add_filter( 'wp_mail_from_name', __NAMESPACE__ . '\set_default_from_name',   1 );  // Early priority so plugins like Formidable can override based on context.
+add_filter( 'wp_mail_from',      __NAMESPACE__ . '\enforce_from_address',  999 );
 add_action( 'phpmailer_init', __NAMESPACE__ . '\configure_smtp'          );
 add_action( 'wp_mail_failed', __NAMESPACE__ . '\log_errors'              );
 
@@ -91,6 +94,20 @@ function better_interceptor_active() {
 }
 
 /**
+ * Get the SMTP config for the current site.
+ *
+ * @return bool|mixed Boolean `false` on failure; An associative array on success.
+ */
+function get_current_site_smtp_config() {
+	global $regolith_smtp;
+
+	// Don't use `WP_HOME` because on Multisite it's always the root site.
+	$current_site = parse_url( home_url(), PHP_URL_HOST );
+
+	return empty( $regolith_smtp[ $current_site ]['hostname'] ) ? false : $regolith_smtp[ $current_site ];
+}
+
+/**
  * Configure emails to be sent via SMTP for better reliability.
  *
  * @param PHPMailer $phpmailer
@@ -98,16 +115,11 @@ function better_interceptor_active() {
  * @throws phpmailerException
  */
 function configure_smtp( $phpmailer ) {
-	global $regolith_smtp;
+	$config = get_current_site_smtp_config();
 
-	// Don't use `WP_HOME` because on Multisite it's always the root site.
-	$current_site = parse_url( home_url(), PHP_URL_HOST );
-
-	if ( empty( $regolith_smtp[ $current_site ]['hostname'] ) ) {
+	if ( ! $config ) {
 		return;
 	}
-
-	$config = $regolith_smtp[ $current_site ];
 
 	$phpmailer->IsSMTP();
 	$phpmailer->SMTPAuth   = true;
@@ -116,15 +128,88 @@ function configure_smtp( $phpmailer ) {
 	$phpmailer->Port       = $config['port'];
 	$phpmailer->Username   = $config['username'];
 	$phpmailer->Password   = $config['password'];
+}
+
+/**
+ * Set the default `From` and `Reply-To` headers for outbound emails.
+ *
+ * @param array $params
+ *
+ * @return array
+ */
+function maybe_set_reply_to( $params ) {
+	$config = get_current_site_smtp_config();
+
+	if ( ! $config ) {
+		return $params;
+	}
+
+	// Normalize the headers to an array, since `wp_mail()` accepts them as an array or a string.
+	if ( is_string( $params['headers'] ) ) {
+		$params['headers'] = explode( "\n", str_replace( "\r\n", "\n", trim( $params['headers'] ) ) );
+	}
 
 	/*
-	 * The third param should be `false` to avoid forging the `Sender` header, which could cause the message to
-	 * be rejected.
-	 *
-	 * See https://core.trac.wordpress.org/ticket/37736
+	 * Whoever called `wp_mail()` knows more about the context of the email than this function does, so if they
+	 * already set `Reply-To` header, then let's just trust that it's more appropriate than this default.
 	 */
-	$phpmailer->setFrom(    $config['from_email'],     $config['from_name'], false );
-	$phpmailer->AddReplyTo( $config['reply_to_email'], $config['from_name'] );
+	foreach ( $params['headers'] as $header ) {
+		if ( 'reply-to' === strtolower( substr( $header, 0, 8 ) ) ) {
+			return $params;
+		}
+	}
+
+	$params['headers'][] = sprintf( 'Reply-To: %s <%s>', $config['from_name'], $config['reply_to_email'] );
+
+	return $params;
+}
+
+/**
+ * Set the default name for the `From` header.
+ *
+ * @param string $name
+ *
+ * @return string
+ */
+function set_default_from_name( $name ) {
+	/*
+	 * Plugins that are sending mail will know the context of that message better than we can, so just accept their
+	 * custom name if they have already overridden `wp_mail()`'s default name.
+	 */
+	if ( 'WordPress' !== $name ) {
+		return $name;
+	}
+
+	$config = get_current_site_smtp_config();
+
+	if ( $config ) {
+		$name = $config['from_name'];
+	} else {
+		$name = get_bloginfo( 'name' );
+	}
+
+	return $name;
+}
+
+/**
+ * Enforce the `From` address.
+ *
+ * It's fine to let plugins override the `From` name, but overriding the `From` address could easily result in
+ * a value being set which will fail SPF/etc tests, making it look like we're forging the header, and getting the
+ * message flagged as spam.
+ *
+ * @param string $address
+ *
+ * @return string
+ */
+function enforce_from_address( $address ) {
+	$config = get_current_site_smtp_config();
+
+	if ( $config ) {
+		$address = $config['from_email'];
+	}
+
+	return $address;
 }
 
 /**

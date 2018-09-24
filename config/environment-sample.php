@@ -38,13 +38,15 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
  * only be one subarray.
  */
 $regolith_smtp = array(
+	/*
 	'regolith.iandunn.localhost' => array(
 		'hostname'       => 'smtp.mailgun.org',
 		'port'           => 587,
 		'username'       => 'postmaster@mailgun.regolith-production.org',
 		'password'       => 'password',
 		'from_name'      => 'Jane Doe',
-		'from_email'     => 'no-reply@mailgun.regolith-production.org',
+		'from_email'     => 'postmaster@mailgun.regolith-production.org',
 		'reply_to_email' => 'jane@regolith-production.org',
 	),
+	*/
 );

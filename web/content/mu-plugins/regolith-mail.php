@@ -12,14 +12,14 @@ namespace Regolith\Mail;
 use PHPMailer, phpmailerException;
 use WP_Error;
 
-defined( 'WPINC' ) or die();
+defined( 'WPINC' ) || die();
 
-add_filter( 'wp_mail',           __NAMESPACE__ . '\intercept_outbound_mail' );
+add_filter( 'wp_mail',           __NAMESPACE__ . '\intercept_outbound_mail'    );
 add_filter( 'wp_mail',           __NAMESPACE__ . '\maybe_set_reply_to',      5 );  // Early priority so plugins can override.
 add_filter( 'wp_mail_from_name', __NAMESPACE__ . '\set_default_from_name',   1 );  // Early priority so plugins like Formidable can override based on context.
 add_filter( 'wp_mail_from',      __NAMESPACE__ . '\enforce_from_address',  999 );
-add_action( 'phpmailer_init', __NAMESPACE__ . '\configure_smtp'          );
-add_action( 'wp_mail_failed', __NAMESPACE__ . '\log_errors'              );
+add_action( 'phpmailer_init',    __NAMESPACE__ . '\configure_smtp'             );
+add_action( 'wp_mail_failed',    __NAMESPACE__ . '\log_errors'                 );
 
 
 /**
@@ -42,13 +42,13 @@ function intercept_outbound_mail( $args ) {
 		return $args;
 	}
 
-	// Completely short-circuit the sending process if we don't have a valid address to send to
+	// Completely short-circuit the sending process if we don't have a valid address to send to.
 	if ( ! defined( 'REGOLITH_DEV_NOTIFICATIONS' ) || ! is_email( REGOLITH_DEV_NOTIFICATIONS ) ) {
 		$args['to'] = '';
 		return $args;
 	}
 
-	// Some plugins will call wp_mail() with no params, just to initialize PHPMailer
+	// Some plugins will call wp_mail() with no params, just to initialize PHPMailer.
 	if ( empty( $args['to'] ) ) {
 		return $args;
 	}
@@ -59,7 +59,7 @@ function intercept_outbound_mail( $args ) {
 	$override_text = "This message was intercepted and redirected to you to prevent users getting e-mails from development servers.\n\nwp_mail() arguments:\n\n%s\n\nOriginal message:\n-----------------------\n\n%s";
 	$args_text     = print_r( $args, true );
 
-	if ( 'text/html' == apply_filters( 'wp_mail_content_type', false ) ) {
+	if ( 'text/html' === apply_filters( 'wp_mail_content_type', false ) ) {
 		$override_text = wpautop( $override_text );
 		$args_text     = sprintf( '<pre>%s</pre>', $args_text );
 	}
@@ -67,7 +67,7 @@ function intercept_outbound_mail( $args ) {
 	$args['to']      = REGOLITH_DEV_NOTIFICATIONS;
 	$args['subject'] = sprintf( '[%s] %s', strtoupper( REGOLITH_ENVIRONMENT ), $args['subject'] );
 	$args['message'] = sprintf( $override_text, $args_text, $original_message );
-	$args['headers'] = '';    // wipe out CC and BCC
+	$args['headers'] = '';    // wipe out CC and BCC.
 
 	return $args;
 }
@@ -80,12 +80,12 @@ function intercept_outbound_mail( $args ) {
 function better_interceptor_active() {
 	$better_interceptor_active = false;
 
-	// MailHog
+	// MailHog.
 	if ( false !== stripos( ini_get( 'sendmail_path' ), 'mailhog' ) || ! empty( getenv( 'MH_OUTGOING_SMTP' ) ) || shell_exec( 'command -v mailhog' ) ) {
 		$better_interceptor_active = true;
 	}
 
-	// MailCatcher
+	// MailCatcher.
 	if ( false !== stripos( ini_get( 'sendmail_path' ), 'catchmail' ) ) {
 		$better_interceptor_active = true;
 	}
@@ -102,7 +102,7 @@ function get_current_site_smtp_config() {
 	global $regolith_smtp;
 
 	// Don't use `WP_HOME` because on Multisite it's always the root site.
-	$current_site = parse_url( home_url(), PHP_URL_HOST );
+	$current_site = wp_parse_url( home_url(), PHP_URL_HOST );
 
 	return empty( $regolith_smtp[ $current_site ]['hostname'] ) ? false : $regolith_smtp[ $current_site ];
 }
@@ -219,7 +219,7 @@ function enforce_from_address( $address ) {
  */
 function log_errors( $error ) {
 	$log_message = sprintf(
-		"%s: %s. Message data: %s",
+		'%s: %s. Message data: %s',
 		$error->get_error_code(),
 		$error->get_error_message(),
 		wp_json_encode( $error->get_error_data() )

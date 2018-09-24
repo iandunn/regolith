@@ -10,7 +10,7 @@ Author URI:  https://iandunn.name
 
 namespace Regolith\Plugin_Config;
 
-defined( 'WPINC' ) or die();
+defined( 'WPINC' ) || die();
 
 /*
  * This approach has several benefits over using the database:

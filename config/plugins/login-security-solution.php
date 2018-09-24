@@ -1,7 +1,7 @@
 <?php
 
 namespace Regolith\Login_Security_Solution;
-defined( 'WPINC' ) or die();
+defined( 'WPINC' ) || die();
 
 /**
  * Get the configuration for Login Security Solution.

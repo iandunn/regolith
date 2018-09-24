@@ -11,9 +11,9 @@ Author URI:  https://iandunn.name
 namespace Regolith\Miscellaneous;
 use WP_Error, WP_REST_Request, WP_Admin_Bar;
 
-defined( 'WPINC' ) or die();
+defined( 'WPINC' ) || die();
 
-add_filter( 'xmlrpc_enabled', '__return_false', 999 );   // Disable for security -- http://core.trac.wordpress.org/ticket/21509#comment:5
+add_filter( 'xmlrpc_enabled', '__return_false', 999 );   // Disable for security -- http://core.trac.wordpress.org/ticket/21509#comment:5.
 
 add_action( 'init',                       __NAMESPACE__ . '\schedule_cron_jobs'             );
 add_filter( 'cron_schedules',             __NAMESPACE__ . '\add_cron_schedules'             );
@@ -38,7 +38,7 @@ add_action( 'admin_print_styles',         __NAMESPACE__ . '\remove_intrusive_wor
 function add_cron_schedules( $schedules ) {
 	$schedules['regolith_backup'] = array(
 		'interval' => REGOLITH_BACKUP_INTERVAL,
-		'display'  => 'Regolith Backup'
+		'display'  => 'Regolith Backup',
 	);
 
 	return $schedules;
@@ -158,7 +158,7 @@ function google_analytics() {
  * `/?s={timestamp}`.
  */
 function content_sensor_flag() {
-	printf( '<!-- %s -->', REGOLITH_CONTENT_SENSOR_FLAG );
+	printf( '<!-- %s -->', esc_html( REGOLITH_CONTENT_SENSOR_FLAG ) );
 }
 
 /**
@@ -189,7 +189,7 @@ function admin_bar_environment_css() {
 		return;
 	}
 
-	$background_color = 'production' == REGOLITH_ENVIRONMENT ? 'transparent' : '#32465a';
+	$background_color = 'production' === REGOLITH_ENVIRONMENT ? 'transparent' : '#32465a';
 
 	?>
 

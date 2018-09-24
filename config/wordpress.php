@@ -20,13 +20,13 @@ define( 'DB_CHARSET', 'utf8mb4'            );
 define( 'DB_COLLATE', 'utf8mb4_unicode_ci' );
 
 $safe_server_name = $_SERVER['SERVER_NAME'] ?? parse_url( WP_HOME, PHP_URL_HOST );
-$safe_server_name = preg_replace( '[^\w\-.]', '', $safe_server_name ); // See footnote in https://stackoverflow.com/a/6474936/450127
+$safe_server_name = preg_replace( '[^\w\-.]', '', $safe_server_name ); // See footnote in https://stackoverflow.com/a/6474936/450127.
 
 if ( $is_multisite ) {
 	define( 'WP_CONTENT_URL',       'https://' . $safe_server_name . $content_dir_path );
 	define( 'MULTISITE',            true                                               );
 	define( 'SUBDOMAIN_INSTALL',    true                                               );
-	define( 'COOKIE_DOMAIN',        null                                               ); // allow it to be set dynamically based on the current domain
+	define( 'COOKIE_DOMAIN',        null                                               ); // Allow it to be set dynamically based on the current domain.
 	define( 'DOMAIN_CURRENT_SITE',  parse_url( WP_HOME, PHP_URL_HOST )                 );
 	define( 'PATH_CURRENT_SITE',    '/'                                                );
 	define( 'SITE_ID_CURRENT_SITE', 1                                                  );
@@ -45,8 +45,8 @@ define( 'WP_CACHE',                     true             );
 define( 'DISALLOW_FILE_EDIT',           true             );
 define( 'DISALLOW_UNFILTERED_HTML',     true             );
 define( 'REGOLITH_CONTENT_SENSOR_FLAG', 'Monitor-WP-OK'  );
-define( 'REGOLITH_BACKUP_INTERVAL',     60 * 60 * 24 * 7 ); // in seconds
-define( 'REGOLITH_BACKUPS_TO_KEEP',     50               ); // includes scheduled backups and backups made before every deployment
+define( 'REGOLITH_BACKUP_INTERVAL',     60 * 60 * 24 * 7 ); // In seconds.
+define( 'REGOLITH_BACKUPS_TO_KEEP',     50               ); // Includes scheduled backups and backups made before every deployment.
 define( 'REGOLITH_GOOGLE_ANALYTICS_ID', 'UA-000000000-0' );
 define( 'REGOLITH_MAINTENANCE_MODE',    false            ); // Note: This is not intended to hide content. See `Regolith\Miscellaneous\coming_soon_page()` for details.
 
@@ -70,7 +70,7 @@ switch ( REGOLITH_ENVIRONMENT ) {
 		break;
 
 	case 'production':
-		ini_set( 'display_errors', 0 );
+		ini_set( 'display_errors', 0 ); // Setting this *and* `WP_DEBUG_DISPLAY` to protect against edge cases.
 
 		define( 'WP_DEBUG_DISPLAY', false );
 		define( 'WP_DEBUG_LOG',     true  );
@@ -80,7 +80,7 @@ switch ( REGOLITH_ENVIRONMENT ) {
 		break;
 }
 
-// These are no longer necessary, so don't let them clutter the global space
+// These are no longer necessary, so don't let them clutter the global space.
 unset( $document_root_path    );
 unset( $content_dir_path      );
 unset( $is_multisite          );

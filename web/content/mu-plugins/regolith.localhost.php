@@ -11,4 +11,4 @@ Author URI:  https://iandunn.name
 // Rename this file to your domain name, and add functionality that's custom to your site.
 
 namespace Regolith_Localhost;
-defined( 'WPINC' ) or die();
+defined( 'WPINC' ) || die();

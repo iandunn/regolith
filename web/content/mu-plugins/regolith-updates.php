@@ -9,18 +9,18 @@ Author URI:  https://iandunn.name
 */
 
 namespace Regolith\Updates;
-defined( 'WPINC' ) or die();
+defined( 'WPINC' ) || die();
 
 add_filter( 'allow_minor_auto_core_updates',     '__return_true'  );
 add_filter( 'allow_major_auto_core_updates',     '__return_true'  );
-add_filter( 'automatic_updates_is_vcs_checkout', '__return_false' ); // See note in auto_update_valid_dependencies()
+add_filter( 'automatic_updates_is_vcs_checkout', '__return_false' ); // See note in auto_update_valid_dependencies().
 
 add_action( 'init',                          __NAMESPACE__ . '\schedule_cron_jobs'                         );
 add_filter( 'site_transient_update_plugins', __NAMESPACE__ . '\block_updates_for_custom_extensions'        );
 add_filter( 'site_transient_update_themes',  __NAMESPACE__ . '\block_updates_for_custom_extensions'        );
 add_filter( 'auto_update_plugin',            __NAMESPACE__ . '\auto_update_valid_dependencies',      10, 2 );
 add_filter( 'auto_update_theme',             __NAMESPACE__ . '\auto_update_valid_dependencies',      10, 2 );
-add_filter( 'upgrader_clear_destination',    __NAMESPACE__ . '\upgrader_symlink_compatibility',      11, 3 );    // after \Plugin_Upgrader::delete_old_plugin()
+add_filter( 'upgrader_clear_destination',    __NAMESPACE__ . '\upgrader_symlink_compatibility',      11, 3 );    // after Plugin_Upgrader::delete_old_plugin().
 
 
 /**
@@ -31,7 +31,7 @@ function schedule_cron_jobs() {
 		return;
 	}
 
-	// Install updates every hour, to minimize the window where a known vulnerability is active
+	// Install updates every hour, to minimize the window where a known vulnerability is active.
 	if ( ! wp_next_scheduled( 'wp_maybe_auto_update' ) ) {
 		wp_schedule_event( time(), 'hourly', 'wp_maybe_auto_update' );
 	}
@@ -56,11 +56,11 @@ function block_updates_for_custom_extensions( $dependencies ) {
 		return $dependencies;
 	}
 
-	foreach( $dependencies->response as $slug => $details ) {
-		if ( 'site_transient_update_plugins' == current_filter() ) {
+	foreach ( $dependencies->response as $slug => $details ) {
+		if ( 'site_transient_update_plugins' === current_filter() ) {
 			$dependency_path = '/plugins/' . dirname( $slug );
 		} else {
-			// Don't block updates for Core themes
+			// Don't block updates for Core themes.
 			if ( is_core_theme( $slug ) ) {
 				continue;
 			}

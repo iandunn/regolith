@@ -9,7 +9,7 @@ Author URI:  https://iandunn.name
 */
 
 namespace Regolith\Base;
-defined( 'WPINC' ) or die();
+defined( 'WPINC' ) || die();
 
 /**
  * Register hook callbacks and other initialization tasks
@@ -55,7 +55,7 @@ function register_wp_cli_commands() {
 /**
  * Ensure that home URL does not contain the /wordpress subdirectory.
  *
- * @param string $value the unchecked home URL
+ * @param string $value the unchecked home URL.
  *
  * @return string the verified home URL
  */
@@ -70,7 +70,7 @@ function fix_home_url( $value ) {
 /**
  * Ensure that site URL contains the /wordpress subdirectory.
  *
- * @param string $value the unchecked site URL
+ * @param string $value the unchecked site URL.
  *
  * @return string the verified site URL
  */
@@ -85,9 +85,9 @@ function fix_site_url( $value ) {
 /**
  * Ensure that the network site URL contains the /wordpress subdirectory.
  *
- * @param string $url    the unchecked network site URL with path appended
- * @param string $path   the path for the URL
- * @param string $scheme the URL scheme
+ * @param string $url    The unchecked network site URL with path appended.
+ * @param string $path   The path for the URL.
+ * @param string $scheme The URL scheme.
  *
  * @return string the verified network site URL
  */
@@ -137,9 +137,9 @@ function load_site_specific_mu_plugins() {
 		return;
 	}
 
-	// Strip the TLD because dev and production sites have different TLDs (e.g., regolith-example.org and regolith-example.localhost)
+	// Strip the TLD because dev and production sites have different TLDs (e.g., regolith-example.org and regolith-example.localhost).
 	$second_level_domain = substr( $current_blog->domain, 0, strrpos( $current_blog->domain, '.' ) );
-	$plugin_folder       = sprintf( '%s/sites/%s', __DIR__ , $second_level_domain );
+	$plugin_folder       = sprintf( '%s/sites/%s', __DIR__, $second_level_domain );
 	$plugins             = glob( $plugin_folder . '/*.php' );
 
 	if ( is_array( $plugins ) ) {

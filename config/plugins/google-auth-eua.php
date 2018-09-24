@@ -1,7 +1,7 @@
 <?php
 
 namespace Regolith\Google_Auth_EUA;
-defined( 'WPINC' ) or die();
+defined( 'WPINC' ) || die();
 
 /**
  * Get the configuration for Google Authenticator - Encourage User Activation.

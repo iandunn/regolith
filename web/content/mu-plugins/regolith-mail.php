@@ -225,5 +225,10 @@ function log_errors( $error ) {
 		wp_json_encode( $error->get_error_data() )
 	);
 
-	trigger_error( $log_message, E_USER_ERROR );
+	if ( 'development' === REGOLITH_ENVIRONMENT ) {
+		trigger_error( $log_message, E_USER_ERROR );
+	} else {
+		// Mimic a fatal error, so that log monitoring software will alert the site owner.
+		error_log( 'Fatal error: ' . $log_message );
+	}
 }

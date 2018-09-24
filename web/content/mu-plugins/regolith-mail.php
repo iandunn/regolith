@@ -8,7 +8,7 @@ Author:      Ian Dunn
 Author URI:  https://iandunn.name
 */
 
-namespace Regolith\Miscellaneous;
+namespace Regolith\Mail;
 use PHPMailer, phpmailerException;
 use WP_Error;
 
@@ -25,7 +25,7 @@ add_action( 'wp_mail_failed', __NAMESPACE__ . '\log_errors'              );
 /**
  * Prevent sandbox e-mails from going to production email accounts
  *
- * This is a quick and dirty fallback in case better tools like MailHog or MailCatcher aren't available.
+ * This is a quick and dirty fallback in case better tools like MailHog or MailCatcher aren't installed.
  *
  * _WARNING_: This will be bypassed if you use SMTP. See the note in `environment.php` for details.
  *

@@ -170,6 +170,7 @@ function content_sensor_flag() {
  * @param WP_Admin_Bar $admin_bar
  */
 function admin_bar_environment( $admin_bar ) {
+	// add is_admin_bar_showing()
 	if ( ! is_super_admin() ) {
 		return;
 	}
@@ -186,6 +187,7 @@ function admin_bar_environment( $admin_bar ) {
  */
 function admin_bar_environment_css() {
 	if ( ! is_super_admin() ) {
+		// add is_admin_bar_showing()
 		return;
 	}
 

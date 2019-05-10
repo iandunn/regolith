@@ -2,6 +2,15 @@
 
 ## High
 
+phpcs on mu-plugins, also align hook callback registration in regolith-mail
+
+php error logs not working anymore? latest error here is real old. iandunn.localhost and iandunn.name are both empty
+	`error_log` is set to correct file. maybe it's a permissions issue, or WP_DEBUG_LOG is off or `error_reporting` is too lower or there's some custom error handler fucking things up or something
+
+commit fixes for Subscript to Comments bugs
+    fatal errors when click on confirmation link
+    warnings/notices throughout
+
 now that not using deployer, install-deps script should delete plugins/themes that aren't in gitignore?
 	otherwise, removing from gitignore would not remove the plugin/theme
 
@@ -27,6 +36,14 @@ log error monitoring
 		https://mmonit.com/monit/
 		https://github.com/etsy/logster
 
+	once have something working, test that regolith\mail\log_errors() are also treated as fatal errors
+		might need to modify the message a bit to match the formatting/wording of real fatal errors
+
+write a bash script to check the PHP error log for fatal errors
+	if it detects one, it writes the current timestamp to a file in /tmp and sends an email w/ the error to alert you
+	but if the previous timestamp was less than 1 hour ago, it won't send the email, so that you only get 1 email per hour
+	then setup a unix cron job to run every minute
+	maybe not. what scenarios does this protect against that uptimemonitor + REGOLITH_CONTENT_SENSOR_FLAG doesn't?
 
 using wpcli for dependency management assumes that all dependencies are in the w.org repos
 	is there a way to integrate plugins hosted on github or premium themes
@@ -47,6 +64,11 @@ using wpcli for dependency management assumes that all dependencies are in the w
 
 	maybe reconsider using composer, but would need to fix obstacles so maintenance isn't a hassle
 
+
+maybe make wp-rig installed as the default theme, instead of simone?
+	would be a good chance to show an example of using git submodules
+	need to make sure it's compiled as part of install-deps though?
+	https://github.com/wprig/wprig
 
 now that not using deployer, install-deps script should delete plugins/themes that aren't in gitignore?
 	otherwise, removing from gitignore would not remove the plugin/theme
@@ -78,6 +100,10 @@ rotate files in {root}/logs
 
 maybe integrate gravityscan
 
+consider removing cloudflare plugin, since it's bloated with hundreds of thousands of lines of vendor code, is throwing notices in PHP7, and doesn't do that much
+	if do remove, might wanna seutp something simple to do a purge when saving the customizer and a few other things
+	maybe also when publishing post, b/c you have
+
 disable automatic upadte emails
 	then disable thunderbird filters since they'll no longer be needed
 
@@ -93,11 +119,6 @@ maybe remove the mail inteceptor and just assume that mailhog/mailcatcher availa
 	probably remove it, but maybe keep some kind of failsafe, or at least document expectations
 
 
-write a bash script to check the PHP error log for fatal errors
-	if it detects one, it writes the current timestamp to a file in /tmp and sends an email w/ the error to alert you
-	but if the previous timestamp was less than 1 hour ago, it won't send the email, so that you only get 1 email per hour
-	then setup a unix cron job to run every minute
-	maybe not. what scenarios does this protect against that uptimemonitor + REGOLITH_CONTENT_SENSOR_FLAG doesn't?
 
 
 add support for multiple plugin directories
@@ -234,8 +255,9 @@ deploy task to `chmod -w config/plugins/wp-super-cache.php` so WPSC doesn't over
 	keep in mind migrating away from delpoyer, so wait until that's done, then add this to whatever script wraps around `git pull`
 
 
-
 ## Medium
+
+migrate from google-authenticator to two-factor?
 
 maybe symlink user.ini to config folder, similar to wp-super-cache config
 	or maybe get rid of it, because it's host-specific, and just leave in install instructions?

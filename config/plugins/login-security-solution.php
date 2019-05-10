@@ -33,5 +33,3 @@ function get_settings() {
 		'pw_reuse_count'                    => '0',
 	);
 }
-
-

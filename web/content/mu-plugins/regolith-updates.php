@@ -90,6 +90,8 @@ function block_updates_for_custom_extensions( $dependencies ) {
 function is_core_theme( $slug ) {
 	$theme = wp_get_theme( $slug );
 
+	// todo don't need this anymore now that just deleteing the bundled content dir?
+	// need to modify function that calls this too.
 	return false !== strpos( $theme->get_theme_root(), 'wordpress/wp-content/themes' );
 }
 

@@ -34,8 +34,9 @@ If you run into any problems, check [the troubleshooting guide](./troubleshootin
 1. If you're setting up a Multisite install, run through the steps in [the Multisite installation notes](./install-multisite.md).
 1. Once you've verified that everything is setup correctly in your local environment:
     1. Run `git remote set-url origin {your_repo_url}` and commit your changes.
+        1. Alternately, if you want to start with a clean commit history, you can:`rm -rf .git`, `git init`, `git add .`, `git ci -m 'Initial Commit'`.
     1. `git push` to your site's repository.
-	1. At this point, your repo is independent of Regolith. You can manually merge in updates if you want, but that isn't necessary.
+	1. At this point, your repo is independent of Regolith. You can [manually merge in updates](./updating.md) if you want, but it's also fine if you don't want to.
 
 
 ### Setup Production Environment
@@ -65,13 +66,15 @@ If you run into any problems, check [the troubleshooting guide](./troubleshootin
 1. Setup HTTP content sensors with a monitoring service -- like [Uptime Robot](https://uptimerobot.com/) -- to look for the value of `REGOLITH_CONTENT_SENSOR_FLAG` in `https://example.org/wp-login.php` and `https://example.org/?s={timestamp}`.
 	1. The timestamp serves as a cachebuster. If the monitoring service doesn't allow timestamp tokens, then you can also use Super Cache's `donotcachepage` parameter along with the value of `REGOLITH_WP_SUPER_CACHE_SECRET`.
 1. Setup CloudFlare, including Page Rules to cache dynamic content.
+	(write your own blog post about this w/ examples, note about not cahcing logged-in views for security. then link the article here -- https://iandunn.name/?p=2354)
 1. Configure the SMTP settings in `environment.php` to send outbound email through a transactional mail service.
     1. I like [Mailgun](https://mailgun.com), but any service that supports SMTP should work.
 	1. I _don't_ recommend Gmail or other consumer email services, because they're not designed to be used in this way. I've seen Gmail start rejecting messages all of the sudden for various reasons, without any advanced warning or failure notification.
 	1. Don't forget to update your SPF and/or DKIM records too.
 1. [Tweak OPCache settings](https://tideways.com/profiler/blog/fine-tune-your-opcache-configuration-to-avoid-caching-suprises).
 	1. `bin/deploy.sh` will reset the OPCache contents, so you should be able to set `opcache.validate_timestamps = 0`, to avoid the performance penalty associated with checking the timestamps. I haven't tested that yet, though. If you do, keep in mind that you'll need to manually reset the cache if you ever directly modify production files (while troubleshooting, etc).
-1. Configure your web server to store PHP/Apache/etc logs in the `logs/` folder.
+1. Configure your web server to store PHP/Apache/etc logs in the `logs/` folder. PHP logs should already be going there (see `config/wordpress.php`), but it's best to set this via `php.ini/phprc/.user.ini` to be safe.
+	1. It's also a good idea to test and make sure that the logs are actually being populated, since file permissions or other issues could prevent it.
 
 
 ## Regular Usage

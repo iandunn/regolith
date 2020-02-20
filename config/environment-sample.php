@@ -24,8 +24,9 @@ define( 'REGOLITH_CLOUDFLARE_ZONE_ID',     ''                           );
 define( 'REGOLITH_OPCACHE_RESET_KEY',      ''                           );
 
 /*
- * Generating these locally is more secure, but you can also use
- * https://api.wordpress.org/secret-key/1.1/salt/ for convenience.
+ * Always set/change these with `wp config shuffle-salts` instead of using api.wordpress.org. Generating them
+ * locally is safer, because the keys are never exposed to the Internet, your web browser
+ * (and its 3rd-party extensions), etc.
  */
 define( 'AUTH_KEY',         'put your unique phrase here' );
 define( 'SECURE_AUTH_KEY',  'put your unique phrase here' );

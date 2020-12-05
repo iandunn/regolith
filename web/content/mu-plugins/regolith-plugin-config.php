@@ -19,7 +19,7 @@ defined( 'WPINC' ) || die();
  * - It's automatically applied when provisioning a new environment, and is always consistent across all
  *   environments.
  * - When changes are made, it's tracked in version control, so you always know that a change was made, when it
- *   was made, who made it, and why.
+ *   was made, who made it, and why (assuming you write good commit messages ;) ).
  */
 
 require_once( REGOLITH_ROOT_DIR . '/config/plugins/google-auth-eua.php'         );
@@ -42,7 +42,7 @@ add_filter( 'pre_option_login-security-solution-options', 'Regolith\Login_Securi
 function override_individual_settings() {
 	//$foo             = Regolith\Foo\get_settings();
 	//$plugin_settings = compact( 'foo' );
-	$plugin_settings = compact( '' );
+	$plugin_settings = array(); // This line is just to avoid a PHP error when there aren't any. Replace it with the example above.
 
 	foreach ( $plugin_settings as $plugin => $settings ) {
 		foreach ( $settings as $option_name => $option_value ) {

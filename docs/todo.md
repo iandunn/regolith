@@ -2,10 +2,11 @@
 
 ## High
 
-phpcs on mu-plugins, also align hook callback registration in regolith-mail
+support new wp environment types
 
-php error logs not working anymore? latest error here is real old. iandunn.localhost and iandunn.name are both empty
-	`error_log` is set to correct file. maybe it's a permissions issue, or WP_DEBUG_LOG is off or `error_reporting` is too lower or there's some custom error handler fucking things up or something
+support new wp fatal error handler? custom drop in to tweak behavior? custom error template?
+
+phpcs on mu-plugins, also align hook callback registration in regolith-mail
 
 commit fixes for Subscript to Comments bugs
     fatal errors when click on confirmation link
@@ -250,10 +251,11 @@ setup file backups
 maybe assign `$regolith_smtp` inside a `switch() {}` so that aliases etc can easily reuse creds
 
 
-	
+
 deploy task to `chmod -w config/plugins/wp-super-cache.php` so WPSC doesn't overwrite it w/ bad values. add comment to top of file explaning why its' unwritable on prod, and to chmod +w to made mods, commit changes, then chmod -w to lock them in place again
 	keep in mind migrating away from delpoyer, so wait until that's done, then add this to whatever script wraps around `git pull`
 
+remove google-authentictator-per-user-prompt from gitignore, config/plugins, etc, b/c parent plugin has that feature now
 
 ## Medium
 

@@ -61,10 +61,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __DIR__ ) . "$document_root_path/wordpress/" );
 }
 
+define( 'WP_DEBUG',     true );
+define( 'WP_DEBUG_LOG', REGOLITH_ROOT_DIR . '/logs/php-errors.log' );
+
 switch ( REGOLITH_ENVIRONMENT ) {
 	case 'development':
+		define( 'WP_DEBUG_DISPLAY', true );
 		define( 'SAVEQUERIES',     true );
-		define( 'WP_DEBUG',        true );
 		define( 'SCRIPT_DEBUG',    true );
 		define( 'FORCE_SSL_ADMIN', false );
 		break;
@@ -73,7 +76,6 @@ switch ( REGOLITH_ENVIRONMENT ) {
 		ini_set( 'display_errors', 0 ); // Setting this *and* `WP_DEBUG_DISPLAY` to protect against edge cases.
 
 		define( 'WP_DEBUG_DISPLAY', false );
-		define( 'WP_DEBUG_LOG',     true  );
 		define( 'SCRIPT_DEBUG',     false );
 		define( 'FORCE_SSL_ADMIN',  true  );
 

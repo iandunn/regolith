@@ -11,6 +11,9 @@ Author URI:  https://iandunn.name
 namespace Regolith\Base;
 defined( 'WPINC' ) || die();
 
+initialize();
+
+
 /**
  * Register hook callbacks and other initialization tasks
  */
@@ -150,5 +153,3 @@ function load_site_specific_mu_plugins() {
 		}
 	}
 }
-
-initialize();

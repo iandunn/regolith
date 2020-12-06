@@ -37,6 +37,21 @@ if ( ! function_exists( 'regolith_get_cache_page_secret' ) ) {
 	}
 }
 
+/*
+ * There's usually no need for caching in development environments, and it's often a hassle to work around it.
+ *
+ * For the occasions when it's needed for testing, this can be temporarily changed locally.
+ */
+if ( 'production' === REGOLITH_ENVIRONMENT ) {
+	$cache_enabled       = true;
+	$super_cache_enabled = true;
+	$cache_rebuild_files = true;
+} else {
+	$cache_enabled       = false;
+	$super_cache_enabled = false;
+	$cache_rebuild_files = false;
+}
+
 $wp_cache_preload_on           = 1;
 $wp_cache_preload_taxonomies   = 1;
 $wp_cache_preload_email_volume = 'many';
@@ -67,8 +82,6 @@ if ( ! defined( 'WPCACHEHOME' ) ) {
 }
 
 $cache_compression   = false;
-$cache_enabled       = true;
-$super_cache_enabled = true;
 $cache_max_time      = 86400;
 //$use_flock           = true; // Set it true or false if you know what to use
 $cache_path          = WP_CONTENT_DIR . '/cache';
@@ -86,8 +99,6 @@ $cache_rejected_user_agent = array(
 	4 => 'spider',
 	5 => 'Yandex'
 );
-
-$cache_rebuild_files = 1;
 
 // Disable the file locking system.
 // If you are experiencing problems with clearing or creating cache files
@@ -126,7 +137,7 @@ $wp_cache_debug_to_file      = 0;
 $wp_super_cache_debug        = 0;
 $wp_cache_debug_level        = 5;
 $wp_cache_debug_ip           = '';
-$wp_cache_debug_log          = '';
+$wp_cache_debug_log          = REGOLITH_ROOT_DIR . '/logs/wp-super-cache.php';
 $wp_cache_debug_email        = '';
 $wp_cache_pages["search"]    = 0;
 $wp_cache_pages["feed"]      = 0;

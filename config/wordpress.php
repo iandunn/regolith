@@ -39,7 +39,6 @@ define( 'WP_SITEURL',          WP_HOME . '/wordpress'                           
 define( 'REGOLITH_BACKUP_DIR', REGOLITH_ROOT_DIR . '/backups'                              );
 define( 'WP_TEMP_DIR',         REGOLITH_ROOT_DIR . '/tmp'                                  ); // Avoid leaking data in shared /tmp.
 define( 'WP_CONTENT_DIR',      REGOLITH_ROOT_DIR . $document_root_path . $content_dir_path );
-define( 'WPCACHEHOME',         WP_CONTENT_DIR . '/plugins/wp-super-cache/'                 );
 
 define( 'WP_CACHE',                     true             );
 define( 'DISALLOW_FILE_EDIT',           true             );

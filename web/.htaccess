@@ -22,63 +22,6 @@ Options -Indexes
 # END regolith.localhost
 
 
-
-# BEGIN WPSuperCache
-<IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteBase /
-#If you serve pages from behind a proxy you may want to change 'RewriteCond %{HTTPS} on' to something more sensible
-AddDefaultCharset UTF-8
-RewriteCond %{REQUEST_URI} !^.*[^/]$
-RewriteCond %{REQUEST_URI} !^.*//.*$
-RewriteCond %{REQUEST_METHOD} !POST
-RewriteCond %{QUERY_STRING} !.*=.*
-RewriteCond %{HTTP:Cookie} !^.*(comment_author_|wordpress_logged_in|wp-postpass_).*$
-RewriteCond %{HTTP:X-Wap-Profile} !^[a-z0-9\"]+ [NC]
-RewriteCond %{HTTP:Profile} !^[a-z0-9\"]+ [NC]
-RewriteCond %{HTTP:Accept-Encoding} gzip
-RewriteCond %{HTTPS} on
-RewriteCond %{DOCUMENT_ROOT}/content/cache/supercache/%{SERVER_NAME}/$1/index-https.html.gz -f
-RewriteRule ^(.*) "/content/cache/supercache/%{SERVER_NAME}/$1/index-https.html.gz" [L]
-
-RewriteCond %{REQUEST_URI} !^.*[^/]$
-RewriteCond %{REQUEST_URI} !^.*//.*$
-RewriteCond %{REQUEST_METHOD} !POST
-RewriteCond %{QUERY_STRING} !.*=.*
-RewriteCond %{HTTP:Cookie} !^.*(comment_author_|wordpress_logged_in|wp-postpass_).*$
-RewriteCond %{HTTP:X-Wap-Profile} !^[a-z0-9\"]+ [NC]
-RewriteCond %{HTTP:Profile} !^[a-z0-9\"]+ [NC]
-RewriteCond %{HTTP:Accept-Encoding} gzip
-RewriteCond %{HTTPS} !on
-RewriteCond %{DOCUMENT_ROOT}/content/cache/supercache/%{SERVER_NAME}/$1/index.html.gz -f
-RewriteRule ^(.*) "/content/cache/supercache/%{SERVER_NAME}/$1/index.html.gz" [L]
-
-RewriteCond %{REQUEST_URI} !^.*[^/]$
-RewriteCond %{REQUEST_URI} !^.*//.*$
-RewriteCond %{REQUEST_METHOD} !POST
-RewriteCond %{QUERY_STRING} !.*=.*
-RewriteCond %{HTTP:Cookie} !^.*(comment_author_|wordpress_logged_in|wp-postpass_).*$
-RewriteCond %{HTTP:X-Wap-Profile} !^[a-z0-9\"]+ [NC]
-RewriteCond %{HTTP:Profile} !^[a-z0-9\"]+ [NC]
-RewriteCond %{HTTPS} on
-RewriteCond %{DOCUMENT_ROOT}/content/cache/supercache/%{SERVER_NAME}/$1/index-https.html -f
-RewriteRule ^(.*) "/content/cache/supercache/%{SERVER_NAME}/$1/index-https.html" [L]
-
-RewriteCond %{REQUEST_URI} !^.*[^/]$
-RewriteCond %{REQUEST_URI} !^.*//.*$
-RewriteCond %{REQUEST_METHOD} !POST
-RewriteCond %{QUERY_STRING} !.*=.*
-RewriteCond %{HTTP:Cookie} !^.*(comment_author_|wordpress_logged_in|wp-postpass_).*$
-RewriteCond %{HTTP:X-Wap-Profile} !^[a-z0-9\"]+ [NC]
-RewriteCond %{HTTP:Profile} !^[a-z0-9\"]+ [NC]
-RewriteCond %{HTTPS} !on
-RewriteCond %{DOCUMENT_ROOT}/content/cache/supercache/%{SERVER_NAME}/$1/index.html -f
-RewriteRule ^(.*) "/content/cache/supercache/%{SERVER_NAME}/$1/index.html" [L]
-</IfModule>
-
-# END WPSuperCache
-
-
 # BEGIN WordPress
 <IfModule mod_rewrite.c>
 RewriteEngine On

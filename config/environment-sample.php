@@ -18,7 +18,6 @@ define( 'WP_HOME',                         'https://regolith.localhost' );
 define( 'DB_HOST',                         'localhost'                  );
 define( 'DB_PASSWORD',                     'password'                   );
 define( 'REGOLITH_DEV_NOTIFICATIONS',      'foo@example.org'            );
-define( 'REGOLITH_WP_SUPER_CACHE_SECRET',  'replace me with  strong password' );
 define( 'WPCOM_API_KEY',                   ''                           ); // Akismet API key.
 define( 'REGOLITH_CLOUDFLARE_ZONE_ID',     ''                           );
 define( 'REGOLITH_OPCACHE_RESET_KEY',      ''                           );

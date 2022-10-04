@@ -28,11 +28,11 @@
 #
 /web/content/plugins/akismet
 /web/content/plugins/cloudflare
-/web/content/plugins/google-authenticator
 /web/content/plugins/login-security-solution
 /web/content/plugins/quick-navigation-interface
+/web/content/plugins/surge
+/web/content/plugins/two-factor
 /web/content/plugins/vaultpress
 /web/content/plugins/wordfence
-/web/content/plugins/surge
 
 /web/content/themes/simone

@@ -49,6 +49,9 @@ define( 'REGOLITH_BACKUPS_TO_KEEP',     50               ); // Includes schedule
 define( 'REGOLITH_GOOGLE_ANALYTICS_ID', 'UA-000000000-0' );
 define( 'REGOLITH_MAINTENANCE_MODE',    false            ); // Note: This is not intended to hide content. See `Regolith\Miscellaneous\coming_soon_page()` for details.
 
+define( 'WP_HTTP_BLOCK_EXTERNAL', true );
+define( 'WP_ACCESSIBLE_HOSTS',    '*.wordpress.org' );
+
 define( 'REGOLITH_MAINTENANCE_MODE_MESSAGE', sprintf( '
 	<p>%s is currently undergoing maintenance, but please check back soon.</p>
 	<!-- %s -->',

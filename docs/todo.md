@@ -2,6 +2,10 @@
 
 ## High
 
+- [ ] install query monitor and laps, but only in non-production envs
+	or maybe installed everywhere, but only activated in non-prod? so can activate on prod when needed?
+	would need config var to switch if code is activating/deactivaging?
+
 support new wp environment types
 
 support new wp fatal error handler? custom drop in to tweak behavior? custom error template?

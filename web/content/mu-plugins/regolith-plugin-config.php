@@ -81,6 +81,8 @@ function schedule_cron_jobs() {
  *       - Leave _temporary_ blocks that WordFence creates itself.
  */
 function apply_wordfence_configuration() {
+	require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
 	if ( ! is_plugin_active( 'wordfence/wordfence.php' ) ) {
 		return;
 	}
